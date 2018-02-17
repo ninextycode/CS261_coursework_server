@@ -4,61 +4,111 @@ import tornado.httpserver as t_http
 import tornado.ioloop
 
 import threading
+import json
 
 import base.Log as l
 import config
 
 
-class Server(tws.WebSocketHandler):
-    live_websockets = set()
+class Handler(tws.WebSocketHandler):
+    on_message_callback = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        Server.live_websockets.add(self)
+        with Server.main_lock:
+            Server.get_instance().live_handlers.add(self)
 
     def open(self):
         pass
 
     def on_message(self, message):
+        Handler.on_message_callback(message)
         l.log("Server received {}".format(message))
-
-    @staticmethod
-    def send_message(message):
-        Server.clean_sockets_list()
-        if len(Server.live_websockets) > 0:
-            print("Server sends {}".format(message))
-        else:
-            print("No active connections to send {}".format(message))
-
-        for ws in Server.live_websockets:
-            ws.write_message(message)
-
-    @staticmethod
-    def clean_sockets_list():
-        to_remove = set()
-        for ws in Server.live_websockets:
-            if not (ws.ws_connection and ws.ws_connection.stream.socket):
-                to_remove.add(ws)
-
-        Server.live_websockets = Server.live_websockets - to_remove
 
     def on_close(self):
         l.log(self, "disconnected")
-        Server.live_websockets.remove(self)
+        with Server.main_lock:
+            handlers = Server.get_instance().live_handlers
+            if self in handlers:
+                handlers.remove(self)
 
 
-def start_server():
-    application = tw.Application([
-        (r'/', Server),
-    ])
+class Server:
+    instance = None
+    main_lock = threading.Lock()
 
-    http_server = t_http.HTTPServer(application)
-    http_server.listen(config.ws_port)
+    @staticmethod
+    def get_instance():
+        if Server.instance is None:
+            with Server.main_lock:
+                if Server.instance is None:
+                    Server.instance = Server()
+        return Server.instance
 
-    def start_loop():
-        loop = tornado.ioloop.IOLoop.instance()
-        loop.start()
+    def __init__(self):
+        self.message_worker = None
+        self.live_handlers = set()
+        self.messages_to_send = []
 
-    thread = threading.Thread(target=start_loop)
-    thread.start()
+        self.ioloop = tornado.ioloop.IOLoop.instance()
+        self.ioloop_thread = None
+        Handler.on_message_callback = self.on_message
 
+    def unsafe_clean_live_handlers_list(self):
+        to_remove = set()
+        for ws in self.live_handlers:
+            if not (ws.ws_connection and ws.ws_connection.stream and ws.ws_connection.stream.socket):
+                to_remove.add(ws)
+
+        self.live_handlers = self.live_handlers - to_remove
+
+    def send(self, message):
+        self.send_in_future(message)
+
+    def send_in_future(self, message):
+        self.messages_to_send.append(message)
+
+    def send_queued(self):
+        with Server.main_lock:
+            for m in self.messages_to_send:
+                self.unsafe_send(m)
+            self.messages_to_send = []
+
+    def unsafe_send(self, message):
+        self.unsafe_clean_live_handlers_list()
+        if len(self.live_handlers) > 0:
+            l.log("Server sends {}".format(message))
+        else:
+            l.log("No active connections to send {}".format(message))
+
+        for ws in self.live_handlers:
+            ws.write_message(message)
+
+    def on_message(self, message):
+        with Server.main_lock:
+            self.unsafe_on_message(message)
+
+    def unsafe_on_message(self, message):
+        message_json = json.loads(message)
+        self.message_worker.on_message(message_json)
+
+    def start_server(self):
+        application = tw.Application([
+            (r'/', Handler),
+        ])
+
+        http_server = t_http.HTTPServer(application)
+        http_server.listen(config.ws_port)
+        message_send_period_ms = 100
+
+        send_messages = tornado.ioloop.PeriodicCallback(self.send_queued, message_send_period_ms)
+
+        def start_in_thread():
+            send_messages.start()
+            self.ioloop.start()
+
+        self.ioloop_thread = threading.Thread(target=start_in_thread)
+        self.ioloop_thread.start()
+
+    def stop_server(self):
+        self.ioloop.add_callback(self.ioloop.stop)

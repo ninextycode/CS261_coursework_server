@@ -1,3 +1,5 @@
+import datetime
+
 
 def log(*message):
-    print(*message)
+    print(datetime.datetime.now(), "\t", *message)
