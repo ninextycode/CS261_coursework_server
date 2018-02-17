@@ -1,4 +1,7 @@
-class PatternBasedeExtractor():
+import base.SingletoneInterface as si
+
+
+class PatternBasedeExtractor(si.Singleton):
     patterns = []
     def get_meaning(self, string):
-        for p in patterns:
+        pass

@@ -15,6 +15,9 @@ class MessageWorker:
 
     def on_message(self, message):
         l.log("Message worker got {} {}".format(type(message), message))
+        if message["mime_type"] == "text/plain":
+            response = self.message_router.process_single(message)
+        self.server.send(message)
 
     def send(self, message):
         self.server.send(message)
