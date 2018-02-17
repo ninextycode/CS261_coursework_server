@@ -54,6 +54,9 @@ class Server:
         self.ioloop_thread = None
         Handler.on_message_callback = self.on_message
 
+    def set_message_worker(self, worker):
+        self.message_worker = worker
+
     def unsafe_clean_live_handlers_list(self):
         to_remove = set()
         for ws in self.live_handlers:

@@ -16,5 +16,8 @@ class MessageWorker:
     def on_message(self, message):
         l.log("Message worker got {} {}".format(type(message), message))
 
-    def send_message(self, message):
+    def send(self, message):
         self.server.send(message)
+
+    def set_server(self, server):
+        self.server = server
