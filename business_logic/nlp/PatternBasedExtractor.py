@@ -13,7 +13,7 @@ class PatternBasedExtractor():
       request = {}
       req1 = {
         'type': 'request',
-        'info': p,
+        'subtype': p,
         'keyword': re.sub(r'[^\w\s]','',string.rsplit(' ', 1)[1])
       }
       s = json.dumps(req1)
