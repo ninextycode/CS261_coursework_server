@@ -1,1 +1,1 @@
-{"type": "request", "keyword": "Microsoft"}
+{"type": "request", "info": "news", "keyword": "Microsoft"}
