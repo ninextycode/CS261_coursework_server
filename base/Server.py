@@ -5,6 +5,7 @@ import tornado.ioloop
 
 import threading
 import json
+import traceback
 
 import base.Log as l
 import config
@@ -15,8 +16,8 @@ class Handler(tws.WebSocketHandler):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        with Server.main_lock:
-            Server.get_instance().live_handlers.add(self)
+        l.log(self, "connected")
+        Server.get_instance().add_handler(self)
 
     def open(self):
         pass
@@ -27,25 +28,22 @@ class Handler(tws.WebSocketHandler):
 
     def on_close(self):
         l.log(self, "disconnected")
-        with Server.main_lock:
-            handlers = Server.get_instance().live_handlers
-            if self in handlers:
-                handlers.remove(self)
+        Server.get_instance().remove_handler(self)
 
 
 class Server:
     instance = None
-    main_lock = threading.Lock()
-
     @staticmethod
     def get_instance():
         if Server.instance is None:
-            with Server.main_lock:
-                if Server.instance is None:
-                    Server.instance = Server()
+            Server.instance = Server()
         return Server.instance
 
     def __init__(self):
+        self.handlers_lock = threading.Lock()
+        self.sending_message_lock = threading.Lock()
+        self.receiving_message_lock = threading.Lock()
+
         self.message_worker = None
         self.live_handlers = set()
         self.messages_to_send = []
@@ -72,7 +70,7 @@ class Server:
         self.messages_to_send.append(message)
 
     def send_queued(self):
-        with Server.main_lock:
+        with self.sending_message_lock:
             for m in self.messages_to_send:
                 self.unsafe_send(m)
             self.messages_to_send = []
@@ -88,8 +86,21 @@ class Server:
             ws.write_message(message)
 
     def on_message(self, message):
-        with Server.main_lock:
-            self.unsafe_on_message(message)
+        with self.receiving_message_lock:
+            response = {
+                "type": "message",
+                "data": {
+                    "mime_type": "text\plain",
+                    "body": "test response"
+                }
+            }
+            try:
+                self.unsafe_on_message(message)
+            except Exception as e:
+                response["data"]["body"] = traceback.format_exc()
+                response["type"] = "exception"
+
+            self.send(response)
 
     def unsafe_on_message(self, message):
         message_json = json.loads(message)
@@ -115,3 +126,11 @@ class Server:
 
     def stop_server(self):
         self.ioloop.add_callback(self.ioloop.stop)
+
+    def add_handler(self, h):
+        with self.handlers_lock:
+            self.live_handlers.add(h)
+
+    def remove_handler(self, h):
+        with self.handlers_lock:
+            self.live_handlers.remove(h)

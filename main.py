@@ -15,15 +15,14 @@ def start():
         server.start_server()
 
         message_worker = mw.MessageWorker.get_instance()
+
         server.set_message_worker(message_worker)
         message_worker.set_server(server)
-
-        while True:
-            message_worker.send({"mime_type": "application/json", "body" : "{ news: []}" } )
-            time.sleep(0.5)
 
     except KeyboardInterrupt:
         if server is not None:
             server.stop_server()
 
-start()
+
+if __name__ == "__main__":
+    start()

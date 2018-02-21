@@ -1,5 +1,5 @@
 class Singleton:
-    instance = None
+    _instance = None
 
     @classmethod
     def get_instance(cls):

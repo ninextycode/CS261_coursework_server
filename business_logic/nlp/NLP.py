@@ -1,4 +1,4 @@
-import base.SingletoneInterface as si
+import base.Singleton as si
 
 import business_logic.nlp.PatternBasedExtractor as pbe
 
