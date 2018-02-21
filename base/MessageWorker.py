@@ -33,7 +33,7 @@ class MessageWorker:
             if message_body["is_base64"]:
                 f.write(base64.b64decode(message_body["content"]))
             else:
-                f.write(bytes((message_body["content"],)))
+                raise NotImplementedError("Audio should be encoded in base64")
 
     def send(self, message):
         self.server.send(message)
