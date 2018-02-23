@@ -25,7 +25,7 @@ class GoogleCommandExtractor(sn.Singleton):
         tree = google_api_output["tree"]
         keywords = google_api_output["keywords"]
 
-        self.pattern_based_extractor.get_meaning(tree, keywords)
+        self.pattern_based_extractor.get_meaning_from_single(text, keywords)
 
         logger.log("tree:\n {}".format(tree["root"]))
         logger.log("keywords {}".format(keywords))

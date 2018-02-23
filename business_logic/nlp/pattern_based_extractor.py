@@ -1,7 +1,5 @@
 import base.singleton as sn
 import business_logic.nlp.data_tags as tags
-# import business_logic.nlp.google_command_extractor as gce
-
 
 import json
 import re
@@ -15,26 +13,25 @@ class PatternBasedExtractor(sn.Singleton):
     patterns = ["price", "news"]
     companies = ["Apple", "Microsoft", "Facebook"]
 
-    def get_meaning_from_single(self, tree, keywords):
+    def get_meaning_from_single(self, string, keywords):
+        print(string.split())
         for k in keywords:
             if k["word"] in self.patterns:
                 request = {}
                 req1 = {
                     'type': tags.Type.data_request,
                     'subtype': k["word"],
-                    'keyword': self.find_company_name(tree["nodes"]) # split the tree
+                    'keyword': self.find_company_name(re.sub(r'[^\w\s]','',string).split())
                 }
                 s = json.dumps(req1)
                 logger.log(s)
                 break
-                #print(keywords[0]['word'])
 
-    def find_company_name(self, nodes):
-        words = nodes
+    def find_company_name(self, words):
         company = None
         for w in words:
-            if (w.data["text"]) in self.companies:
-                company = w.data["text"]
+            if w in self.companies:
+                company = w
                 break
         return company
 
