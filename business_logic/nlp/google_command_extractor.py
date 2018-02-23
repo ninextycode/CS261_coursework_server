@@ -66,4 +66,4 @@ class GoogleCommandExtractor(sn.Singleton):
 
 if __name__ == '__main__':
     gce = GoogleCommandExtractor().get_instance()
-    gce.get_meaning_from_single_using_nlp("What is the price of Apple?")
+    gce.get_meaning_from_single_using_nlp("How much is Facebook?")
