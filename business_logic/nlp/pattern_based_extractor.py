@@ -15,14 +15,14 @@ class PatternBasedExtractor(sn.Singleton):
     patterns = ["price", "news"]
     companies = ["Apple", "Microsoft", "Facebook"]
 
-    def get_meaning(self, tree, keywords):
+    def get_meaning_from_single(self, tree, keywords):
         for k in keywords:
             if k["word"] in self.patterns:
                 request = {}
                 req1 = {
                     'type': tags.Type.data_request,
                     'subtype': k["word"],
-                    'keyword': self.find_company_name(tree["nodes"])
+                    'keyword': self.find_company_name(tree["nodes"]) # split the tree
                 }
                 s = json.dumps(req1)
                 logger.log(s)
