@@ -118,6 +118,7 @@ class Server(sn.Singleton):
         send_messages = tornado.ioloop.PeriodicCallback(self.send_queued, message_send_period_ms)
 
         def start_in_thread():
+            server_logger.log("Server started")
             send_messages.start()
             self.ioloop.start()
 

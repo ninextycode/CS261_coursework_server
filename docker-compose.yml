@@ -13,10 +13,3 @@ services:
 
     ports:
       - 7004:7004
-
-    networks:
-      - dockernet
-
-networks:
-  dockernet:
-      external: true
