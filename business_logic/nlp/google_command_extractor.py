@@ -37,10 +37,10 @@ class GoogleCommandExtractor(sn.Singleton):
         meaning = self.get_meaning_from_single_using_patterns(text)
         if meaning is not None:
             return meaning
+
         meaning = self.get_meaning_from_single_using_nlp(text)
         if meaning is not None:
             return meaning
-
         raise ex.MeaningUnknown()
 
     def get_meaning_from_alternatives(self, alternatives):
@@ -60,3 +60,7 @@ class GoogleCommandExtractor(sn.Singleton):
 
         raise ex.MeaningUnknown()
 
+
+if __name__ == '__main__':
+    gce = GoogleCommandExtractor().get_instance()
+    gce.get_meaning_from_single("What is the price of Apple?")

@@ -27,5 +27,6 @@ class PatternBasedExtractor(sn.Singleton):
 
 
 if __name__ == '__main__':
-    PatternBasedExtractor.get_instance().get_meaning("What is the price of Apple?")
-    PatternBasedExtractor.get_instance().get_meaning("What is the latest news of Microsoft?")
+    pbe = PatternBasedExtractor.get_instance()
+    pbe.get_meaning("What is the price of Apple?")
+    pbe.get_meaning("What is the latest news of Microsoft?")
