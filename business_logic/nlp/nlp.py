@@ -7,5 +7,8 @@ class NLP(si.Singleton):
     def __init__(self):
         self.extractor = gce.GoogleCommandExtractor.get_instance()
 
-    def get_meaning(self, string):
-        return self.extractor.get_meaning(string)
+    def get_meaning_from_single(self, string):
+        return self.extractor.get_meaning_from_single(string)
+
+    def get_meaning_from_alternatives(self, string):
+        return self.extractor.get_meaning_from_alternatives(string)

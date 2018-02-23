@@ -25,8 +25,6 @@ class GoogleNlpApi(sn.Singleton):
 
         api_response = client.annotate_text(document=document, features=features)
 
-        logger.log(api_response)
-
         result = {
             "keywords": self.get_keywords(api_response),
             "raw": api_response,
@@ -60,7 +58,6 @@ class GoogleNlpApi(sn.Singleton):
     def get_keywords(self, response):
         keywords = []
         for e in response.entities:
-            logger.log(e)
             keywords.append({
                 "word": e.name,
                 "type": e.type,

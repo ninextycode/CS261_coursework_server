@@ -25,7 +25,6 @@ def start():
         message_worker.set_message_router(message_router)
         message_router.set_message_worker(message_worker)
 
-
     except KeyboardInterrupt:
         if server is not None:
             server.stop_server()

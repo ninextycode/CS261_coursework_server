@@ -1,5 +1,5 @@
 import data_providers.external_apis.google_rss as google_rss
-import base.data_tags as tags
+import business_logic.nlp.data_tags as tags
 
 class NewsAnalyser:
     def __init__(self):

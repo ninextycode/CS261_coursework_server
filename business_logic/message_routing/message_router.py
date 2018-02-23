@@ -1,7 +1,7 @@
 import base.singleton as sn
 import base.log as l
 import business_logic.nlp.nlp as nlp
-import base.data_tags as tags
+import business_logic.nlp.data_tags as tags
 
 
 logger = l.Logger("MessageRouter")
@@ -17,16 +17,15 @@ class MessageRouter(sn.Singleton):
         self.message_worker = None
         self.world_data = None
 
-    # todo take alternatives' scores into account
     def process_alternatives(self, alternatives):
-        for alt in alternatives:
-            try:
-                return self.process_single(alt["transcript"])
-            except:
-                logger.log("failed to undestand one of the alternatives: \"{}\"".format(alt["transcript"]))
+        meaning = self.nlp.get_meaning_from_alternatives(alternatives)
+        return self.response_to_command(meaning)
 
     def process_single(self, message):
-        meaning = self.nlp.get_meaning(message)
+        meaning = self.nlp.get_meaning_from_single(message)
+        return self.response_to_command(meaning)
+
+    def response_to_command(self, meaning):
         if meaning["type"] == tags.Type.data_request and \
                 meaning["subtype"] == tags.SubType.news:
 
