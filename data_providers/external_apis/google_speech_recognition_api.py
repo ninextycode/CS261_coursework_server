@@ -1,9 +1,8 @@
 import base.singleton as sn
 import base.log as l
 
-from google.cloud import speech
-from google.cloud.speech import enums
-from google.cloud.speech import types
+import google.cloud as gl_cloud
+import google.cloud.speech as gl_speech
 
 
 logger = l.Logger("GoogleSpeechRecognitionApi")
@@ -11,17 +10,17 @@ logger = l.Logger("GoogleSpeechRecognitionApi")
 
 class GoogleSpeechRecognitionApi(sn.Singleton):
     def __init__(self):
-        self.client = speech.SpeechClient()
+        self.client = gl_cloud.speech.SpeechClient()
 
     def query(self, audio_bytes_dict, n_alternatives=30):
-        config = types.RecognitionConfig(
-            encoding=enums.RecognitionConfig.AudioEncoding.FLAC,
+        config = gl_speech.types.RecognitionConfig(
+            encoding=gl_speech.enums.RecognitionConfig.AudioEncoding.FLAC,
             language_code='en-GB',
             max_alternatives=n_alternatives
         )
 
         content = audio_bytes_dict["bytes"]
-        audio = types.RecognitionAudio(content=content)
+        audio = gl_speech.types.RecognitionAudio(content=content)
 
         response = self.client.recognize(config, audio)
         if len(response.results) == 0:
