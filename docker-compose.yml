@@ -1,0 +1,22 @@
+version: "3.3"
+
+services:
+  server:
+    stdin_open: true
+    tty: true
+    restart: always
+
+    build: ./
+
+    volumes:
+      - .:/server/
+
+    ports:
+      - 7004:7004
+
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+      external: true
