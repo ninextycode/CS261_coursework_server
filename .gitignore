@@ -4,6 +4,7 @@ Pipfile.lock
 
 .idea/*
 *.flac
+**/keys/*
 
 ### Python template
 # Byte-compiled / optimized / DLL files
