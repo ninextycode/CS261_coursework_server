@@ -9,7 +9,7 @@ import config
 
 import multiprocessing.pool as m_pool
 
-logger = l.Logger("GoogleCommandExtractor", 500)
+logger = l.Logger("GoogleCommandExtractor", None)
 
 
 class GoogleCommandExtractor(sn.Singleton):
@@ -25,8 +25,11 @@ class GoogleCommandExtractor(sn.Singleton):
         tree = google_api_output["tree"]
         keywords = google_api_output["keywords"]
 
+        self.pattern_based_extractor.get_meaning(tree, keywords)
+
         logger.log("tree:\n {}".format(tree["root"]))
         logger.log("keywords {}".format(keywords))
+
 
         return meaning
 
@@ -63,4 +66,4 @@ class GoogleCommandExtractor(sn.Singleton):
 
 if __name__ == '__main__':
     gce = GoogleCommandExtractor().get_instance()
-    gce.get_meaning_from_single("What is the price of Apple?")
+    gce.get_meaning_from_single_using_nlp("What is the price of Apple?")

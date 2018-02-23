@@ -86,4 +86,4 @@ class Node:
         return ret
 
     def __repr__(self):
-        return "<tree>"
+        return "<node>"
