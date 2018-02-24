@@ -10,16 +10,16 @@ logger = l.Logger("PatternBasedExtractor")
 
 class PatternBasedExtractor(sn.Singleton):
 
-    patterns = json.loads('{"stock_price": ["price", "much"], "news": ["news", "information"]}')
+    patterns = json.loads('{"stock_price": ["price", "much"], "news": ["news", "information", "happen"]}')
 
     companies = ["Apple", "Microsoft", "Facebook"]
 
-    def get_meaning_from_single(self, string, keywords):
-        print(self.patterns["stock_price"])
-        for k in keywords:
+    def get_meaning_from_using_patterns(self, string):
+        words = re.sub(r'[^\w\s]','',string).split()
+        print(words)
+        for w in words:
             for p in self.patterns:
-                print(p)
-                if k["word"] in self.patterns[p]:
+                if w in self.patterns[p]:
                     request = {}
                     req1 = {
                         'type': tags.Type.data_request,
@@ -30,6 +30,32 @@ class PatternBasedExtractor(sn.Singleton):
                     logger.log(s)
                     break
 
+
+    def get_meaning_from_using_nlp(self, tree, keywords):
+        pattern = None
+        nouns = []
+
+        for n in tree["nodes"]:
+            if n.data["part_of_speech"] == 6:  # get nouns
+                nouns.append(n.data["lemma"])
+            for p in self.patterns:
+                if n.data["lemma"] in self.patterns[p]:  # find pattern
+                    pattern = p
+                    if n.data["part_of_speech"] == 6:
+                     nouns.remove(n.data["lemma"])
+
+
+        req1 = {
+            'type': tags.Type.data_request,
+            'subtype': pattern,
+            'keyword': nouns
+        }
+
+        s = json.dumps(req1)
+        logger.log(s)
+
+
+
     def find_company_name(self, words):
         company = None
         for w in words:
@@ -38,9 +64,16 @@ class PatternBasedExtractor(sn.Singleton):
                 break
         return company
 
+    def check_tree_against_patterns(self,tree):
+     pass
 
-if __name__ == '__main__':
-    gce = gce.get_instance()
-    pbe = PatternBasedExtractor.get_instance()
-    pbe.get_meaning("What is the price of Apple?")
-    pbe.get_meaning("What is the latest news of Microsoft?")
+
+
+    def get_all_nouns_from_tree(self, tree):
+        nouns = []
+        for n in tree["nodes"]:
+            print(n.data["lemma"] + ", " + str(n.data["part_of_speech"]))
+            if n.data["part_of_speech"] == 6:
+                nouns.append(n.data["lemma"])
+        return nouns
+

@@ -3,7 +3,7 @@ import base.log as l
 
 import google.cloud as gl_cloud
 import google.cloud.language as gl_lang
-
+import data_providers.external_apis.google_nlp_enum_string as maps
 
 logger = l.Logger("GoogleNlpApi", None)
 
@@ -71,6 +71,10 @@ class Node:
     def __init__(self, data, children=()):
         self.children = list(children)
         self.data = data
+        self.int_mappers = {
+            "dependency_edge": maps.dependency_edge,
+            "part_of_speech": maps.part_of_speech
+        }
 
     def add_child(self, child):
         self.children.append(child)
@@ -78,11 +82,22 @@ class Node:
     def remove_child(self, child):
         self.children.remove(child)
 
-    def __str__(self, level=0):
-        ret = "\t" * 2 * level + "({0})\n".format(repr(self.data))
+    def __str__(self, use_int_mappers=True, level=0):
+        ret = "\t" * 2 * level
+        data_string = ""
+
+        if use_int_mappers and type(self.data) is dict:
+            temp_data = self.data.copy()
+            for key in temp_data.keys():
+                if key in self.int_mappers.keys():
+                    temp_data[key] = self.int_mappers[key][temp_data[key]]
+            ret += "({})\n".format(temp_data)
+        else:
+            ret += "({})\n".format(self.data)
+
 
         for child in self.children:
-            ret += child.__str__(level + 1)
+            ret += child.__str__(use_int_mappers, level + 1)
         return ret
 
     def __repr__(self):

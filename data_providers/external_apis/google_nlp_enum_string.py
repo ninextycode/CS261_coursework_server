@@ -1,7 +1,7 @@
 import google.cloud.language as gl_lang
 
 
-labels = {
+dependency_edge = {
     gl_lang.enums.DependencyEdge.Label.UNKNOWN: "Unknown",
     gl_lang.enums.DependencyEdge.Label.ABBREV: "Abbreviation modifier",
     gl_lang.enums.DependencyEdge.Label.ACOMP: "Adjectival complement",
@@ -85,4 +85,22 @@ labels = {
     gl_lang.enums.DependencyEdge.Label.INFMOD: "Infinitival modifier",
     gl_lang.enums.DependencyEdge.Label.MES: "Measure",
     gl_lang.enums.DependencyEdge.Label.NCOMP: "Nominal complement of a noun",
+}
+
+part_of_speech = {
+    gl_lang.enums.PartOfSpeech.Tag.ADJ: "Adjective",
+    gl_lang.enums.PartOfSpeech.Tag.ADP: "Adposition(preposition and postposition)",
+    gl_lang.enums.PartOfSpeech.Tag.ADV: "Adverb",
+    gl_lang.enums.PartOfSpeech.Tag.AFFIX: "Affix",
+    gl_lang.enums.PartOfSpeech.Tag.CONJ: "Conjunction",
+    gl_lang.enums.PartOfSpeech.Tag.DET: "Determiner",
+    gl_lang.enums.PartOfSpeech.Tag.NOUN: "Noun (common and proper)",
+    gl_lang.enums.PartOfSpeech.Tag.NUM: "Cardinal Number",
+    gl_lang.enums.PartOfSpeech.Tag.PRON: "Pronoun",
+    gl_lang.enums.PartOfSpeech.Tag.PRT: "Particle or other function",
+    gl_lang.enums.PartOfSpeech.Tag.PUNCT: "Punctuation",
+    gl_lang.enums.PartOfSpeech.Tag.UNKNOWN: "Unknown",
+    gl_lang.enums.PartOfSpeech.Tag.VERB: "Verb (all tenses and modes",
+    gl_lang.enums.PartOfSpeech.Tag.X: "Other: foreign words, typos, abbreviations"
+
 }

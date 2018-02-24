@@ -1,12 +1,11 @@
 import base.singleton as sn
 import business_logic.nlp.pattern_based_extractor as pbe
-import business_logic.nlp.nlp_exceptions as ex
 import data_providers.external_apis.google_nlp_api as google_nlp
-
+import business_logic.nlp.nlp_exceptions as ex
 import base.log as l
 
 import config
-
+import google.cloud.language as gl_lang
 import multiprocessing.pool as m_pool
 
 logger = l.Logger("GoogleCommandExtractor", None)
@@ -17,7 +16,7 @@ class GoogleCommandExtractor(sn.Singleton):
     def __init__(self):
         self.pattern_based_extractor = pbe.PatternBasedExtractor.get_instance()
         self.google_api = google_nlp.GoogleNlpApi.get_instance()
-
+        gl_lang.enums.DependencyEdge.Label
     def get_meaning_from_single_using_nlp(self, text):
         meaning = None
         google_api_output = self.google_api.query(text)
@@ -25,19 +24,19 @@ class GoogleCommandExtractor(sn.Singleton):
         tree = google_api_output["tree"]
         keywords = google_api_output["keywords"]
 
-        self.pattern_based_extractor.get_meaning_from_single(text, keywords)
-
         logger.log("tree:\n {}".format(tree["root"]))
         logger.log("keywords {}".format(keywords))
 
+        self.pattern_based_extractor.get_meaning_from_using_nlp(tree, keywords)
 
         return meaning
 
     def get_meaning_from_single_using_patterns(self, text):
-        return self.pattern_based_extractor.get_meaning(text)
+        return self.pattern_based_extractor.get_meaning_from_using_patterns(text)
 
     def get_meaning_from_single(self, text):
         meaning = self.get_meaning_from_single_using_patterns(text)
+
         if meaning is not None:
             return meaning
 
@@ -66,4 +65,13 @@ class GoogleCommandExtractor(sn.Singleton):
 
 if __name__ == '__main__':
     gce = GoogleCommandExtractor().get_instance()
-    gce.get_meaning_from_single_using_nlp("How much is Facebook?")
+    gce.get_meaning_from_single_using_patterns("How much is Facebook?")
+    gce.get_meaning_from_single_using_patterns("What is the price of Apple?")
+    gce.get_meaning_from_single_using_patterns("Any news on Microsoft?")
+    gce.get_meaning_from_single_using_patterns("Any news in the oil market?")
+    gce.get_meaning_from_single_using_patterns("What is happening in pharmaceuticals?")
+    gce.get_meaning_from_single_using_patterns("Any information on real estate market?")
+    # gce.get_meaning_from_single_using_nlp("Any news in the oil market?")
+    # gce.get_meaning_from_single_using_nlp("What is happening in pharmaceuticals?")
+    # gce.get_meaning_from_single_using_nlp("Any information on real estate market?")
+    gce.get_meaning_from_single_using_nlp("Are there any deviations in the ship building industry?")
