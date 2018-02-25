@@ -17,6 +17,7 @@ class GoogleCommandExtractor(sn.Singleton):
         self.pattern_based_extractor = pbe.PatternBasedExtractor.get_instance()
         self.google_api = google_nlp.GoogleNlpApi.get_instance()
         gl_lang.enums.DependencyEdge.Label
+
     def get_meaning_from_single_using_nlp(self, text):
         meaning = None
         google_api_output = self.google_api.query(text)
@@ -65,13 +66,15 @@ class GoogleCommandExtractor(sn.Singleton):
 
 if __name__ == '__main__':
     gce = GoogleCommandExtractor().get_instance()
-    gce.get_meaning_from_single_using_patterns("How much is Facebook?")
-    gce.get_meaning_from_single_using_patterns("What is the price of Apple?")
-    gce.get_meaning_from_single_using_patterns("Any news on Microsoft?")
-    gce.get_meaning_from_single_using_patterns("Any news in the oil market?")
-    gce.get_meaning_from_single_using_patterns("What is happening in pharmaceuticals?")
-    gce.get_meaning_from_single_using_patterns("Any information on real estate market?")
+    # gce.get_meaning_from_single_using_patterns("How much is Facebook?")
+    # gce.get_meaning_from_single_using_patterns("What is the price of Apple?")
+    # gce.get_meaning_from_single_using_patterns("Any news on Microsoft?")
+    # gce.get_meaning_from_single_using_patterns("Any news in the oil market?")
+    # gce.get_meaning_from_single_using_patterns("What is happening in pharmaceuticals?")
+    # gce.get_meaning_from_single_using_patterns("Any information on real estate market?")
+    # gce.get_meaning_from_single_using_patterns("How much is Facebook?")
     # gce.get_meaning_from_single_using_nlp("Any news in the oil market?")
     # gce.get_meaning_from_single_using_nlp("What is happening in pharmaceuticals?")
     # gce.get_meaning_from_single_using_nlp("Any information on real estate market?")
+    gce.get_meaning_from_single_using_patterns("Are there any deviations in the ship building industry?")
     gce.get_meaning_from_single_using_nlp("Are there any deviations in the ship building industry?")

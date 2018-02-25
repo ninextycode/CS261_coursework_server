@@ -1,3 +1,4 @@
+import config as conf
 import base.singleton as sn
 import business_logic.nlp.data_tags as tags
 
@@ -12,8 +13,9 @@ class PatternBasedExtractor(sn.Singleton):
 
     patterns = json.loads('{"stock_price": ["price", "much"], "news": ["news", "information", "happen"]}')
 
-    companies = ["Apple", "Microsoft", "Facebook"]
+    companies = conf.companies
 
+    # basic predefined commands inluding pattern words and company name or industry name
     def get_meaning_from_using_patterns(self, string):
         words = re.sub(r'[^\w\s]','',string).split()
         print(words)
@@ -64,6 +66,10 @@ class PatternBasedExtractor(sn.Singleton):
                 break
         return company
 
+    def get_company_key(list, company):
+        return [name for name, age in list.iteritems() if age == search_age]
+
+
     def check_tree_against_patterns(self,tree):
      pass
 
@@ -77,3 +83,6 @@ class PatternBasedExtractor(sn.Singleton):
                 nouns.append(n.data["lemma"])
         return nouns
 
+if __name__ == "__main__":
+    pbe = PatternBasedExtractor().get_instance()
+    print(pbe.companies)
