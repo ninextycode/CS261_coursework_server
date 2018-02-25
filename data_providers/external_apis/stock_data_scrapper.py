@@ -6,6 +6,7 @@ import requests
 import numpy as np
 import pandas as pd
 
+
 class StockDataScrapper:
     def split_string(self, s, start, end):
         return (s.split(start))[1].split(end)[0].strip()
@@ -71,6 +72,7 @@ class StockDataScrapper:
                 return json_obj['d'][0][1]
         else:
             print('cannot retrieve data for more than 5 years')
+
 
 if __name__ == '__main__':
     scrapper = StockDataScrapper()

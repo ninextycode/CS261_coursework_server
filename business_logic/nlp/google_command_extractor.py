@@ -20,7 +20,7 @@ class GoogleCommandExtractor(sn.Singleton):
 
     def get_meaning_from_single_using_nlp(self, text):
         meaning = None
-        google_api_output = self.google_api.query(text)
+        google_api_output = self.google_api.query_meaning(text)
 
         tree = google_api_output["tree"]
         keywords = google_api_output["keywords"]
@@ -44,7 +44,7 @@ class GoogleCommandExtractor(sn.Singleton):
         raise ex.MeaningUnknown()
 
     def get_meaning_from_alternatives(self, alternatives):
-        pool = m_pool.ThreadPool(processes=config.default_number_of_nlp_threads)
+        pool = m_pool.ThreadPool(processes=len(alternatives))
 
         async_result = pool.map_async(self.get_meaning_from_single_using_patterns, [a["text"] for a in alternatives])
         pattern_based_responses = async_result.get()

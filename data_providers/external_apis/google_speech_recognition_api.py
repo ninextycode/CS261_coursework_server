@@ -14,7 +14,7 @@ class GoogleSpeechRecognitionApi(sn.Singleton):
     def __init__(self):
         self.client = gl_cloud.speech.SpeechClient()
 
-    def query(self, audio_bytes_dict, n_alternatives=config.default_number_of_nlp_threads):
+    def query(self, audio_bytes_dict, n_alternatives=config.default_number_of_speech_rec_alternatives):
         google_config = gl_speech.types.RecognitionConfig(
             encoding=gl_speech.enums.RecognitionConfig.AudioEncoding.FLAC,
             language_code='en-GB',

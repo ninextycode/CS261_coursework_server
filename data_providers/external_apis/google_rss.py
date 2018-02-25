@@ -1,12 +1,16 @@
+import base.singleton as sn
+
+
 import requests
 from bs4 import BeautifulSoup
 import datetime
 
 
-class GoogleRss:
-    url_template = "https://news.google.com/news/rss/search/section/q/{}"
+class GoogleRss(sn.Singleton):
+    # hl sets language to english
+    url_template = "https://news.google.com/news/rss/search/section/q/{}?hl=en"
 
-    def get_news(self, keywords, date_from=None, date_to=None):
+    def get_news_by_keywords(self, keywords, date_from=None, date_to=None):
         url = self.get_url(keywords)
         news_response = requests.get(url)
 
@@ -26,7 +30,7 @@ class GoogleRss:
         return response
 
     def get_datetime(self, datestr):
-        return  datetime.datetime.strptime(datestr, "%a, %d %b %Y %H:%M:%S %Z")
+        return datetime.datetime.strptime(datestr, "%a, %d %b %Y %H:%M:%S %Z")
 
     def get_new_data(self, new_xml):
         return {

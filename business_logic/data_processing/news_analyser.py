@@ -1,18 +1,35 @@
-import data_providers.external_apis.google_rss as google_rss
-import business_logic.nlp.data_tags as tags
+import base.singleton as sn
 
-class NewsAnalyser:
+import data_providers.data_wrappers.news_provider as news_provider
+import business_logic.nlp.nlp as nlp
+
+import multiprocessing.pool as m_pool
+
+
+class NewsAnalyser(sn.Singleton):
     def __init__(self):
-        self.google_rss = google_rss.GoogleRss()
+        self.news_provider = news_provider.NewsProvider.get_instance()
+        self.nlp = nlp.NLP.get_instance()
 
-    def get_news(self, json_request):
-        news = self.google_rss.get_news(json_request["keywords"],
-                                        date_from=json_request.get("date_from", None),
-                                        date_to=json_request.get("date_to", None))
+    def get_news(self, request_dict):
+        date_from = request_dict.get("date_from", None)
+        date_to = request_dict.get("date_to", None)
+        news = self.news_provider.get_news_by_keywords(request_dict["keywords"],
+                                                       date_from=date_from,
+                                                       date_to=date_to)
+        pool = m_pool.ThreadPool(processes=len(news))
 
-        response = {
-            "type": tags.Type.data_request,
-            "subtype": tags.SubType.news,
-            "data": news
-        }
-        return response
+        async_result = pool.map_async(self.nlp.summarise_url, [n["link"] for n in news])
+        summaries = async_result.get()
+
+        for i in range(len(news)):
+            news[i]["summary"] = summaries[i]
+        return news
+
+
+if __name__ == "__main__":
+    news_analyser = NewsAnalyser.get_instance()
+
+    news = news_analyser.get_news({"keywords": ["Mac", "Apple"]})
+    for n in news:
+        print(n)

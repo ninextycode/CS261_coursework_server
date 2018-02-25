@@ -8,10 +8,54 @@ import google.cloud.language as gl_lang
 logger = l.Logger("GoogleNlpApi", None)
 
 
-class GoogleNlpApi(sn.Singleton):
-    def query(self, text):
-        client = gl_cloud.language.LanguageServiceClient()
+# todo catch exceptions or pass retry object to retry calls at least 1 time
 
+class GoogleNlpApi(sn.Singleton):
+    def __init__(self):
+        self.emotions_api = GoogleNlpApiEmotions.get_instance()
+        self.meaning_api = GoogleNlpApiMeaning.get_instance()
+
+    def query_emotions(self, *args, **kwargs):
+        return self.emotions_api.query_emotions(*args, **kwargs)
+
+    def query_meaning(self, *args, **kwargs):
+        return self.meaning_api.query_meaning(*args, **kwargs)
+
+
+class GoogleNlpApiEmotions(sn.Singleton):
+    def __init__(self):
+        self.client = gl_cloud.language.LanguageServiceClient()
+
+    def query_emotions(self, text, by_sentence):
+        document = gl_lang.types.Document(
+            content=text,
+            type=gl_lang.enums.Document.Type.PLAIN_TEXT,
+            language="en"
+        )
+
+        api_response = self.client.analyze_sentiment(document=document)
+
+        if by_sentence:
+            return self.emotion_response_by_sentences(api_response)
+        else:
+            return self.emotion_response_overall(api_response)
+
+    def emotion_response_overall(self, api_response):
+        return {
+            "score": api_response.document_sentiment.score,
+            "magnitude": api_response.document_sentiment.magnitude,
+        }
+
+    def emotion_response_by_sentences(self, api_response):
+        return [
+            {
+                "score": s.sentiment.score,
+                "magnitude": s.sentiment.magnitude,
+            } for s in api_response.sentences]
+
+
+class GoogleNlpApiMeaning(sn.Singleton):
+    def query_meaning(self, text):
         document = gl_lang.types.Document(
             content=text,
             type=gl_lang.enums.Document.Type.PLAIN_TEXT,
@@ -23,7 +67,7 @@ class GoogleNlpApi(sn.Singleton):
             "extract_entities": True
         }
 
-        api_response = client.annotate_text(document=document, features=features)
+        api_response = self.client.annotate_text(document=document, features=features)
 
         result = {
             "keywords": self.get_keywords(api_response),
@@ -54,7 +98,6 @@ class GoogleNlpApi(sn.Singleton):
 
         return {"root": nodes[root_index], "nodes": nodes}
 
-
     def get_keywords(self, response):
         keywords = []
         for e in response.entities:
@@ -67,6 +110,7 @@ class GoogleNlpApi(sn.Singleton):
             return keywords
 
 
+# used to construct a tree of word relationships
 class Node:
     def __init__(self, data, children=()):
         self.children = list(children)

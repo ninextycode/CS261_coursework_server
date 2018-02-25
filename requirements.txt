@@ -7,3 +7,5 @@ numpy==1.14.0
 pydub==0.21.0
 google-cloud-speech==0.32.0
 google-cloud-language==1.0.0
+TwitterAPI==2.4.8
+sumy==0.7.0
