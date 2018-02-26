@@ -28,7 +28,7 @@ if __name__ == "__main__":
     gee = GoogleEmotionExtractor.get_instance()
     sentences = [
         "I really hate this place",
-        "I love this place a lot"
-    ] * 10
+        "I love this place a lot",
+    ] * 2
     print([gee.get_emotions_score(s, False) for s in sentences])
     print(gee.get_emotions_score(". ".join(sentences) + ".", True))

@@ -4,6 +4,7 @@ import json
 from data_providers.external_apis import twitter_key_path
 
 
+# todo either change key or throw meaningfil exception/give meaningful response when limit reached
 class TwitterApi(sn.Singleton):
     class ResultType:
         mixed = "mixed",
@@ -14,9 +15,9 @@ class TwitterApi(sn.Singleton):
         self.name = "TwitterApi"
         self.keys_dict = json.loads(open(twitter_key_path, "r").read())
         self.twitter_api = twitter.TwitterAPI(consumer_key=self.keys_dict["consumer_key"],
-                                       consumer_secret=self.keys_dict["consumer_secret"],
-                                       access_token_key=self.keys_dict["access_token_key"],
-                                       access_token_secret=self.keys_dict["access_token_secret"])
+                                              consumer_secret=self.keys_dict["consumer_secret"],
+                                              access_token_key=self.keys_dict["access_token_key"],
+                                              access_token_secret=self.keys_dict["access_token_secret"])
         self.querying_types = [
             # TwitterApi.ResultType.popular,
             # TwitterApi.ResultType.recent,
