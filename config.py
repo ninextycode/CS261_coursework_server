@@ -150,3 +150,8 @@ industries = {
     40: "Tobacco",
     41: "Travel & Leisure"
 }
+
+import business_logic.nlp.data_tags as tags
+companies_by_industry = {
+    tags.Industry.pharma: []
+}

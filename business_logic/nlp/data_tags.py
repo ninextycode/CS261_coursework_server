@@ -10,4 +10,7 @@ class SubType:
 
 
 class Indicator:
-    pass
+    industry_average = "industry_average"
+    just_price = "just_price"
+class Industry:
+    pharma= "pharmasuticals"

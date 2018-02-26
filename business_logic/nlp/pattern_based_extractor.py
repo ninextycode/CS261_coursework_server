@@ -11,8 +11,12 @@ logger = l.Logger("PatternBasedExtractor")
 
 class PatternBasedExtractor(sn.Singleton):
 
-    patterns = json.loads('{"stock_price": ["price", "much"], "news": ["news", "information", "happen"], "industry": ["movement"]}')
+    patterns = {"stock_price": ["price", "much", "movement"],
+                "news": ["news", "information", "happen"],
+                "so": []
 
+                }
+    patterns_for_industry = {"movement"}
     companies = conf.companies
 
     # basic predefined commands including pattern words and company name or industry name
@@ -21,20 +25,47 @@ class PatternBasedExtractor(sn.Singleton):
         company = None
 
         words = re.sub(r'[^\w\s]','',string).split()
-        for w in words:
-            for p in self.patterns:
+        result = self.check_stock_price(words)
+        if result is None:
+
+        for p in self.patterns.keys():
+            for w in words:
+
                 if w in self.patterns[p]:
                     pattern = p
-                    break
 
-        req1 = {
-            'type': tags.Type.data_request,
-            'subtype': pattern,
-            'keyword': self.find_company_name_from_string(string)
-        }
+                    if w in patterns_for_industry
+                    req1 = {
+                        'type': tags.Type.data_request,
+                        'subtype': pattern,
+                        'keyword': self.find_company_name_from_string(string)
+                    }
+                    BREAK
         s = json.dumps(req1)
         logger.log(s)
 
+    def check_stock_price(self, words):
+        pattern_keywords = PatternBasedExtractor.patterns["stock_price"]
+        patterns_for_industry = {"movement"}
+        for w in words:
+            if w in pattern_keywords:
+                pattern = p
+
+                if w in patterns_for_industry:
+                    stock_names =
+                    indicator = tags.Indicator.industry_average
+                else:
+
+                    stock_names = self.find_company_name_from_string(string)
+                    indicator = tags.Indicator.just_price
+                req = {
+                    'type': tags.Type.data_request,
+                    'subtype': pattern,
+                    "indicator" : indicator,
+                    'keyword': stock_names
+                }
+                return req
+        return None
 
     def get_meaning_from_using_nlp(self, tree, keywords):
         pattern = None
