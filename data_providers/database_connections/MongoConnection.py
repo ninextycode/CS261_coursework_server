@@ -5,10 +5,10 @@ class MongoConnection:
     def __init__(self):
         self.client = MongoClient()
 
-    def get_from_db(name):
-        db = MongoConnection.client[name]
+    def get_from_db(self,name):
+        self.db = MongoConnection.client[name]
 
-
+"""
         client = MongoClient()
         db = client.companyData
         collection = db.company
@@ -16,3 +16,4 @@ class MongoConnection:
         posts.find_one()
         print(collection.find_one())
         pprint.pprint(posts.find_one())
+"""
