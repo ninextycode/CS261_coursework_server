@@ -11,31 +11,36 @@ logger = l.Logger("PatternBasedExtractor")
 
 class PatternBasedExtractor(sn.Singleton):
 
-    patterns = json.loads('{"stock_price": ["price", "much"], "news": ["news", "information", "happen"]}')
+    patterns = json.loads('{"stock_price": ["price", "much"], "news": ["news", "information", "happen"], "industry": ["movement"]}')
 
     companies = conf.companies
 
-    # basic predefined commands inluding pattern words and company name or industry name
+    # basic predefined commands including pattern words and company name or industry name
     def get_meaning_from_using_patterns(self, string):
+        pattern = None
+        company = None
+
         words = re.sub(r'[^\w\s]','',string).split()
-        print(words)
         for w in words:
             for p in self.patterns:
                 if w in self.patterns[p]:
-                    request = {}
-                    req1 = {
-                        'type': tags.Type.data_request,
-                        'subtype': p,
-                        'keyword': self.find_company_name(re.sub(r'[^\w\s]','',string).split())
-                    }
-                    s = json.dumps(req1)
-                    logger.log(s)
+                    pattern = p
                     break
+
+        req1 = {
+            'type': tags.Type.data_request,
+            'subtype': pattern,
+            'keyword': self.find_company_name_from_string(string)
+        }
+        s = json.dumps(req1)
+        logger.log(s)
 
 
     def get_meaning_from_using_nlp(self, tree, keywords):
         pattern = None
         nouns = []
+        company = self.find_company_name_from_array(nouns)
+        keywords = None
 
         for n in tree["nodes"]:
             if n.data["part_of_speech"] == 6:  # get nouns
@@ -46,11 +51,14 @@ class PatternBasedExtractor(sn.Singleton):
                     if n.data["part_of_speech"] == 6:
                      nouns.remove(n.data["lemma"])
 
+        keywords = nouns
+        if company is not None:
+            keywords = company
 
         req1 = {
             'type': tags.Type.data_request,
             'subtype': pattern,
-            'keyword': nouns
+            'keyword': keywords
         }
 
         s = json.dumps(req1)
@@ -58,16 +66,34 @@ class PatternBasedExtractor(sn.Singleton):
 
 
 
-    def find_company_name(self, words):
+    def find_company_name_from_string(self, string):
+        input = string.lower()
         company = None
-        for w in words:
-            if w in self.companies:
-                company = w
+        temp = None
+
+        for c in self.companies:
+            temp = str(self.companies[c]).lower()
+            logger.log(temp)
+            if temp in input:
+                company = c
                 break
+
         return company
 
-    def get_company_key(list, company):
-        return [name for name, age in list.iteritems() if age == search_age]
+    def find_company_name_from_array(self, array):
+        logger.log(array)
+        arr = [x.lower() for x in array]
+        company = None
+        temp = None
+
+        for c in self.companies:
+            temp = str(self.companies[c]).lower()
+            for noun in arr:
+                if noun in temp:
+                    company = temp
+                    break
+
+        return company
 
 
     def check_tree_against_patterns(self,tree):
