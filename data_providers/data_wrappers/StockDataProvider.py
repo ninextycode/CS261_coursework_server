@@ -1,12 +1,14 @@
 import sys, os.path
-sys.path.append(os.path.abspath('../'))
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from external_apis.StockDataScrapper import StockDataScrapper
+
 import requests
 import json
 import datetime
 import time
 import numpy as np
 import pandas as pd
+
 
 class StockDataProvider:
     def __init__(self):

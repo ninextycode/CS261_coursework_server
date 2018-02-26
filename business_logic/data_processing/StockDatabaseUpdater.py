@@ -1,7 +1,7 @@
 import sys, os.path
-sys.path.append(os.path.abspath('../'))
-from data_wrappers.StockDataProvider import StockDataProvider
-from data_wrappers.SqlDatabaseConnection import SqlDatabaseConnection
+sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
+from data_providers.data_wrappers.StockDataProvider import StockDataProvider
+from data_providers.data_wrappers.SqlDatabaseConnection import SqlDatabaseConnection
 import pandas as pd
 import time
 
