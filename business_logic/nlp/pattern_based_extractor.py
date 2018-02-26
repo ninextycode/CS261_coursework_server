@@ -73,7 +73,6 @@ class PatternBasedExtractor(sn.Singleton):
 
         for c in self.companies:
             temp = str(self.companies[c]).lower()
-            logger.log(temp)
             if temp in input:
                 company = c
                 break

@@ -67,17 +67,17 @@ class GoogleCommandExtractor(sn.Singleton):
 
 if __name__ == '__main__':
     gce = GoogleCommandExtractor().get_instance()
-    gce.get_meaning_from_single_using_nlp("What is the news on the computer sector?")
+    #gce.get_meaning_from_single_using_nlp("What is the news on the computer sector?")
     #gce.get_meaning_from_single_using_patterns("How much is Barclays Bank?")
     #gce.pattern_based_extractor.find_company_name("How much is Easy Jet?")
     #gce.get_meaning_from_single_using_patterns("How is Rolls Royce priced?")
 
-    # gce.get_meaning_from_single_using_patterns("What is the price of Apple?")
-    # gce.get_meaning_from_single_using_patterns("Any news on Microsoft?")
-    # gce.get_meaning_from_single_using_patterns("Any news in the oil market?")
-    # gce.get_meaning_from_single_using_patterns("What is happening in pharmaceuticals?")
-    # gce.get_meaning_from_single_using_patterns("Any information on real estate market?")
-    # gce.get_meaning_from_single_using_patterns("How much is Facebook?")
+    gce.get_meaning_from_single_using_patterns("What is the price of Apple?")
+    gce.get_meaning_from_single_using_patterns("Any news on Microsoft?")
+    gce.get_meaning_from_single_using_patterns("Any news in the oil market?")
+    gce.get_meaning_from_single_using_patterns("What is happening in pharmaceuticals?")
+    gce.get_meaning_from_single_using_patterns("Any information on real estate market?") #get a company name!!! should be a sector
+    gce.get_meaning_from_single_using_patterns("How much is Facebook?")
     # gce.get_meaning_from_single_using_nlp("How is Rolls Royce priced?")
     # gce.get_meaning_from_single_using_nlp("What is happening in pharmaceuticals?")
     # gce.get_meaning_from_single_using_nlp("Any information on real estate market?")
