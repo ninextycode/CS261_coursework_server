@@ -72,7 +72,7 @@ companies = {
     "PSN": ["PERSIMMON"],
     "PRU": ["PRUDENTIAL"],
     "RRS": ["RANDGOLD RES.", "Randgold Resources Limited"],
-    "RDSA": ["RDS 'A'", "Royal Dutch Shell A"],
+    "RDSA": ["RDS 'A'", "Royal Dutch Shell A"], # test
     "RDSB": ["RDS 'B'", "Royal Dutch Shell B"],
     "RB.": ["RECKITT BEN. GP", "Reckitt Benckiser Group"],
     "REL": ["RELX"],
@@ -89,7 +89,7 @@ companies = {
     "SVT": ["SEVERN TRENT"],
     "SHP": ["SHIRE"],
     "SKY": ["SKY PLC", "Sky"],
-    "SN.": ["SMITH&NEPHEW", "Smith and Nephew"],
+    "SN.": ["SMITH&NEPHEW", "Smith and Nephew"], # test all three smith
     "SMDS": ["SMITH(DS)", "DS Smith"],
     "SMIN": ["SMITHS GROUP"],
     "SKG": ["SMURFIT KAP.", "Smurfit Kappa"],
@@ -149,6 +149,50 @@ industries = {
     39: "Technology Hardware & Equipment",
     40: "Tobacco",
     41: "Travel & Leisure"
+}
+
+industry_companies = {
+    1: ["BA.", "RR."],
+    2: [],
+    3: ["GKN"],
+    4: ["BARC", "HSBA", "LLOY", "RBS", "STAN"],
+    5: ["CCH", "DGE"],
+    6: ["CRDA", "JMAT"],
+    7: ["CRH"],
+    8: ["SSE"],
+    9: ["HLMA"],
+    10: ["SMT"],
+    11: ["III", "HL.", "LSE", "SDR", "SLA"],
+    12: ["BT.A"],
+    13: ["MRW", "SBRY", "TSCO"],
+    14: ["ABF"],
+    15: ["MNDI"],
+    16: ["CNA", "NG.", "SVT", "UU."],
+    17: ["SMDS", "SMIN", "SKG"],
+    18: ["JE.", "KGF", "MKS", "NXT"],
+    19: ["MDC", "NMC", "SN."],
+    20: ["BDEV", "BKG", "PSN", "RB.", "TW."],
+    21: [],
+    22: ["EVR"],
+    23: [],
+    24: [],
+    25: ["AV.", "LGEN", "OML", "PRU", "STJ"],
+    26: ["INF", "ITV", "PSON", "REL", "SKY", "WPP"],
+    27: ["AAL", "ANTO", "BLT", "FRES", "GLEN", "RRS", "RIO"],
+    28: ["VOD"],
+    29: [],
+    30: ["ADM", "DLG", "RSA"],
+    31: ["BP.", "RDSA", "RDSB"],
+    32: [],
+    33: ["BRBY", "ULVR"],
+    34: ["AZN", "GSK", "SHP"],
+    35: [],
+    36: ["BLND", "HMSO", "LAND", "SGRO"],
+    37: ["MCRO", "SGE"],
+    38: ["AHT", "BNZL", "DCC", "EXPN", "FERG", "GFS", "ITRK", "RTO"],
+    39: [],
+    40: ["BATS"],
+    41: ["CCL", "CPG", "EZJ", "IHG", "IAG", "PPB", "TUI", "WTB"]
 }
 
 import business_logic.nlp.data_tags as tags
