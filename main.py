@@ -2,8 +2,9 @@ import tornado.ioloop
 
 import time
 
-import base.Server as svr
-import base.MessageWorker as mw
+import base.server as svr
+import base.message_worker as mw
+import business_logic.message_routing.message_router as mr
 
 import threading
 
@@ -11,19 +12,23 @@ import threading
 def start():
     server = None
     try:
+        # todo send special message on server restart
         server = svr.Server.get_instance()
+        message_worker = mw.MessageWorker.get_instance()
+        message_router = mr.MessageRouter.get_instance()
+
         server.start_server()
 
-        message_worker = mw.MessageWorker.get_instance()
         server.set_message_worker(message_worker)
         message_worker.set_server(server)
 
-        while True:
-            message_worker.send({"mime_type": "application/json", "body" : "{ news: []}" } )
-            time.sleep(0.5)
+        message_worker.set_message_router(message_router)
+        message_router.set_message_worker(message_worker)
 
     except KeyboardInterrupt:
         if server is not None:
             server.stop_server()
 
-start()
+
+if __name__ == "__main__":
+    start()
