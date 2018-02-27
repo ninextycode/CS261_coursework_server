@@ -2,6 +2,7 @@ import base.singleton as sn
 import business_logic.speech_recognition.google_audio_to_text as google_audio
 import base64
 
+
 class TextAudio(sn.Singleton):
     def __init__(self):
         self.api_caller = google_audio.GoogleAudioToText.get_instance()

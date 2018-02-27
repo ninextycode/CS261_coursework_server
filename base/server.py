@@ -108,7 +108,7 @@ class Server(sn.Singleton):
 
     def start_server(self):
         application = tw.Application([
-            (r'/', Handler),
+            (r"/", Handler),
         ])
 
         http_server = t_http.HTTPServer(application)

@@ -1,35 +1,38 @@
-import datetime
-import time
-import json
+import base.singleton as sn
 import bs4
 import requests
-import numpy as np
-import pandas as pd
+from datetime import datetime
 
 
+<<<<<<< HEAD
 class StockDataScrapper:
+=======
+class StockDataScrapper(sn.Singleton):
+>>>>>>> database
     def split_string(self, s, start, end):
         return (s.split(start))[1].split(end)[0].strip()
 
     def scrape_stocks_data(self, url):
         response = requests.get(url)
-        if(response.status_code == 200):
+        if response.status_code == 200:
             soup = bs4.BeautifulSoup(response.content, "lxml")
-            table = soup.findAll(attrs={"summary" : "Companies and Prices"})[0]
-            body = table.find('tbody')
-            rows = body.findAll('tr')
+            table = soup.findAll(attrs={"summary": "Companies and Prices"})[0]
+            body = table.find("tbody")
+            rows = body.findAll("tr")
+            time = str(datetime.now())
             arr = []
             for r in rows:
-                data = r.findAll('td')
+                data = r.findAll("td")
                 code = data[0].string
                 name = data[1].findChildren()[0].string
                 current = data[2].string
-                price = data[3].string
-                diff = self.split_string(str(data[4]), '">', "<")
+                price = data[3].string.replace(",", "")
+                diff = self.split_string(str(data[4]), ">", "<")
                 per_diff = data[5].string.strip()
-                curr = [code,name,current,price,diff,per_diff]
+                curr = [code,name,current,price,diff,per_diff,time]
                 arr.append(curr)
             return arr
+<<<<<<< HEAD
 
     '''
     return pandas dataframe of all ftse100 stock's code, name, current, price, diff, per_diff
@@ -83,3 +86,5 @@ if __name__ == '__main__':
     date = datetime.datetime(2017,3,20)
     print(scrapper.get_stocks_historical_price("III",date))
     print(scrapper.get_stocks_historical_price("BARC",date))
+=======
+>>>>>>> database

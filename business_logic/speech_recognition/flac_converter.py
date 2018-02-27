@@ -22,7 +22,6 @@ class FlacConverter(sn.Singleton):
         ext = given_mime.split("/")[1]
         given_bytes = audio_bytes_dict["bytes"]
 
-
         with tempfile.NamedTemporaryFile(suffix="."+ext) as temp_file, io.BytesIO() as flac_bytes:
             temp_file.write(given_bytes)
             audio_segment = pydub.AudioSegment.from_file(temp_file.name, ext).set_channels(1)

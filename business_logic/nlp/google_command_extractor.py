@@ -61,6 +61,6 @@ class GoogleCommandExtractor(sn.Singleton):
         raise ex.MeaningUnknown()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     gce = GoogleCommandExtractor().get_instance()
     gce.get_meaning_from_single("What is the price of Apple?")
