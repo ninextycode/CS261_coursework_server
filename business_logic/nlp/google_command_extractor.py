@@ -67,20 +67,46 @@ class GoogleCommandExtractor(sn.Singleton):
 
 if __name__ == '__main__':
     gce = GoogleCommandExtractor().get_instance()
-    #gce.get_meaning_from_single_using_nlp("What is the news on the computer sector?")
-    #gce.get_meaning_from_single_using_patterns("How much is Barclays Bank?")
-    #gce.pattern_based_extractor.find_company_name("How much is Easy Jet?")
-    #gce.get_meaning_from_single_using_patterns("How is Rolls Royce priced?")
 
-    gce.get_meaning_from_single_using_patterns("What is the price of Apple?")
-    gce.get_meaning_from_single_using_patterns("Any news on Microsoft?")
-    gce.get_meaning_from_single_using_patterns("Any news in the oil market?")
-    gce.get_meaning_from_single_using_patterns("What is happening in pharmaceuticals?")
-    gce.get_meaning_from_single_using_patterns("Any information on real estate market?") #get a company name!!! should be a sector
-    gce.get_meaning_from_single_using_patterns("How much is Facebook?")
+    # logger.log(gce.pattern_based_extractor.find_company_name_from_string("What is the stock price of Barclays?"))
+
+    # test cases for stock price of company with patterns
+    print("companies_____________________________________________")
+    gce.get_meaning_from_single_using_patterns("What is the stock price of Barclays Bank?")
+    gce.get_meaning_from_single_using_patterns("What is the price of Barclays?")
+    gce.get_meaning_from_single_using_patterns("How is Rolls Royce priced?") # doesn't make it into the test at all
+    gce.get_meaning_from_single_using_patterns("What is the price of Rolls Royce?")
+    gce.get_meaning_from_single_using_patterns("How much is the price of RDS A?")
+    gce.get_meaning_from_single_using_patterns("What is the price of Royal Dutch Shell?") # should give back two: A and B share
+    gce.get_meaning_from_single_using_patterns("Tell me the stock price of Smith?") # three companies that include smith
+
+    # test cases for industry request with patterns
+    print("industry_____________________________________________")
+    gce.get_meaning_from_single_using_patterns("Tell me about the software industry.")
+    gce.get_meaning_from_single_using_patterns("How is the car industry behaving?")
+    gce.get_meaning_from_single_using_patterns("Is there any movement in the paper industry?")
+    gce.get_meaning_from_single_using_patterns("Any news on the electronics industry?") # will pass news and industry test!!!
+
+    # test cases for news request with patterns
+    print("news_____________________________________________")
+    gce.get_meaning_from_single_using_patterns("Give me the latest news on Barclays?")
+    gce.get_meaning_from_single_using_patterns("Find news on Sainsbury's?")
+    gce.get_meaning_from_single_using_patterns("Display the headlines of the pharmaceutical industry?") #crashes the test --> passes patterns for pharma industry info
+
+    # test cases for social_media request with patterns
+    print("social_media_____________________________________________")
+    gce.get_meaning_from_single_using_patterns("What do people think about the construction sector?")
+    gce.get_meaning_from_single_using_patterns("Show me social media trends of Legal and General?")
+
+
+
+    # gce.get_meaning_from_single_using_patterns("What is happening in pharmaceuticals?")
+    # gce.get_meaning_from_single_using_patterns("Any information on real estate market?") #get a company name!!! should be a sector
+    # gce.get_meaning_from_single_using_patterns("How much is Facebook?")
     # gce.get_meaning_from_single_using_nlp("How is Rolls Royce priced?")
     # gce.get_meaning_from_single_using_nlp("What is happening in pharmaceuticals?")
     # gce.get_meaning_from_single_using_nlp("Any information on real estate market?")
     # gce.get_meaning_from_single_using_patterns("Are there any deviations in the ship building industry?")
     # gce.get_meaning_from_single_using_nlp("Are there any deviations in the ship building industry?")
     # print("easy jet" in "how much is easy jet?")
+    # gce.get_meaning_from_single_using_nlp("What is the news on the computer sector?")

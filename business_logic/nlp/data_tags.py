@@ -12,5 +12,5 @@ class SubType:
 class Indicator:
     industry_average = "industry_average"
     just_price = "just_price"
-class Industry:
-    pharma= "pharmasuticals"
+    news = "news"
+    social_media = "social_media"
