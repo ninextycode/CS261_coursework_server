@@ -2,12 +2,7 @@ import inspect
 import os
 
 
-<<<<<<< HEAD
 keys_dir = os.path.join(os.path.join(os.path.join(
-=======
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(
-        os.path.join(os.path.join(
->>>>>>> database
             os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))),
                 os.pardir), os.pardir), "keys")
 

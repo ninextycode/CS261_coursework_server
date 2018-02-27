@@ -1,4 +1,7 @@
 import pymysql
+import json
+from data_providers.database_connections import mysql_key_path
+
 
 class MySqlConnection():
     def __init__(self):
@@ -6,9 +9,10 @@ class MySqlConnection():
         self.open()
 
     def open(self):
+        key = json.loads(open(mysql_key_path).read())
         self.conn = pymysql.connect(host="localhost",
-                                    user="root",
-                                    password="password",
+                                    user=key["user"],
+                                    password=key["password"],
                                     db="company_data")
 
     def __exec(self, sql, data_tuple):

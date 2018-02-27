@@ -3,6 +3,9 @@ import data_providers.database_connections.my_sql_connection as my_sql
 
 
 class SqlDatabaseConnection(sn.Singleton):
+    def get_prices(tickers, time_start, time_end):
+        pass
+
     def __init__(self):
         self.conn = my_sql.MySqlConnection()
 

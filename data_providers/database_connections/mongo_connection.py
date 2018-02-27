@@ -7,7 +7,7 @@ class MongoConnection(sn.Singleton):
         self.client = pymongo.MongoClient()
 
     def get_from_db(self, name):
-        db = MongoConnection.client[name]
+        db = self.client[name]
 
 """
         client = MongoClient()
