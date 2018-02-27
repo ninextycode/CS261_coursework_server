@@ -72,30 +72,46 @@ if __name__ == '__main__':
 
     # test cases for stock price of company with patterns
     print("companies_____________________________________________")
+    print(1)
     gce.get_meaning_from_single_using_patterns("What is the stock price of Barclays Bank?")
+    print(2)
     gce.get_meaning_from_single_using_patterns("What is the price of Barclays?")
-    gce.get_meaning_from_single_using_patterns("How is Rolls Royce priced?") # doesn't make it into the test at all
+    print(3)
+    gce.get_meaning_from_single_using_patterns("How is Rolls Royce priced?") # doesn't make it into the test at all, priced not in pattern
+    print(4)
     gce.get_meaning_from_single_using_patterns("What is the price of Rolls Royce?")
+    print(5)
     gce.get_meaning_from_single_using_patterns("How much is the price of RDS A?")
-    gce.get_meaning_from_single_using_patterns("What is the price of Royal Dutch Shell?") # should give back two: A and B share
+    print(6)
+    gce.get_meaning_from_single_using_patterns("What is the price of Royal Dutch Shell?") # should give back two: A and B share give a as default??
+    print(7)
     gce.get_meaning_from_single_using_patterns("Tell me the stock price of Smith?") # three companies that include smith
 
     # test cases for industry request with patterns
     print("industry_____________________________________________")
+    print(1)
     gce.get_meaning_from_single_using_patterns("Tell me about the software industry.")
+    print(2)
     gce.get_meaning_from_single_using_patterns("How is the car industry behaving?")
+    print(3)
     gce.get_meaning_from_single_using_patterns("Is there any movement in the paper industry?")
+    print(4)
     gce.get_meaning_from_single_using_patterns("Any news on the electronics industry?") # will pass news and industry test!!!
 
     # test cases for news request with patterns
     print("news_____________________________________________")
+    print(1)
     gce.get_meaning_from_single_using_patterns("Give me the latest news on Barclays?")
+    print(2)
     gce.get_meaning_from_single_using_patterns("Find news on Sainsbury's?")
+    print(3)
     gce.get_meaning_from_single_using_patterns("Display the headlines of the pharmaceutical industry?") #crashes the test --> passes patterns for pharma industry info
 
     # test cases for social_media request with patterns
     print("social_media_____________________________________________")
+    print(1)
     gce.get_meaning_from_single_using_patterns("What do people think about the construction sector?")
+    print(2)
     gce.get_meaning_from_single_using_patterns("Show me social media trends of Legal and General?")
 
 
