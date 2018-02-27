@@ -1,5 +1,5 @@
 import base.singleton as sn
-import business_logic.nlp.data_tags as tags
+import business_logic.data_tags as tags
 
 
 import json

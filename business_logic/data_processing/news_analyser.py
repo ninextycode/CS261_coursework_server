@@ -24,12 +24,13 @@ class NewsAnalyser(sn.Singleton):
 
         for i in range(len(news)):
             news[i]["summary"] = summaries[i]
+
         return news
 
 
 if __name__ == "__main__":
     news_analyser = NewsAnalyser.get_instance()
 
-    news = news_analyser.get_news({"keywords": ["Mac", "Apple"]})
+    news = news_analyser.get_news({"keywords": ["Tesco"]})
     for n in news:
         print(n)

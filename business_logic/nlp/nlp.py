@@ -22,13 +22,6 @@ class NLP(si.Singleton):
     def summarise_url(self, url):
         return self.summariser.summarise_url(url)
 
-    # “Clearly positive” and “clearly negative” sentiment varies for different
-    # use cases and customers. You might find differing results for your specific scenario.
-    # We recommend that you define a threshold that works for you, and then adjust the
-    # threshold after testing and verifying the results. For example, you may define a threshold of
-    # any score over 0.25 as clearly positive, and then modify the score threshold to 0.15 after reviewing your
-    # data and results and finding that scores from 0.15-0.25 should be considered positive as well.
-    # (https://cloud.google.com/)
     def get_emotions(self, text, by_sentences=False):
         return self.emotions_extractor.get_emotions(text, by_sentences)
 

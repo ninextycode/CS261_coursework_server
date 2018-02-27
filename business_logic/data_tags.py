@@ -11,3 +11,9 @@ class SubType:
 
 class Indicator:
     pass
+
+
+class Mood:
+    positive = "positive"
+    neutral = "neutral"
+    negative = "negative"

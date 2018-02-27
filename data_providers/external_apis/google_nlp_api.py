@@ -3,7 +3,7 @@ import base.log as l
 
 import google.cloud as gl_cloud
 import google.cloud.language as gl_lang
-
+import requests
 
 logger = l.Logger("GoogleNlpApi", None)
 
@@ -36,22 +36,30 @@ class GoogleNlpApiEmotions(sn.Singleton):
         api_response = self.client.analyze_sentiment(document=document)
 
         if by_sentence:
-            return self.emotion_response_by_sentences(api_response)
+            return self.emotions_response_by_sentences(api_response)
         else:
-            return self.emotion_response_overall(api_response)
+            return self.emotions_response_overall(api_response)
 
-    def emotion_response_overall(self, api_response):
+    def emotions_response_overall(self, api_response):
+        if api_response is None:
+            return {
+                "score": 0,
+                "magnitude": 0
+            }
+
         return {
             "score": api_response.document_sentiment.score,
             "magnitude": api_response.document_sentiment.magnitude,
         }
 
-    def emotion_response_by_sentences(self, api_response):
-        return [
-            {
-                "score": s.sentiment.score,
-                "magnitude": s.sentiment.magnitude,
-            } for s in api_response.sentences]
+    def emotions_response_by_sentences(self, api_response):
+        if api_response is None:
+            return []
+
+        return [{
+            "score": s.sentiment.score,
+            "magnitude": s.sentiment.magnitude,
+        } for s in api_response.sentences]
 
 
 class GoogleNlpApiMeaning(sn.Singleton):

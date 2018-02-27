@@ -23,7 +23,6 @@ class GoogleEmotionExtractor(sn.Singleton):
         else:
             return result["magnitude"]
 
-
 if __name__ == "__main__":
     gee = GoogleEmotionExtractor.get_instance()
     sentences = [
