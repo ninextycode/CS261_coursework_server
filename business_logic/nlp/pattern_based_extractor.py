@@ -11,7 +11,7 @@ logger = l.Logger("PatternBasedExtractor")
 
 class PatternBasedExtractor(sn.Singleton):
 
-    patterns = {"stock_price": ["price", "much", "industry", "sector"],
+    patterns = {"stock_price": ["price", "much", "stock", "industry", "sector"],
                 "news": ["news", "information", "headlines"],
                 "social_media": ["think", "social media"]
                 }
@@ -158,10 +158,12 @@ class PatternBasedExtractor(sn.Singleton):
 
 
     def get_meaning_from_using_nlp(self, tree, keywords):
+        req = None
         pattern = None
+        subtype = None
         nouns = []
-        company = self.find_company_name_from_array(nouns)
         keywords = None
+        req = None
 
         for n in tree["nodes"]:
             if n.data["part_of_speech"] == 6:  # get nouns
@@ -169,38 +171,61 @@ class PatternBasedExtractor(sn.Singleton):
             for p in self.patterns:
                 if n.data["lemma"] in self.patterns[p]:  # find pattern
                     pattern = p
+                    if n.data["lemma"] in self.patterns_for_industry:
+                        subtype = tags.Indicator.industry_average
                     if n.data["part_of_speech"] == 6:
                      nouns.remove(n.data["lemma"])
 
-        keywords = nouns
-        if company is not None:
-            keywords = company
+        if pattern == "stock_price":
+            if subtype is tags.Indicator.industry_average:
+                req = {
+                    'type': tags.Type.data_request,
+                    'subtype': "stock_price",
+                    'indicator': tags.Indicator.industry_average,
+                    'keyword': self.find_industry_from_array(nouns)
+                }
+            req =  {
+                    'type': tags.Type.data_request,
+                    'subtype': "stock_price",
+                    'indicator': tags.Indicator.just_price,
+                    'keyword': self.find_company_name_from_array(nouns)
+                }
+        if pattern == "news":
+            req = {
+                'type': tags.Type.data_request,
+                'subtype': "news",
+                'indicator': "news",
+                'keyword': [nouns]
+            }
 
-        req1 = {
-            'type': tags.Type.data_request,
-            'subtype': pattern,
-            'keyword': keywords
-        }
+        if pattern == "social_media":
+            req = {
+                'type': tags.Type.data_request,
+                'subtype': "social_media",
+                'indicator': "social_media",
+                'keyword': [nouns]
+            }
 
-        s = json.dumps(req1)
-        logger.log(s)
+        logger.log(req)
 
 
     def find_company_name_from_array(self, array):
-        logger.log(array)
         arr = [x.lower() for x in array]
-        company = None
+        logger.log(arr)
+        companies = []
         temp = None
 
         for c in self.companies:
             temp = str(self.companies[c]).lower()
             for noun in arr:
                 if noun in temp:
-                    company = temp
+                    companies.append(c)
                     break
 
-        return company
+        return companies
 
+    def find_industry_from_array(self, array):
+        pass
 
     def check_tree_against_patterns(self,tree):
      pass
@@ -213,7 +238,3 @@ class PatternBasedExtractor(sn.Singleton):
             if n.data["part_of_speech"] == 6:
                 nouns.append(n.data["lemma"])
         return nouns
-
-if __name__ == "__main__":
-    pbe = PatternBasedExtractor().get_instance()
-    print(pbe.companies)

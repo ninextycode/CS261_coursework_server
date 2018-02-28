@@ -68,61 +68,104 @@ class GoogleCommandExtractor(sn.Singleton):
 if __name__ == '__main__':
     gce = GoogleCommandExtractor().get_instance()
 
-    # logger.log(gce.pattern_based_extractor.find_company_name_from_string("What is the stock price of Barclays?"))
-
     # test cases for stock price of company with patterns
-    print("companies_____________________________________________")
-    print(1)
+    # print("companies_____________________________________________")
+    # print(1)
     gce.get_meaning_from_single_using_patterns("What is the stock price of Barclays Bank?")
-    print(2)
-    gce.get_meaning_from_single_using_patterns("What is the price of Barclays?")
-    print(3)
-    gce.get_meaning_from_single_using_patterns("How is Rolls Royce priced?") # doesn't make it into the test at all, priced not in pattern
-    print(4)
-    gce.get_meaning_from_single_using_patterns("What is the price of Rolls Royce?")
-    print(5)
-    gce.get_meaning_from_single_using_patterns("How much is the price of RDS A?")
-    print(6)
-    gce.get_meaning_from_single_using_patterns("What is the price of Royal Dutch Shell?") # should give back two: A and B share give a as default??
-    print(7)
-    gce.get_meaning_from_single_using_patterns("Tell me the stock price of Smith?") # three companies that include smith
+    # print(2)
+    # gce.get_meaning_from_single_using_patterns("What is the price of Barclays?")
+    # print(3)
+    # gce.get_meaning_from_single_using_patterns("How is Rolls Royce priced?") # doesn't make it into the test at all, priced not in pattern
+    # print(4)
+    # gce.get_meaning_from_single_using_patterns("What is the price of Rolls Royce?")
+    # print(5)
+    # gce.get_meaning_from_single_using_patterns("How much is the price of RDS A?")
+    # print(6)
+    # gce.get_meaning_from_single_using_patterns("What is the price of Royal Dutch Shell?") # should give back two: A and B share give a as default??
+    # print(7)
+    # gce.get_meaning_from_single_using_patterns("Tell me the stock price of Smith?") # three companies that include smith
+    # print(8)
+    # gce.get_meaning_from_single_using_patterns("Tell me the stock price of Microsoft?")
+    # print(9)
+    # gce.get_meaning_from_single_using_patterns("Give me the stock of Lloyds Group?")
+    # print(10)
+    # gce.get_meaning_from_single_using_patterns("Give me the stock of Royal Shell?")
 
     # test cases for industry request with patterns
-    print("industry_____________________________________________")
-    print(1)
-    gce.get_meaning_from_single_using_patterns("Tell me about the software industry.")
-    print(2)
-    gce.get_meaning_from_single_using_patterns("How is the car industry behaving?")
-    print(3)
-    gce.get_meaning_from_single_using_patterns("Is there any movement in the paper industry?")
-    print(4)
-    gce.get_meaning_from_single_using_patterns("Any news on the electronics industry?") # will pass news and industry test!!!
+    # print("industry_____________________________________________")
+    # print(1)
+    # gce.get_meaning_from_single_using_patterns("Tell me about the software industry.")
+    # print(2)
+    # gce.get_meaning_from_single_using_patterns("How is the car industry behaving?")
+    # print(3)
+    # gce.get_meaning_from_single_using_patterns("Is there any movement in the paper industry?")
+    # print(4)
+    # gce.get_meaning_from_single_using_patterns("Any news on the electronics industry?") # will pass news and industry test!!! /ordering takes care now
 
     # test cases for news request with patterns
-    print("news_____________________________________________")
-    print(1)
-    gce.get_meaning_from_single_using_patterns("Give me the latest news on Barclays?")
-    print(2)
-    gce.get_meaning_from_single_using_patterns("Find news on Sainsbury's?")
-    print(3)
-    gce.get_meaning_from_single_using_patterns("Display the headlines of the pharmaceutical industry?") #crashes the test --> passes patterns for pharma industry info
+    # print("news_____________________________________________")
+    # print(1)
+    # gce.get_meaning_from_single_using_patterns("Give me the latest news on Barclays?")
+    # print(2)
+    # gce.get_meaning_from_single_using_patterns("Find news on Sainsbury's?")
+    # print(3)
+    # gce.get_meaning_from_single_using_patterns("Display the headlines of the pharmaceutical industry?") #crashes the test --> passes patterns for pharma industry info
+    # print(4)
+    # gce.get_meaning_from_single_using_patterns("Find news on the CEO of Barclays?") # makes the pattern, but cleary wrong result
+    # print(5)
+    # gce.get_meaning_from_single_using_patterns("Find news on Germany?")
 
     # test cases for social_media request with patterns
-    print("social_media_____________________________________________")
-    print(1)
-    gce.get_meaning_from_single_using_patterns("What do people think about the construction sector?")
-    print(2)
-    gce.get_meaning_from_single_using_patterns("Show me social media trends of Legal and General?")
+    # print("social_media_____________________________________________")
+    # print(1)
+    # gce.get_meaning_from_single_using_patterns("What do people think about the construction sector?")
+    # print(2)
+    # gce.get_meaning_from_single_using_patterns("Show me social media trends of Legal and General?")
+    print(3)
+    gce.get_meaning_from_single_using_patterns("What do people think about Donald Trump online?")
+
+    # special cases for request with patterns
+    # print("special_____________________________________________")
+    # print(1)
+    # gce.get_meaning_from_single_using_patterns("Do you have news on the price of Barclays?") # retruns news but should give stock price history
 
 
 
-    # gce.get_meaning_from_single_using_patterns("What is happening in pharmaceuticals?")
-    # gce.get_meaning_from_single_using_patterns("Any information on real estate market?") #get a company name!!! should be a sector
-    # gce.get_meaning_from_single_using_patterns("How much is Facebook?")
+    #test cases for nlp
+
+    # test cases for stock price of company with patterns
+    # print("companies_____________________________________________")
+    # print(3)
     # gce.get_meaning_from_single_using_nlp("How is Rolls Royce priced?")
-    # gce.get_meaning_from_single_using_nlp("What is happening in pharmaceuticals?")
-    # gce.get_meaning_from_single_using_nlp("Any information on real estate market?")
-    # gce.get_meaning_from_single_using_patterns("Are there any deviations in the ship building industry?")
-    # gce.get_meaning_from_single_using_nlp("Are there any deviations in the ship building industry?")
-    # print("easy jet" in "how much is easy jet?")
-    # gce.get_meaning_from_single_using_nlp("What is the news on the computer sector?")
+    # print(6)
+    # gce.get_meaning_from_single_using_nlp("What is the price of Royal Dutch Shell?")  # should give back two: A and B share give a as default??
+    # print(7)
+    # gce.get_meaning_from_single_using_nlp("Tell me the stock price of Smith?")  # three companies that include smith
+    # print(8)
+    # gce.get_meaning_from_single_using_nlp("Tell me the stock price of Microsoft?")  # three companies that include smith
+    # print(9)
+    # gce.get_meaning_from_single_using_nlp("Give me the stock of Lloyds Group?")
+    print(10)
+    gce.get_meaning_from_single_using_nlp("Give me the stock of Royal Shell?")
+
+
+    # test cases for industry request with patterns
+    # print("industry_____________________________________________")
+
+    # test cases for news request with patterns
+    # print("news_____________________________________________")
+    # print(3)
+    # gce.get_meaning_from_single_using_nlp("Display the headlines of the pharmaceutical industry?") #crashes the test --> passes patterns for pharma industry info
+    # print(4)
+    # gce.get_meaning_from_single_using_nlp("Find news on the CEO of Barclays?")
+    # print(5)
+    # gce.get_meaning_from_single_using_nlp("Find news on Germany?")
+
+
+    # print("social_media_____________________________________________")
+    print(3)
+    gce.get_meaning_from_single_using_nlp("What do people think about Donald Trump online?")
+
+
+    # special cases for request with patterns
+    # print("special_____________________________________________")
