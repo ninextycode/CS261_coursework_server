@@ -10,8 +10,10 @@ class SubType:
 
 
 class Indicator:
-    pass
-
+    industry_average = "industry_average"
+    just_price = "just_price"
+    news = "news"
+    social_media = "social_media"
 
 class Mood:
     positive = "positive"
