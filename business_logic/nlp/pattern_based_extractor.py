@@ -29,10 +29,11 @@ class PatternBasedExtractor(sn.Singleton):
         if result is None:
             result = self.check_stock_price(string)
 
+        return result
 
     def check_stock_price(self, string):
         words = re.sub(r'[^\w\s]','',string).split()
-        pattern = None
+        # pattern = None
         indicator = None
         keyword = None
         pattern_keywords = self.patterns["stock_price"]
@@ -40,7 +41,7 @@ class PatternBasedExtractor(sn.Singleton):
 
         for w in words:
             if w in pattern_keywords: #!!!!!
-                pattern = "stock_price" # wrong, need key
+                # pattern = "stock_price" # wrong, need key
                 if w in patterns_for_industry:
                     indicator = tags.Indicator.industry_average
                     keyword = self.find_industry_from_string(string)
@@ -49,8 +50,8 @@ class PatternBasedExtractor(sn.Singleton):
                     keyword = self.find_company_name_from_string(string)
                 req = {
                     'type': tags.Type.data_request,
-                    'subtype': pattern,
-                    "indicator" : indicator,
+                    'subtype': tags.SubType.stock,
+                    'indicator' : indicator,
                     'keyword': keyword
                 }
                 logger.log("Before check: " + str(req))
@@ -61,22 +62,22 @@ class PatternBasedExtractor(sn.Singleton):
 
     def check_news(self, string):
         words = re.sub(r'[^\w\s]', '', string).split()
-        pattern = None
+        # pattern = None
         indicator = None
         keyword = None
         pattern_keywords = self.patterns["news"]
 
         for w in words:
             if w in pattern_keywords:
-                pattern = w  # wrong, need key
-                indicator = tags.Indicator.news
+                # pattern = w  # wrong, need key
+                # indicator = tags.Indicator.news
                 keyword = self.find_company_name_from_string(string)
                 if not keyword:
                     keyword = self.find_industry_from_string(string)
                 req = {
                     'type': tags.Type.data_request,
-                    'subtype': pattern,
-                    "indicator": indicator,
+                    'subtype': tags.SubType.news,
+                    "indicator": tags.Indicator.news,
                     'keyword': keyword
                 }
                 logger.log("Before check: " + str(req))
@@ -94,15 +95,15 @@ class PatternBasedExtractor(sn.Singleton):
 
         for w in words:
             if str(w) in pattern_keywords or "social media" in string.lower():
-                pattern = "social media"  # wrong, need key
-                indicator = tags.Indicator.social_media
+                # pattern = "social media"  # wrong, need key
+                # indicator = tags.Indicator.social_media
                 keyword = self.find_company_name_from_string(string)
                 if not keyword:
                     keyword = self.find_industry_from_string(string)
                 req = {
                     'type': tags.Type.data_request,
-                    'subtype': pattern,
-                    "indicator": indicator,
+                    'subtype': tags.SubType.social_media,
+                    "indicator": tags.Indicator.social_media,
                     'keyword': keyword
                 }
                 logger.log("Before check: " + str(req))
@@ -180,33 +181,36 @@ class PatternBasedExtractor(sn.Singleton):
             if subtype is tags.Indicator.industry_average:
                 req = {
                     'type': tags.Type.data_request,
-                    'subtype': "stock_price",
+                    'subtype': tags.SubType.stock,
                     'indicator': tags.Indicator.industry_average,
                     'keyword': self.find_industry_from_array(nouns)
                 }
             req =  {
                     'type': tags.Type.data_request,
-                    'subtype': "stock_price",
+                    'subtype': tags.SubType.stock,
                     'indicator': tags.Indicator.just_price,
                     'keyword': self.find_company_name_from_array(nouns)
                 }
         if pattern == "news":
             req = {
                 'type': tags.Type.data_request,
-                'subtype': "news",
-                'indicator': "news",
-                'keyword': [nouns]
+                'subtype': tags.SubType.news,
+                'indicator': tags.Indicator.news,
+                'keyword': nouns
             }
 
         if pattern == "social_media":
             req = {
                 'type': tags.Type.data_request,
-                'subtype': "social_media",
-                'indicator': "social_media",
-                'keyword': [nouns]
+                'subtype': tags.SubType.social_media,
+                'indicator': tags.Indicator.social_media,
+                'keyword': nouns
             }
-
+        logger.log(pattern)
+        logger.log(nouns)
         logger.log(req)
+
+        return req
 
 
     def find_company_name_from_array(self, array):

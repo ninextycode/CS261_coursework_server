@@ -29,7 +29,7 @@ class GoogleCommandExtractor(sn.Singleton):
         logger.log("tree:\n {}".format(tree["root"]))
         logger.log("keywords {}".format(keywords))
 
-        self.pattern_based_extractor.get_meaning_from_using_nlp(tree, keywords)
+        meaning = self.pattern_based_extractor.get_meaning_from_using_nlp(tree, keywords)
 
         return meaning
 
@@ -38,14 +38,26 @@ class GoogleCommandExtractor(sn.Singleton):
 
     def get_meaning_from_single(self, text):
         meaning = self.get_meaning_from_single_using_patterns(text)
-
+        print("--------------------")
+        print("meaning: ")
+        print(meaning)
+        print("--------------------")
         if meaning is not None:
+            print("--------------------")
+            print("meaning after pattern: ")
+            print(meaning)
+            print("--------------------")
             return meaning
 
         meaning = self.get_meaning_from_single_using_nlp(text)
         if meaning is not None:
+            print("--------------------")
+            print("meaning after nlp: ")
+            print(meaning)
+            print("--------------------")
             return meaning
-        raise ex.MeaningUnknown()
+
+        raise ex.MeaningUnknown("Ambiguous Request")
 
     def get_meaning_from_alternatives(self, alternatives):
         pool = m_pool.ThreadPool(processes=config.default_number_of_nlp_threads)
@@ -71,7 +83,7 @@ if __name__ == '__main__':
     # test cases for stock price of company with patterns
     # print("companies_____________________________________________")
     # print(1)
-    gce.get_meaning_from_single_using_patterns("What is the stock price of Barclays Bank?")
+    # gce.get_meaning_from_single_using_patterns("What is the stock price of Barclays Bank?")
     # print(2)
     # gce.get_meaning_from_single_using_patterns("What is the price of Barclays?")
     # print(3)
@@ -121,8 +133,8 @@ if __name__ == '__main__':
     # gce.get_meaning_from_single_using_patterns("What do people think about the construction sector?")
     # print(2)
     # gce.get_meaning_from_single_using_patterns("Show me social media trends of Legal and General?")
-    print(3)
-    gce.get_meaning_from_single_using_patterns("What do people think about Donald Trump online?")
+    # print(3)
+    # gce.get_meaning_from_single_using_patterns("What do people think about Donald Trump online?")
 
     # special cases for request with patterns
     # print("special_____________________________________________")
@@ -145,8 +157,8 @@ if __name__ == '__main__':
     # gce.get_meaning_from_single_using_nlp("Tell me the stock price of Microsoft?")  # three companies that include smith
     # print(9)
     # gce.get_meaning_from_single_using_nlp("Give me the stock of Lloyds Group?")
-    print(10)
-    gce.get_meaning_from_single_using_nlp("Give me the stock of Royal Shell?")
+    # print(10)
+    # gce.get_meaning_from_single_using_nlp("Give me the stock of Royal Shell?")
 
 
     # test cases for industry request with patterns
@@ -163,9 +175,21 @@ if __name__ == '__main__':
 
 
     # print("social_media_____________________________________________")
-    print(3)
-    gce.get_meaning_from_single_using_nlp("What do people think about Donald Trump online?")
+    # print(3)
+    # gce.get_meaning_from_single_using_nlp("What do people think about Donald Trump online?")
+    # gce.get_meaning_from_single_using_nlp("Check social media for IPhone 10")    #check "social media" two nodes!!
 
 
     # special cases for request with patterns
     # print("special_____________________________________________")
+
+
+    # general test cases
+    # gce.get_meaning_from_single("What is the price of Barclays?")
+    gce.get_meaning_from_single("What do people think about Donald Trump online?")
+    # gce.get_meaning_from_single("How is Rolls Royce priced?")
+    # gce.get_meaning_from_single("Show me social media trends of Legal and General?")
+    # gce.get_meaning_from_single("Find news on Sainsbury's?")
+    gce.get_meaning_from_single_using_nlp("Check social media for IPhone 10")   # wrong!
+
+    # about, for

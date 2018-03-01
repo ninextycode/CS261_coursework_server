@@ -40,7 +40,7 @@ class GoogleNlpApi(sn.Singleton):
                 "text":  token.text.content,
                 "lemma": token.lemma,
                 "dependency_edge": token.dependency_edge.label,
-                "part_of_speech": token.part_of_speech.tag
+                "part_of_speech": token.part_of_speech.tag,
             }
             nodes.append(Node(token_node_data))
 
@@ -65,7 +65,6 @@ class GoogleNlpApi(sn.Singleton):
                 "importance": e.salience
             })
             return keywords
-
 
 class Node:
     def __init__(self, data, children=()):

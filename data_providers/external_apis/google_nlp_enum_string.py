@@ -100,7 +100,7 @@ part_of_speech = {
     gl_lang.enums.PartOfSpeech.Tag.PRT: "Particle or other function",
     gl_lang.enums.PartOfSpeech.Tag.PUNCT: "Punctuation",
     gl_lang.enums.PartOfSpeech.Tag.UNKNOWN: "Unknown",
-    gl_lang.enums.PartOfSpeech.Tag.VERB: "Verb (all tenses and modes",
+    gl_lang.enums.PartOfSpeech.Tag.VERB: "Verb (all tenses and modes)",
     gl_lang.enums.PartOfSpeech.Tag.X: "Other: foreign words, typos, abbreviations"
 
 }
