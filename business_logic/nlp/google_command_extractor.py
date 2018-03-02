@@ -190,6 +190,6 @@ if __name__ == "__main__":
     # gce.get_meaning_from_single("How is Rolls Royce priced?")
     # gce.get_meaning_from_single("Show me social media trends of Legal and General?")
     # gce.get_meaning_from_single("Find news on Sainsbury's?")
-    gce.get_meaning_from_single_using_nlp("Check social media for IPhone 10")   # wrong!
+    # gce.get_meaning_from_single_using_nlp("Check social media for IPhone 10")   # wrong!
 
     # about, for

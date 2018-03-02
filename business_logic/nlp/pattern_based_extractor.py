@@ -17,6 +17,8 @@ class PatternBasedExtractor(sn.Singleton):
                 "social_media": ["think", "social media"]
                 }
     patterns_for_industry = ["industry", "sector"]
+    pattern_nodes_social_media = ["about", "for"]
+
     companies = conf.companies
     industries = conf.industries
 
@@ -202,6 +204,12 @@ class PatternBasedExtractor(sn.Singleton):
             }
 
         if pattern == "social_media":
+
+            for n in tree["nodes"]:
+                for p in self.pattern_nodes_social_media:
+                    if n.data["text"] == p:  # get children of pattern nodes
+                        nouns = n["nodes"]
+
             req = {
                 'type': tags.Type.data_request,
                 'subtype': tags.SubType.social_media,

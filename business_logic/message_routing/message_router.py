@@ -42,10 +42,27 @@ class MessageRouter(sn.Singleton):
             return self.readable_responser.get_readable_response_for_news(formal_request, data)
 
         elif formal_request["subtype"] == tags.SubType.social_media:
-            data = self.world_data.get_social_media_data(formal_request)
+            data = self.world_data.get_public_opinion(formal_request)
             return self.readable_responser.get_readable_response_for_public_opinion(formal_request, data)
 
         elif formal_request["subtype"] == tags.SubType.stock:
             pass
             # todo
             # return self.world_data.get_stock_price_data(meaning)
+
+
+if __name__ == "__main__":
+    request0 = {
+        "type": tags.Type.data_request,
+        "subtype": tags.SubType.social_media,
+        "keywords": ["hate"]
+    }
+    request1 = {
+        "type": tags.Type.data_request,
+        "subtype": tags.SubType.news,
+        "keywords": ["Tesco"]
+    }
+
+    router = MessageRouter.get_instance()
+    router.response_to_data_request(request0)
+    router.response_to_data_request(request1)
