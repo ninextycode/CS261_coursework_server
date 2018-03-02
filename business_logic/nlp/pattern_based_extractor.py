@@ -156,10 +156,6 @@ class PatternBasedExtractor(sn.Singleton):
         return temp_req
 
 
-
-
-
-
     def get_meaning_from_using_nlp(self, tree, keywords):
         req = None
         pattern = None

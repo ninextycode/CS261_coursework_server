@@ -65,6 +65,9 @@ class GoogleNlpApiEmotions(sn.Singleton):
 
 
 class GoogleNlpApiMeaning(sn.Singleton):
+    def __init__(self):
+        self.client = gl_cloud.language.LanguageServiceClient()
+
     def query_meaning(self, text):
         document = gl_lang.types.Document(
             content=text,
