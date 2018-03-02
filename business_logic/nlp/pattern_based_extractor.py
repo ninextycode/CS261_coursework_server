@@ -17,12 +17,14 @@ class PatternBasedExtractor(sn.Singleton):
                 "social_media": ["think", "social media"]
                 }
     patterns_for_industry = ["industry", "sector"]
+    pattern_nodes_social_media = ["about", "for"]
+
     companies = conf.companies
     industries = conf.industries
 
     # basic predefined commands including pattern words and company name or industry name
     def get_meaning_from_using_patterns(self, string):
-        words = re.sub(r'[^\w\s]','',string).split()
+        words = re.sub(r"[^\w\s]","",string).split()
 
         result = self.check_news(string)
         if result is None:
@@ -33,7 +35,7 @@ class PatternBasedExtractor(sn.Singleton):
         return result
 
     def check_stock_price(self, string):
-        words = re.sub(r'[^\w\s]','',string).split()
+        words = re.sub(r"[^\w\s]","",string).split()
         # pattern = None
         indicator = None
         keywords = None
@@ -51,10 +53,10 @@ class PatternBasedExtractor(sn.Singleton):
                     indicator = tags.Indicator.just_price
                     keywords = self.find_company_name_from_string(string)
                 req = {
-                    'type': tags.Type.data_request,
-                    'subtype': tags.SubType.stock,
-                    'indicator' : indicator,
-                    'keywords': keywords
+                    "type": tags.Type.data_request,
+                    "subtype": tags.SubType.stock,
+                    "indicator" : indicator,
+                    "keywords": keywords
                 }
                 logger.log("Before check: " + str(req))
                 req = self.check_for_empty_information(req)
@@ -63,7 +65,7 @@ class PatternBasedExtractor(sn.Singleton):
         return None
 
     def check_news(self, string):
-        words = re.sub(r'[^\w\s]', '', string).split()
+        words = re.sub(r"[^\w\s]", "", string).split()
         # pattern = None
         indicator = None
         keywords = None
@@ -77,10 +79,10 @@ class PatternBasedExtractor(sn.Singleton):
                 if not keywords:
                     keywords = self.find_industry_from_string(string)
                 req = {
-                    'type': tags.Type.data_request,
-                    'subtype': tags.SubType.news,
+                    "type": tags.Type.data_request,
+                    "subtype": tags.SubType.news,
                     "indicator": tags.Indicator.news,
-                    'keywords': keywords
+                    "keywords": keywords
                 }
                 logger.log("Before check: " + str(req))
                 req = self.check_for_empty_information(req)
@@ -89,7 +91,7 @@ class PatternBasedExtractor(sn.Singleton):
         return None
 
     def check_social_media(self, string):
-        words = re.sub(r'[^\w\s]', '', string.lower()).split()
+        words = re.sub(r"[^\w\s]", "", string.lower()).split()
         pattern = None
         indicator = None
         keywords = None
@@ -103,10 +105,10 @@ class PatternBasedExtractor(sn.Singleton):
                 if not keywords:
                     keywords = self.find_industry_from_string(string)
                 req = {
-                    'type': tags.Type.data_request,
-                    'subtype': tags.SubType.social_media,
+                    "type": tags.Type.data_request,
+                    "subtype": tags.SubType.social_media,
                     "indicator": tags.Indicator.social_media,
-                    'keywords': keywords
+                    "keywords": keywords
                 }
                 logger.log("Before check: " + str(req))
                 req = self.check_for_empty_information(req)
@@ -163,6 +165,7 @@ class PatternBasedExtractor(sn.Singleton):
         nouns = []
         keywords = None
         req = None
+        soc_keywords = []
 
         for n in tree["nodes"]:
             if n.data["part_of_speech"] == 6:  # get nouns
@@ -178,35 +181,48 @@ class PatternBasedExtractor(sn.Singleton):
         if pattern == "stock_price":
             if subtype is tags.Indicator.industry_average:
                 req = {
-                    'type': tags.Type.data_request,
-                    'subtype': tags.SubType.stock,
-                    'indicator': tags.Indicator.industry_average,
-                    'keywords': self.find_industry_from_array(nouns)
+                    "type": tags.Type.data_request,
+                    "subtype": tags.SubType.stock,
+                    "indicator": tags.Indicator.industry_average,
+                    "keywords": self.find_industry_from_array(nouns)
                 }
             req =  {
-                    'type': tags.Type.data_request,
-                    'subtype': tags.SubType.stock,
-                    'indicator': tags.Indicator.just_price,
-                    'keywords': self.find_company_name_from_array(nouns)
+                    "type": tags.Type.data_request,
+                    "subtype": tags.SubType.stock,
+                    "indicator": tags.Indicator.just_price,
+                    "keywords": self.find_company_name_from_array(nouns)
                 }
         if pattern == "news":
             req = {
-                'type': tags.Type.data_request,
-                'subtype': tags.SubType.news,
-                'indicator': tags.Indicator.news,
-                'keywords': nouns
+                "type": tags.Type.data_request,
+                "subtype": tags.SubType.news,
+                "indicator": tags.Indicator.news,
+                "keywords": nouns
             }
 
         if pattern == "social_media":
+
+            for n in tree["nodes"]:
+                for p in self.pattern_nodes_social_media:
+                    if n.data["text"] == p:  # get children of pattern nodes
+                        soc_keywords = n.get_predecessors()
+                        nouns = []
+
+            for w in soc_keywords:
+                if w.data["part_of_speech"] == 6:
+                    nouns.append(w.data["text"])
+
             req = {
-                'type': tags.Type.data_request,
-                'subtype': tags.SubType.social_media,
-                'indicator': tags.Indicator.social_media,
-                'keywords': nouns
+                "type": tags.Type.data_request,
+                "subtype": tags.SubType.social_media,
+                "indicator": tags.Indicator.social_media,
+                "keywords": nouns
             }
         logger.log(pattern)
         logger.log(nouns)
         logger.log(req)
+        if req is not None:
+            req = self.check_for_empty_information(req)
 
         return req
 
