@@ -11,4 +11,6 @@ class HtmlGenerator(sn.Singleton):
         for new in news:
             print(new["summary"])
 
-        print(self.news_template.generate(news=news))
+        with open(routing.news_page_path, "wb") as new_page:
+            page = self.news_template.generate(news=news)
+            new_page.write(page)
