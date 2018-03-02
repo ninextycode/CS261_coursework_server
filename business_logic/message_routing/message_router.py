@@ -15,8 +15,8 @@ class MessageRouter(sn.Singleton):
 
     def __init__(self):
         self.nlp = nlp.NLP.get_instance()
-        self.readable_responser = rr.ReadableResponser.get_instance()
-        self.world_data = world_data.WorldData.get_instance()
+        self.readable_responser: rr.ReadableResponser = rr.ReadableResponser.get_instance()
+        self.world_data: world_data.WorldData = world_data.WorldData.get_instance()
 
         self.message_worker = None
 
@@ -42,10 +42,27 @@ class MessageRouter(sn.Singleton):
             return self.readable_responser.get_readable_response_for_news(formal_request, data)
 
         elif formal_request["subtype"] == tags.SubType.social_media:
-            data = self.world_data.get_social_media_data(formal_request)
+            data = self.world_data.get_public_opinion(formal_request)
             return self.readable_responser.get_readable_response_for_public_opinion(formal_request, data)
 
         elif formal_request["subtype"] == tags.SubType.stock:
             pass
             # todo
             # return self.world_data.get_stock_price_data(meaning)
+
+
+if __name__ == "__main__":
+    tests = [
+        "What is the price of Barclays?",
+        "What do people think about Donald Trump online?",
+        "How is Rolls Royce priced?",
+        "Show me social media trends of Legal and General?",
+        "Find news on Sainsbury's?",
+        "How much does Microsoft cost",
+        "What are the news about meat"
+    ]
+
+    router: MessageRouter = MessageRouter.get_instance()
+    for test in tests:
+        result = router.process_single(test)
+        print(test, result)
