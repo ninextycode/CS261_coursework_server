@@ -191,18 +191,16 @@ if __name__ == "__main__":
     # gce.get_meaning_from_single_using_nlp("Check social media for IPhone 10")   # wrong!
 
     tests = [
-        "What is the price of Barclays?",
-        "What do people think about Donald Trump online?",
-        "How is Rolls Royce priced?",
-        "Show me social media trends of Legal and General?",
-        "Find news on Sainsbury's?",
-        "How much does Microsoft cost",
-        "Give me news about Microsoft",
+        # "What is the price of Barclays?",
+        # "What do people think about Donald Trump online?",
+        # "How is Rolls Royce priced?",
+        # "Show me social media trends of Legal and General?",
+        # "Find news on Sainsbury's?",
+        # "How much does Microsoft cost",
+        # "Give me news about Microsoft",
         "What are the news about meat",
         "What do people think about the weather today?"
     ]
     for test in tests:
         resp = gce.get_meaning_from_single_using_nlp(test)   # wrong!
         print(resp)
-
-    # about, for

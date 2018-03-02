@@ -218,9 +218,6 @@ class PatternBasedExtractor(sn.Singleton):
                 "indicator": tags.Indicator.social_media,
                 "keywords": nouns
             }
-        logger.log(pattern)
-        logger.log(nouns)
-        logger.log(req)
         if req is not None:
             req = self.check_for_empty_information(req)
 
