@@ -25,14 +25,16 @@ class SocialMediaAnalyser(sn.Singleton):
         async_result = pool.map_async(self.nlp.get_emotions_score, [p["text"] for p in posts_likes])
         emotions = np.array(async_result.get())
 
+
+
+        return self.analytics(emotions, keywords)
+
+    def analytics(self, emotions, keywords):
         hist = np.histogram(emotions, bins=np.linspace(-1, 1, 10))
         hist_str = self.hist_string(hist)
         logger.log("got emotion magnitude distribution for keywords {}:\n"
                    "{}".format(keywords, hist_str))
 
-        return self.analytics(emotions)
-
-    def analytics(self, emotions):
         mean = np.mean(emotions)
         logger.log("mean: {}".format(mean))
 
@@ -52,6 +54,7 @@ class SocialMediaAnalyser(sn.Singleton):
             "very_negative": very_negative,
             "total":         total_posts,
             "mean":          mean,
+            "histrogram_string": hist_str,
             "general_opinion":    self.get_general_opinion(mean)
         }
         return response

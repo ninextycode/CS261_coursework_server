@@ -2,6 +2,10 @@ default_number_of_speech_rec_alternatives = 10
 
 ws_port = 7004
 
+
+news_summary_address = "example.com"
+
+
 companies = {
     "III": ["3I GRP", "3i Group"],
     "ABF": ["A.B.FOOD", "Associated Brititsh Foods"],

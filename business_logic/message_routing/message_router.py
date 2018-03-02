@@ -52,11 +52,12 @@ class MessageRouter(sn.Singleton):
 
 
 if __name__ == "__main__":
-    request0 = {
-        "type": tags.Type.data_request,
-        "subtype": tags.SubType.social_media,
-        "keywords": ["Canada", "Trump"]
-    }
+    # request0 = {
+    #     "type": tags.Type.data_request,
+    #     "subtype": tags.SubType.social_media,
+    #     "keywords": ["Barclays", "Bribe"]
+    # }
+    
     request1 = {
         "type": tags.Type.data_request,
         "subtype": tags.SubType.news,
@@ -64,5 +65,5 @@ if __name__ == "__main__":
     }
 
     router = MessageRouter.get_instance()
-    router.response_to_data_request(request0)
+
     router.response_to_data_request(request1)
