@@ -55,7 +55,7 @@ if __name__ == "__main__":
     request0 = {
         "type": tags.Type.data_request,
         "subtype": tags.SubType.social_media,
-        "keywords": ["hate"]
+        "keywords": ["Canada", "Trump"]
     }
     request1 = {
         "type": tags.Type.data_request,

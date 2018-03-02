@@ -157,3 +157,10 @@ class Node:
 
     def __repr__(self):
         return "<node>"
+
+    def get_predecessors(self):
+        predecessors = []
+        for child in self.children:
+            predecessors.append(child)
+            predecessors.extend(child.get_predecessors())
+        return predecessors

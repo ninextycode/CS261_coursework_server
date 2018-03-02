@@ -6,8 +6,8 @@ class ReadableResponser(sn.Singleton):
 
         print(request)
         print(data)
-        print(data[0].keys())
-        return None
+        print(data[0])
+        return None #return meaningful string here
 
     def get_readable_response_for_public_opinion(self, request, data):
         print(request)
