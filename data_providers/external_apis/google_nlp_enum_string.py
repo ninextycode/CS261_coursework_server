@@ -71,7 +71,7 @@ dependency_edge = {
     gl_lang.enums.DependencyEdge.Label.AUXVV: "Helper auxiliary",
     gl_lang.enums.DependencyEdge.Label.DTMOD: "Rentaishi (Prenominal modifier)",
     gl_lang.enums.DependencyEdge.Label.FOREIGN: "Foreign words",
-    gl_lang.enums.DependencyEdge.Label.KW: "Keyword",
+    gl_lang.enums.DependencyEdge.Label.KW: "keywords",
     gl_lang.enums.DependencyEdge.Label.LIST: "List for chains of comparable items",
     gl_lang.enums.DependencyEdge.Label.NOMC: "Nominalized clause",
     gl_lang.enums.DependencyEdge.Label.NOMCSUBJ: "Nominalized clausal subject",

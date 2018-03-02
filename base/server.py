@@ -108,6 +108,7 @@ class Server(sn.Singleton):
 
     def start_server(self):
         application = tw.Application([
+            (r"/news/*", )
             (r"/", Handler),
         ])
 

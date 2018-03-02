@@ -4,6 +4,7 @@ import business_logic.nlp.nlp as nlp
 import business_logic.data_tags as tags
 import business_logic.message_routing.readable_responser as rr
 import business_logic.data_processing.world_data as world_data
+import business_logic.message_routing.html_generator as html_generator
 
 logger = l.Logger("MessageRouter")
 
@@ -17,7 +18,7 @@ class MessageRouter(sn.Singleton):
         self.nlp = nlp.NLP.get_instance()
         self.readable_responser: rr.ReadableResponser = rr.ReadableResponser.get_instance()
         self.world_data: world_data.WorldData = world_data.WorldData.get_instance()
-
+        self.html_generator: html_generator.HtmlGenerator = html_generator.HtmlGenerator.get_instance()
         self.message_worker = None
 
     def process_alternatives(self, alternatives):
@@ -36,9 +37,12 @@ class MessageRouter(sn.Singleton):
         elif formal_request["type"] == tags.Type.subscription:
             pass  # TODO work on subscriptions
 
+        return self.readable_responser.get_readable_response_for_unknown()
+
     def response_to_data_request(self, formal_request):
         if formal_request["subtype"] == tags.SubType.news:
             data = self.world_data.get_news(formal_request)
+            html = self.html_generator.get_page_for_news(data)
             return self.readable_responser.get_readable_response_for_news(formal_request, data)
 
         elif formal_request["subtype"] == tags.SubType.social_media:
@@ -49,17 +53,18 @@ class MessageRouter(sn.Singleton):
             pass
             # todo
             # return self.world_data.get_stock_price_data(meaning)
+        return self.readable_responser.get_readable_response_for_unknown()
 
 
 if __name__ == "__main__":
     tests = [
-        "What is the price of Barclays?",
-        "What do people think about Donald Trump online?",
-        "How is Rolls Royce priced?",
-        "Show me social media trends of Legal and General?",
-        "Find news on Sainsbury's?",
-        "How much does Microsoft cost",
-        "What are the news about meat"
+        #"What is the price of Barclays?",
+        #"What do people think about Donald Trump online?",
+        #"How is Rolls Royce priced?",
+        #"Show me social media trends of Legal and General?",
+        #"Find news on Sainsbury's?",
+        #"How much does Microsoft cost",
+        "What are the news about pork meat"
     ]
 
     router: MessageRouter = MessageRouter.get_instance()
