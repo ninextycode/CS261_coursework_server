@@ -38,23 +38,12 @@ class GoogleCommandExtractor(sn.Singleton):
 
     def get_meaning_from_single(self, text):
         meaning = self.get_meaning_from_single_using_patterns(text)
-        logger.log("--------------------")
-        logger.log("meaning: ")
-        logger.log(meaning)
-        logger.log("--------------------")
+
         if meaning is not None:
-            logger.log("--------------------")
-            logger.log("meaning after pattern: ")
-            logger.log(meaning)
-            logger.log("--------------------")
             return meaning
 
         meaning = self.get_meaning_from_single_using_nlp(text)
         if meaning is not None:
-            logger.log("--------------------")
-            logger.log("meaning after nlp: ")
-            logger.log(meaning)
-            logger.log("--------------------")
             return meaning
 
         raise ex.MeaningUnknown("Ambiguous Request")
@@ -66,12 +55,14 @@ class GoogleCommandExtractor(sn.Singleton):
         pattern_based_responses = async_result.get()
         for response in pattern_based_responses:
             if response is not None:
+                logger.log(response)
                 return response
 
         async_result = pool.map_async(self.get_meaning_from_single_using_nlp, [a["text"] for a in alternatives])
         api_responses = async_result.get()
         for response in api_responses:
             if response is not None:
+                logger.log(response)
                 return response
 
         raise ex.MeaningUnknown()
