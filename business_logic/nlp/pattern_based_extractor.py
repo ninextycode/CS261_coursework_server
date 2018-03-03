@@ -12,11 +12,12 @@ logger = l.Logger("PatternBasedExtractor")
 
 class PatternBasedExtractor(sn.Singleton):
 
-    patterns = {"stock_price": ["price", "much", "stock", "industry", "sector"],
+    patterns = {"stock_price": ["price", "much", "stock", "variance", "behaviour", "behavior" "industry", "sector"],
                 "news": ["news", "information", "headlines"],
                 "social_media": ["think", "social media"]
                 }
     patterns_for_industry = ["industry", "sector"]
+    patterns_for_stock_prices = ["variance", "behaviour", "behavior", "today", "yesterday"]
     pattern_nodes_social_media = ["about", "for"]
 
     companies = conf.companies
@@ -35,7 +36,7 @@ class PatternBasedExtractor(sn.Singleton):
         return result
 
     def check_stock_price(self, string):
-        words = re.sub(r"[^\w\s]","",string).split()
+        words = re.sub(r"[^\w\s]","",string.lower()).split()
         indicator = None
         keywords = None
         pattern_keywords = self.patterns["stock_price"]
@@ -49,7 +50,7 @@ class PatternBasedExtractor(sn.Singleton):
                     indicator = tags.Indicator.industry_average
                     keywords = self.find_industry_from_string(string)
                 else:
-                    indicator = tags.Indicator.just_price
+                    indicator = self.check_stock_price_tags(words)
                     keywords = self.find_company_name_from_string(string)
                 req = {
                     "type": tags.Type.data_request,
@@ -60,6 +61,14 @@ class PatternBasedExtractor(sn.Singleton):
                 req = self.check_for_empty_information(req)
                 return req
         return None
+
+    def check_stock_price_tags(self, words):
+        indicator = tags.Indicator.just_price
+        for w in words:
+            if w in self.patterns_for_stock_prices:
+                indicator = w
+                break
+        return indicator
 
     def check_news(self, string):
         words = re.sub(r"[^\w\s]", "", string).split()

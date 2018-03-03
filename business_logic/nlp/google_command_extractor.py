@@ -166,8 +166,8 @@ if __name__ == "__main__":
 
     # print("social_media_____________________________________________")
     # print(3)
-    gce.get_meaning_from_single_using_nlp("What do people think about Donald Trump online?")
-    gce.get_meaning_from_single_using_nlp("Check social media for IPhone 10")    #check "social media" two nodes!!
+    # gce.get_meaning_from_single_using_nlp("What do people think about Donald Trump online?")
+    # gce.get_meaning_from_single_using_nlp("Check social media for IPhone 10")    #check "social media" two nodes!!
 
     # special cases for request with patterns
     # print("special_____________________________________________")
@@ -181,7 +181,7 @@ if __name__ == "__main__":
     # gce.get_meaning_from_single("Find news on Sainsbury's?")
     # gce.get_meaning_from_single_using_nlp("Check social media for IPhone 10")   # wrong!
 
-    tests = [
+    # tests = [
         # "What is the price of Barclays?",
         # "What do people think about Donald Trump online?",
         # "How is Rolls Royce priced?",
@@ -189,9 +189,13 @@ if __name__ == "__main__":
         # "Find news on Sainsbury's?",
         # "How much does Microsoft cost",
         # "Give me news about Microsoft",
-        "What are the news about meat",
-        "What do people think about the weather today?"
-    ]
-    for test in tests:
-        resp = gce.get_meaning_from_single_using_nlp(test)   # wrong!
-        print(resp)
+        # "What are the news\ink about the weather today?"
+    # ]
+    # for test in tests:
+    #     resp = gce.get_meaning_from_single_using_nlp(test)   # wrong!
+    #     print(resp)
+
+
+    # logger.log(gce.get_meaning_from_single_using_patterns("What is the stock price of Barclays Bank today?"))
+    logger.log(gce.get_meaning_from_single_using_patterns("What is the variance of Barclays Bank today?")) #!!! problem solved with ordering
+    logger.log(gce.get_meaning_from_single_using_patterns("What is the variance of Barclays Bank?"))
