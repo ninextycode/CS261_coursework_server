@@ -226,7 +226,6 @@ class PatternBasedExtractor(sn.Singleton):
 
         return req
 
-
     def find_company_name_from_array(self, array):
         arr = [x.lower() for x in array]
         logger.log(arr)

@@ -108,9 +108,12 @@ class Server(sn.Singleton):
 
     def start_server(self):
         application = tw.Application([
-            (r"/news/*", )
+            (r"/(.*)", tw.StaticFileHandler, {"path": config.static_folder}),
             (r"/", Handler),
-        ])
+        ],
+            template_path=config.templates_folder,
+            static_path=config.static_folder
+        )
 
         http_server = t_http.HTTPServer(application)
         http_server.listen(config.ws_port)

@@ -42,7 +42,7 @@ class MessageRouter(sn.Singleton):
     def response_to_data_request(self, formal_request):
         if formal_request["subtype"] == tags.SubType.news:
             data = self.world_data.get_news(formal_request)
-            html = self.html_generator.get_page_for_news(data)
+            html = self.html_generator.get_page_for_news(data, formal_request)
             return self.readable_responser.get_readable_response_for_news(formal_request, data)
 
         elif formal_request["subtype"] == tags.SubType.social_media:
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         #"Show me social media trends of Legal and General?",
         #"Find news on Sainsbury's?",
         #"How much does Microsoft cost",
-        "What are the news about pork meat"
+        "What are the news about pork meat in the uk"
     ]
 
     router: MessageRouter = MessageRouter.get_instance()

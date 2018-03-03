@@ -1,9 +1,8 @@
 import os
 import inspect
+import config
 
 
-pages_folder = os.path.join(os.path.join(os.path.join(
-            os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))),
-            os.pardir), os.pardir), "html_pages")
+pages_folder = config.static_folder
 
-news_page_path = os.path.join(pages_folder, "news.html")
+news_page_path = os.path.join(config.static_folder, "news.html")

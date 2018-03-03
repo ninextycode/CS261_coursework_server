@@ -1,4 +1,13 @@
+import os
+import inspect
+
+
 default_number_of_speech_rec_alternatives = 10
+
+static_folder = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "html_pages")
+
+templates_folder = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "templates")
+
 
 ws_port = 7004
 
