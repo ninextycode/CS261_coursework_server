@@ -36,7 +36,6 @@ class PatternBasedExtractor(sn.Singleton):
 
     def check_stock_price(self, string):
         words = re.sub(r"[^\w\s]","",string).split()
-        # pattern = None
         indicator = None
         keywords = None
         pattern_keywords = self.patterns["stock_price"]
@@ -44,8 +43,8 @@ class PatternBasedExtractor(sn.Singleton):
 
 
         for w in words:
-            if w in pattern_keywords: #!!!!!
-                # pattern = "stock_price" # wrong, need key
+            if w in pattern_keywords:
+
                 if w in patterns_for_industry:
                     indicator = tags.Indicator.industry_average
                     keywords = self.find_industry_from_string(string)
@@ -58,23 +57,18 @@ class PatternBasedExtractor(sn.Singleton):
                     "indicator" : indicator,
                     "keywords": keywords
                 }
-                logger.log("Before check: " + str(req))
                 req = self.check_for_empty_information(req)
-                logger.log("after check: " + str(req))
                 return req
         return None
 
     def check_news(self, string):
         words = re.sub(r"[^\w\s]", "", string).split()
-        # pattern = None
         indicator = None
         keywords = None
         pattern_keywords = self.patterns["news"]
 
         for w in words:
             if w in pattern_keywords:
-                # pattern = w  # wrong, need key
-                # indicator = tags.Indicator.news
                 keywords = self.find_company_name_from_string(string)
                 if not keywords:
                     keywords = self.find_industry_from_string(string)
@@ -84,9 +78,7 @@ class PatternBasedExtractor(sn.Singleton):
                     "indicator": tags.Indicator.news,
                     "keywords": keywords
                 }
-                logger.log("Before check: " + str(req))
                 req = self.check_for_empty_information(req)
-                logger.log("after check: " + str(req))
                 return req
         return None
 
@@ -99,8 +91,6 @@ class PatternBasedExtractor(sn.Singleton):
 
         for w in words:
             if str(w) in pattern_keywords or "social media" in string.lower():
-                # pattern = "social media"  # wrong, need key
-                # indicator = tags.Indicator.social_media
                 keywords = self.find_company_name_from_string(string)
                 if not keywords:
                     keywords = self.find_industry_from_string(string)
@@ -110,9 +100,7 @@ class PatternBasedExtractor(sn.Singleton):
                     "indicator": tags.Indicator.social_media,
                     "keywords": keywords
                 }
-                logger.log("Before check: " + str(req))
                 req = self.check_for_empty_information(req)
-                logger.log("after check: " + str(req))
                 return req
         return None
 
@@ -137,7 +125,6 @@ class PatternBasedExtractor(sn.Singleton):
 
         for i in self.industries:
             temp = self.industries[i]
-            # logger.log(temp)
             for ind in temp:
                 if ind.lower() in input:
                     industry.append(self.industries[i][0])
@@ -201,7 +188,6 @@ class PatternBasedExtractor(sn.Singleton):
             }
 
         if pattern == "social_media":
-
             for n in tree["nodes"]:
                 for p in self.pattern_nodes_social_media:
                     if n.data["text"] == p:  # get children of pattern nodes
@@ -218,9 +204,6 @@ class PatternBasedExtractor(sn.Singleton):
                 "indicator": tags.Indicator.social_media,
                 "keywords": nouns
             }
-        logger.log(pattern)
-        logger.log(nouns)
-        logger.log(req)
         if req is not None:
             req = self.check_for_empty_information(req)
 
@@ -228,7 +211,6 @@ class PatternBasedExtractor(sn.Singleton):
 
     def find_company_name_from_array(self, array):
         arr = [x.lower() for x in array]
-        logger.log(arr)
         companies = []
         temp = None
 
@@ -241,17 +223,11 @@ class PatternBasedExtractor(sn.Singleton):
 
         return companies
 
-    def find_industry_from_array(self, array):
-        pass
 
-    def check_tree_against_patterns(self,tree):
-     pass
-
-
-    def get_all_nouns_from_tree(self, tree):
-        nouns = []
-        for n in tree["nodes"]:
-            print(n.data["lemma"] + ", " + str(n.data["part_of_speech"]))
-            if n.data["part_of_speech"] == 6:
-                nouns.append(n.data["lemma"])
-        return nouns
+    # def get_all_nouns_from_tree(self, tree):
+    #     nouns = []
+    #     for n in tree["nodes"]:
+    #         print(n.data["lemma"] + ", " + str(n.data["part_of_speech"]))
+    #         if n.data["part_of_speech"] == 6:
+    #             nouns.append(n.data["lemma"])
+    #     return nouns

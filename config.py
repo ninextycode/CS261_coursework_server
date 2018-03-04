@@ -11,6 +11,10 @@ templates_folder = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(
 
 ws_port = 7004
 
+
+news_summary_address = "example.com"
+
+
 companies = {
     "III": ["3I GRP", "3i Group"],
     "ABF": ["A.B.FOOD", "Associated Brititsh Foods"],
