@@ -9,10 +9,10 @@ static_folder = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(ins
 templates_folder = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "templates")
 
 
-ws_port = 7004
+port = 7004
 
 
-news_summary_address = "example.com"
+news_summary_address = "localhost:{}/news.html".format(port)
 
 
 companies = {

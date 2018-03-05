@@ -4,14 +4,14 @@ import base.singleton as sn
 
 
 class ReadableResponser(sn.Singleton):
-    def get_readable_response_for_news(self, request, data):
+    def get_readable_response_for_news(self, data, request):
         n = len(data)
         headline = "I found {} recent articles for {}.\n".format(n, request["keywords"])
         articles = ""
 
-        for l in data:
+        for l in data[:10]:
             articles += (l["title"] + ": " + l["link"] + "\n")
-
+        articles += "Find summaries and more news at {}".format(config.news_summary_address)
         response = {
             "headline": headline,
             "text_body": articles
@@ -19,7 +19,7 @@ class ReadableResponser(sn.Singleton):
 
         return response
 
-    def get_readable_response_for_public_opinion(self, request, data):
+    def get_readable_response_for_public_opinion(self, data, request):
         print(request)
         print(data.keys())
         print(data)
@@ -35,18 +35,19 @@ class ReadableResponser(sn.Singleton):
                                                  self.calc_percentage(data["negative"], data["total"]),
                                                  self.calc_percentage(data["very_negative"], data["total"]))
 
+        sentiments =  "The overall sentiment of {} social media posts is " \
+                      "{} with an average sentiment " \
+                      "score of {:1.2f}.\n".format(data["total"], data["general_opinion"],  data["mean"]) + sentiments
+
         response = {
             "headline": "Social Media Analysis for " + str(search_terms),
-            "sentence": "The overall sentiment of {} social media posts is {} with an average sentiment score of {}.".format(data["total"], data["general_opinion"], round(data["mean"],2)),
             "text_body": sentiments
-            }
-
-        # print(response["headline"])
-        # print(response["sentence"])
-        # print(response["text_body"])
+        }
 
         return response
 
     def calc_percentage(self, den, nom):
         return "{:2.1f}%".format(den/nom*100)
 
+    def get_readable_response_for_unknown(self):
+        return "Cannot process request"

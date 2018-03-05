@@ -17,6 +17,9 @@ class NewsAnalyser(sn.Singleton):
         news = self.news_provider.get_news_by_keywords(request_dict["keywords"],
                                                        date_from=date_from,
                                                        date_to=date_to)
+        if len(news) == 0:
+            return []
+
         news = sorted(news, key=lambda x: x["datetime"], reverse=True)
         pool = m_pool.ThreadPool(processes=len(news))
 

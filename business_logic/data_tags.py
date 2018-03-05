@@ -15,7 +15,20 @@ class Indicator:
     news = "news"
     social_media = "social_media"
 
+
 class Mood:
     positive = "positive"
     neutral = "neutral"
     negative = "negative"
+
+
+class OutgoingMessageType:
+    response = "response"
+    on_unknown_request = "unknown_request"
+    on_exception = "exception"
+
+
+class MimeTypes:
+    text = "text/plain"
+    ogg = "audio/ogg"
+    flac = "audio/flac"

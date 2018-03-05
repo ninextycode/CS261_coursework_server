@@ -14,7 +14,7 @@ class PatternBasedExtractor(sn.Singleton):
 
     patterns = {"stock_price": ["price", "much", "stock", "industry", "sector"],
                 "news": ["news", "information", "headlines"],
-                "social_media": ["think", "social media"]
+                "social_media": ["think", "talk", "social media"]
                 }
     patterns_for_industry = ["industry", "sector"]
     pattern_nodes_social_media = ["about", "for"]
@@ -50,7 +50,7 @@ class PatternBasedExtractor(sn.Singleton):
                     keywords = self.find_industry_from_string(string)
                 else:
                     indicator = tags.Indicator.just_price
-                    keywords = self.find_company_name_from_string(string)
+                    keywords = self.find_company_ticker_from_string(string)
                 req = {
                     "type": tags.Type.data_request,
                     "subtype": tags.SubType.stock,
@@ -107,16 +107,34 @@ class PatternBasedExtractor(sn.Singleton):
     def find_company_name_from_string(self, string):
         input = string.lower()
         company = []
-        temp = None
 
-        for c in self.companies:
-            temp = [x.lower() for x in self.companies[c]]
-            for comp in temp:
+        for c in self.companies.keys():
+            variations = [x.lower() for x in self.companies[c]]
+            for comp in variations:
+                if comp in input:
+                    company.append(comp)
+                    break
+
+        return company
+
+    def find_company_ticker_from_string(self, string):
+        input = string.lower()
+        company = []
+
+        for c in self.companies.keys():
+            variations = [x.lower() for x in self.companies[c]]
+            for comp in variations:
                 if comp in input:
                     company.append(c)
                     break
 
         return company
+
+    def find_industry_from_array(self, data):
+        industries = []
+        for word in data:
+            industries.extend(self.find_industry_from_string(word))
+        return industries
 
     def find_industry_from_string(self, string):
         input = string.lower()
@@ -144,84 +162,6 @@ class PatternBasedExtractor(sn.Singleton):
                     return None
         return temp_req
 
-
-    def get_meaning_from_using_nlp(self, tree, keywords):
-        req = None
-        pattern = None
-        subtype = None
-        nouns = []
-        keywords = None
-        req = None
-        soc_keywords = []
-
-        for n in tree["nodes"]:
-            if n.data["part_of_speech"] == 6:  # get nouns
-                nouns.append(n.data["lemma"])
-            for p in self.patterns:
-                if n.data["lemma"] in self.patterns[p]:  # find pattern
-                    pattern = p
-                    if n.data["lemma"] in self.patterns_for_industry:
-                        subtype = tags.Indicator.industry_average
-                    if n.data["part_of_speech"] == 6:
-                     nouns.remove(n.data["lemma"])
-
-        if pattern == "stock_price":
-            if subtype is tags.Indicator.industry_average:
-                req = {
-                    "type": tags.Type.data_request,
-                    "subtype": tags.SubType.stock,
-                    "indicator": tags.Indicator.industry_average,
-                    "keywords": self.find_industry_from_array(nouns)
-                }
-            req =  {
-                    "type": tags.Type.data_request,
-                    "subtype": tags.SubType.stock,
-                    "indicator": tags.Indicator.just_price,
-                    "keywords": self.find_company_name_from_array(nouns)
-                }
-        if pattern == "news":
-            req = {
-                "type": tags.Type.data_request,
-                "subtype": tags.SubType.news,
-                "indicator": tags.Indicator.news,
-                "keywords": nouns
-            }
-
-        if pattern == "social_media":
-            for n in tree["nodes"]:
-                for p in self.pattern_nodes_social_media:
-                    if n.data["text"] == p:  # get children of pattern nodes
-                        soc_keywords = n.get_predecessors()
-                        nouns = []
-
-            for w in soc_keywords:
-                if w.data["part_of_speech"] == 6:
-                    nouns.append(w.data["text"])
-
-            req = {
-                "type": tags.Type.data_request,
-                "subtype": tags.SubType.social_media,
-                "indicator": tags.Indicator.social_media,
-                "keywords": nouns
-            }
-        if req is not None:
-            req = self.check_for_empty_information(req)
-
-        return req
-
-    def find_company_name_from_array(self, array):
-        arr = [x.lower() for x in array]
-        companies = []
-        temp = None
-
-        for c in self.companies:
-            temp = str(self.companies[c]).lower()
-            for noun in arr:
-                if noun in temp:
-                    companies.append(c)
-                    break
-
-        return companies
 
 
     # def get_all_nouns_from_tree(self, tree):
