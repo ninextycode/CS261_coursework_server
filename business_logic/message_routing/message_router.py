@@ -15,8 +15,8 @@ class MessageRouter(sn.Singleton):
 
     def __init__(self):
         self.nlp = nlp.NLP.get_instance()
-        self.readable_responser = rr.ReadableResponser.get_instance()
-        self.world_data = world_data.WorldData.get_instance()
+        self.readable_responser: rr.ReadableResponser = rr.ReadableResponser.get_instance()
+        self.world_data: world_data.WorldData = world_data.WorldData.get_instance()
 
         self.message_worker = None
 
@@ -52,17 +52,17 @@ class MessageRouter(sn.Singleton):
 
 
 if __name__ == "__main__":
-    request0 = {
-        "type": tags.Type.data_request,
-        "subtype": tags.SubType.social_media,
-        "keywords": ["hate"]
-    }
-    request1 = {
-        "type": tags.Type.data_request,
-        "subtype": tags.SubType.news,
-        "keywords": ["Tesco"]
-    }
+    tests = [
+        "What is the price of Barclays?",
+        "What do people think about Donald Trump online?",
+        "How is Rolls Royce priced?",
+        "Show me social media trends of Legal and General?",
+        "Find news on Sainsbury's?",
+        "How much does Microsoft cost",
+        "What are the news about meat"
+    ]
 
-    router = MessageRouter.get_instance()
-    router.response_to_data_request(request0)
-    router.response_to_data_request(request1)
+    router: MessageRouter = MessageRouter.get_instance()
+    for test in tests:
+        result = router.process_single(test)
+        print(test, result)
