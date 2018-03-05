@@ -19,9 +19,10 @@ class StockDatabaseUpdater(sn.Singleton):
         self.sql_wrapper.insert_prices(dataframe)
 
     def start(self):
-        self.update()
-        time.sleep(self.period_sec / 2)
+        while True:
+            self.update()
+            time.sleep(self.period_sec / 2)
 
 
 if __name__ == "__main__":
-    StockDatabaseUpdater.get_instance().update()
+    StockDatabaseUpdater.get_instance().start()

@@ -33,6 +33,7 @@ class MessageRouter(sn.Singleton):
         self.send(self.process_formal_request(formal_request))
 
     def process_formal_request(self, request):
+        logger.log("request: {}".format(request))
         self.my_data.add_request(result)
         self.response_to_formal_request(request)
 

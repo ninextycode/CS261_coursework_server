@@ -15,10 +15,6 @@ class MongoConnection(sn.Singleton):
 
     def count(self, dictionary):
         self.db.posts.find(dictionary).count()
-        self.db.add_son_manipulator()
-
-    def find(self, name):
-        db = self.client[name]
 
     def insert_one(self, data, collection):
         self.db[collection].insert_one(data)

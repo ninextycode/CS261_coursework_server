@@ -21,8 +21,10 @@ class SqlDatabaseWrapper(sn.Singleton):
                 "AND Company_code IN %s" \
                 "ORDER BY Record_Time DESC"
         data = self.conn.query(query,
-                               (time_start, time_end, tuple(tickers)),
-                               many)
+                               [
+                                   time_start, time_end, tuple(tickers)
+                               ],
+                               many=many)
         dataframe = pd.DataFrame([list(r) for r in data],
                                  columns=["Record_Time", "Price", "Company_code"])
         return dataframe
@@ -61,9 +63,38 @@ class SqlDatabaseWrapper(sn.Singleton):
     def close(self):
         self.conn.close()
 
+    def get_first_price_one_ticker(self, one_ticker, time):
+        query = "SELECT Record_Time, Price, Company_code " \
+                "FROM Historical_Prices  INNER JOIN Companies " \
+                "ON Companies.Company_ID = Historical_Prices.Company_ID " \
+                "WHERE Record_Time <= %s " \
+                "AND Company_code = %s " \
+                "ORDER BY Record_Time DESC LIMIT 1"
+
+        data = self.conn.query(query, [str(time), one_ticker], many=False)
+
+        if data is None:
+            return pd.DataFrame()
+
+        dataframe = pd.DataFrame([list(data)],
+                                 columns=["Record_Time", "Price", "Company_code"])
+        return dataframe
+
+    def get_first_price_before(self, tickers, time):
+        dataframe = pd.DataFrame()
+
+        for ticker in tickers:
+            ticker_df = self.get_first_price_one_ticker(ticker, time)
+            dataframe = dataframe.append(ticker_df)
+
+        return dataframe
+
 
 if __name__ == "__main__":
     conn = SqlDatabaseWrapper()
     sql = "SELECT * FROM COMPANY WHERE CODE = \"test\""
-    print(conn.get_prices(["RDSB", "RDSA"]).loc[0,:])
+    print(conn.get_first_price_before(["RDSB", "RDSA", "AAL", "fake"], datetime.datetime.now()))
     conn.close()
+
+
+# SELECT Record_Time, Price, Company_code FROM Historical_Prices  INNER JOIN Companies ON Companies.Company_ID = Historical_Prices.Company_ID ORDER BY Record_Time DESC LIMIT 1
