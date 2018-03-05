@@ -6,11 +6,12 @@ import base.singleton as sn
 class Summariser(sn.Singleton):
     def __init__(self):
         self.sum_apis = [
-            # too expensive to run (sad)
+            # too expensive to run TextsummarizationNetApi (sad)
             # tsz_api.TextsummarizationNetApi.get_instance()
             sumy_api.SummarisationWithSumy.get_instance()
             # potentially add more
         ]
+        self.no_summary_response = "Unfortunately no summary available."
 
     def summarise_url(self, url):
         for api in self.sum_apis:
@@ -18,4 +19,4 @@ class Summariser(sn.Singleton):
             if summary is not None:
                 return summary
 
-        return None
+        return self.no_summary_response

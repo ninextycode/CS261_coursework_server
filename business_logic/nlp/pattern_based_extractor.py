@@ -12,13 +12,14 @@ logger = l.Logger("PatternBasedExtractor")
 
 class PatternBasedExtractor(sn.Singleton):
 
-    patterns = {"stock_price": ["price", "much", "stock", "variance", "behaviour", "behavior" "industry", "sector"],
-                "news": ["news", "information", "headlines"],
-                "social_media": ["think", "social media"]
-                }
+    patterns_keys = ["news",   "stock_price", "social_media"]
+    patterns = {
+        "news": ["news", "information", "headlines"],
+        "stock_price": ["price", "much", "stock", "industry", "sector"],
+        "social_media": ["think", "talk", "social media"]
+    }
     patterns_for_industry = ["industry", "sector"]
-    patterns_for_stock_prices = ["variance", "behaviour", "behavior", "today", "yesterday"]
-    pattern_nodes_social_media = ["about", "for"]
+    pattern_nodes_opinion_on = ["about", "for", "on"]
 
     companies = conf.companies
     industries = conf.industries
@@ -51,7 +52,7 @@ class PatternBasedExtractor(sn.Singleton):
                     keywords = self.find_industry_from_string(string)
                 else:
                     indicator = self.check_stock_price_tags(words)
-                    keywords = self.find_company_name_from_string(string)
+                    keywords = self.find_company_ticker_from_string(string)
                 req = {
                     "type": tags.Type.data_request,
                     "subtype": tags.SubType.stock,
@@ -116,25 +117,42 @@ class PatternBasedExtractor(sn.Singleton):
     def find_company_name_from_string(self, string):
         input = string.lower()
         company = []
-        temp = None
 
-        for c in self.companies:
-            temp = [x.lower() for x in self.companies[c]]
-            for comp in temp:
+        for c in self.companies.keys():
+            variations = [x.lower() for x in self.companies[c]]
+            for comp in variations:
+                if comp in input:
+                    company.append(comp)
+                    break
+
+        return company
+
+    def find_company_ticker_from_string(self, string):
+        input = string.lower()
+        company = []
+
+        for c in self.companies.keys():
+            alternatives = [x.lower() for x in self.companies[c]]
+            for comp in alternatives:
                 if comp in input:
                     company.append(c)
                     break
 
         return company
 
+    def find_industry_from_array(self, data):
+        industries = []
+        for word in data:
+            industries.extend(self.find_industry_from_string(word))
+        return industries
+
     def find_industry_from_string(self, string):
         input = string.lower()
         industry = []
-        temp = None
 
-        for i in self.industries:
-            temp = self.industries[i]
-            for ind in temp:
+        for i in self.industries.keys():
+            alternatives = self.industries[i]
+            for ind in alternatives:
                 if ind.lower() in input:
                     industry.append(self.industries[i][0])
                     break
@@ -238,6 +256,7 @@ class PatternBasedExtractor(sn.Singleton):
                     break
 
         return companies
+
 
 
     # def get_all_nouns_from_tree(self, tree):

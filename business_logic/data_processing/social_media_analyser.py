@@ -60,7 +60,7 @@ class SocialMediaAnalyser(sn.Singleton):
         return response
 
     def get_general_opinion(self, mean):
-        if mean > self.threshold_0:
+        if mean >= self.threshold_0:
             return tags.Mood.positive
         if mean > -self.threshold_0:
             return tags.Mood.neutral

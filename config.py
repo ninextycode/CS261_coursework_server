@@ -1,9 +1,18 @@
+import os
+import inspect
+
+
 default_number_of_speech_rec_alternatives = 10
 
-ws_port = 7004
+static_folder = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "html_pages")
+
+templates_folder = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "templates")
 
 
-news_summary_address = "example.com"
+port = 7004
+
+
+news_summary_address = "localhost:{}/news.html".format(port)
 
 
 companies = {

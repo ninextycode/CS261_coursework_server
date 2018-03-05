@@ -3,6 +3,7 @@ import business_logic.nlp.pattern_based_extractor as pbe
 import data_providers.external_apis.google_nlp_api as google_nlp
 import business_logic.nlp.nlp_exceptions as ex
 import base.log as l
+import business_logic.data_tags as tags
 
 import config
 import google.cloud.language as gl_lang
@@ -15,9 +16,8 @@ logger = l.Logger("GoogleCommandExtractor", None)
 class GoogleCommandExtractor(sn.Singleton):
 
     def __init__(self):
-        self.pattern_based_extractor = pbe.PatternBasedExtractor.get_instance()
+        self.pattern_based_extractor: pbe.PatternBasedExtractor = pbe.PatternBasedExtractor.get_instance()
         self.google_api = google_nlp.GoogleNlpApi.get_instance()
-        gl_lang.enums.DependencyEdge.Label
 
     def get_meaning_from_single_using_nlp(self, text):
         meaning = None
@@ -29,7 +29,7 @@ class GoogleCommandExtractor(sn.Singleton):
         logger.log("tree:\n {}".format(tree["root"]))
         logger.log("keywords {}".format(keywords))
 
-        meaning = self.pattern_based_extractor.get_meaning_from_using_nlp(tree, keywords)
+        meaning = self.get_meaning_from_using_nlp(tree, keywords)
 
         return meaning
 
@@ -46,9 +46,13 @@ class GoogleCommandExtractor(sn.Singleton):
         if meaning is not None:
             return meaning
 
-        raise ex.MeaningUnknown("Ambiguous Request")
+        # raise ex.MeaningUnknown("Ambiguous Request")
+        return None
 
     def get_meaning_from_alternatives(self, alternatives):
+        if len(alternatives) == 0:
+            return None
+
         pool = m_pool.ThreadPool(processes=len(alternatives))
 
         async_result = pool.map_async(self.get_meaning_from_single_using_patterns, [a["text"] for a in alternatives])
@@ -65,8 +69,107 @@ class GoogleCommandExtractor(sn.Singleton):
                 logger.log(response)
                 return response
 
-        raise ex.MeaningUnknown()
+        return None
 
+    def get_meaning_from_using_nlp(self, tree, keywords):
+        req = None
+        pattern = None
+        subtype = None
+        keywords = []
+        req = None
+        soc_keywords = []
+
+        interesting_parts_of_speech = [gl_lang.enums.PartOfSpeech.Tag.NOUN,  gl_lang.enums.PartOfSpeech.Tag.ADJ]
+
+        for n in tree["nodes"]:
+            if n.data["part_of_speech"] in interesting_parts_of_speech:  # get nouns
+                keywords.append(n.data["lemma"])
+
+        for p in self.pattern_based_extractor.patterns_keys:
+            for n in tree["nodes"]:
+                if n.data["lemma"] in self.pattern_based_extractor.patterns[p]:  # find pattern
+                    pattern = p
+                    if n.data["lemma"] in self.pattern_based_extractor.patterns_for_industry:
+                        subtype = tags.Indicator.industry_average
+                    if n.data["part_of_speech"] in interesting_parts_of_speech:
+                        keywords.remove(n.data["lemma"])
+
+                        logger.log("looking for a {}".format(pattern))
+                        break
+            if pattern is not None:
+                break
+
+        if pattern == "stock_price":
+            if subtype is tags.Indicator.industry_average:
+                req = {
+                    "type": tags.Type.data_request,
+                    "subtype": tags.SubType.stock,
+                    "indicator": tags.Indicator.industry_average,
+                    "keywords": self.pattern_based_extractor.find_industry_from_array(keywords)
+                }
+            else:
+                req = {
+                    "type": tags.Type.data_request,
+                    "subtype": tags.SubType.stock,
+                    "indicator": tags.Indicator.just_price,
+                    "keywords": self.find_company_name_from_array(keywords)
+                }
+
+        if pattern == "news":
+            print("=" * 200)
+            news_key_nodes = []
+            for n in tree["nodes"]:
+                for p in self.pattern_based_extractor.pattern_nodes_opinion_on:
+                    if n.data["text"] == p:  # get children of pattern nodes
+                        news_key_nodes = n.get_predecessors()
+                        keywords = []
+
+            for w in news_key_nodes:
+                if w.data["part_of_speech"] in interesting_parts_of_speech:
+                    keywords.append(w.data["text"])
+
+            req = {
+                "type": tags.Type.data_request,
+                "subtype": tags.SubType.news,
+                "indicator": tags.Indicator.news,
+                "keywords": keywords
+            }
+
+        if pattern == "social_media":
+            for n in tree["nodes"]:
+                for p in self.pattern_based_extractor.pattern_nodes_opinion_on:
+                    if n.data["text"] == p:  # get children of pattern nodes
+                        soc_keywords = n.get_predecessors()
+                        keywords = []
+
+            for w in soc_keywords:
+                if w.data["part_of_speech"] in interesting_parts_of_speech:
+                    keywords.append(w.data["text"])
+
+            req = {
+                "type": tags.Type.data_request,
+                "subtype": tags.SubType.social_media,
+                "indicator": tags.Indicator.social_media,
+                "keywords": keywords
+            }
+        if req is not None:
+            req = self.pattern_based_extractor.check_for_empty_information(req)
+
+        return req
+
+    def find_company_name_from_array(self, array):
+        arr = [x.lower() for x in array]
+        companies = []
+        temp = None
+
+        for c in self.pattern_based_extractor.companies:
+            temp = str(self.pattern_based_extractor.companies[c]).lower()
+            for noun in arr:
+                if noun in temp:
+                    companies.append(c)
+                    break
+
+        return companies
 
 if __name__ == "__main__":
     gce = GoogleCommandExtractor().get_instance()
