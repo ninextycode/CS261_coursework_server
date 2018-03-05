@@ -40,7 +40,7 @@ class GoogleRss(sn.Singleton):
         }
 
     def get_url(self, keywords):
-        return GoogleRss.url_template.format(" OR ".join(keywords))
+        return GoogleRss.url_template.format(" AND ".join(keywords))
 
 
 if __name__ == "__main__":
