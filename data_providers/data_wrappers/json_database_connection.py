@@ -9,4 +9,10 @@ class JsonDatabaseConnection(sn.Singleton):
 
     def write(self, data):
         data["time"] = datetime.datetime
-        self.database_connection.w
+        self.database_connection.write(data)
+
+    def find(self, data):
+        return self.database_connection.find(data)
+
+    def count(self, data):
+        return self.database_connection.counnt(data)

@@ -1,0 +1,102 @@
+Company,Ticker,Sector
+BAE Systems,BA.,Aerospace & Defense
+Rolls-Royce Holdings,RR.,Aerospace & Defense
+GKN,GKN,Automobiles & Parts
+Barclays,BARC,Banks
+HSBC,HSBA,Banks
+Lloyds Banking Group,LLOY,Banks
+The Royal Bank of Scotland Group,RBS,Banks
+Standard Chartered,STAN,Banks
+Coca-Cola HBC AG,CCH,Beverages
+Diageo,DGE,Beverages
+Croda International,CRDA,Chemicals
+Johnson Matthey,JMAT,Chemicals
+CRH plc,CRH,Construction & Materials
+SSE plc,SSE,Electricity
+Halma,HLMA,Electronic & Electrical Equipment
+Scottish Mortgage Investment Trust,SMT,Equity Investment Instruments
+3i,III,Financial Services
+Hargreaves Lansdown,HL.,Financial Services
+London Stock Exchange Group,LSE,Financial Services
+Schroders,SDR,Financial Services
+Standard Life Aberdeen,SLA,Financial Services
+BT Group,BT.A,Fixed Line Telecommunications
+Morrisons,MRW,Food & Drug Retailers
+Sainsbury's,SBRY,Food & Drug Retailers
+Tesco,TSCO,Food & Drug Retailers
+Associated British Foods,ABF,Food Producers
+Mondi,MNDI,Forestry & Paper
+Centrica,CNA,"Gas, Water & Multiutilities"
+National Grid plc,NG.,"Gas, Water & Multiutilities"
+Severn Trent,SVT,"Gas, Water & Multiutilities"
+United Utilities,UU.,"Gas, Water & Multiutilities"
+"Smith, D.S.",SMDS,General Industrials
+Smiths Group,SMIN,General Industrials
+Smurfit Kappa,SKG,General Industrials
+Just Eat,JE.,General Retailers
+Kingfisher plc,KGF,General Retailers
+Marks & Spencer,MKS,General Retailers
+Next plc,NXT,General Retailers
+Mediclinic International,MDC,Health Care Equipment & Services
+NMC Health,NMC,Health Care Equipment & Services
+Smith & Nephew,SN.,Health Care Equipment & Services
+Barratt Developments,BDEV,Household Goods & Home Construction
+Berkeley Group Holdings,BKG,Household Goods & Home Construction
+Persimmon plc,PSN,Household Goods & Home Construction
+Reckitt Benckiser,RB.,Household Goods & Home Construction
+Taylor Wimpey,TW.,Household Goods & Home Construction
+Evraz,EVR,Industrial Metals & Mining
+Aviva,AV.,Life Insurance
+Legal & General,LGEN,Life Insurance
+Old Mutual,OML,Life Insurance
+Prudential plc,PRU,Life Insurance
+St. James's Place plc,STJ,Life Insurance
+Informa,INF,Media
+ITV plc,ITV,Media
+Pearson PLC,PSON,Media
+RELX Group,REL,Media
+Sky plc,SKY,Media
+WPP plc,WPP,Media
+Anglo American plc,AAL,Mining
+Antofagasta,ANTO,Mining
+BHP,BLT,Mining
+Fresnillo plc,FRES,Mining
+Glencore,GLEN,Mining
+Randgold Resources,RRS,Mining
+Rio Tinto Group,RIO,Mining
+Vodafone Group,VOD,Mobile Telecommunications
+Admiral Group,ADM,Nonlife Insurance
+Direct Line Group,DLG,Nonlife Insurance
+RSA Insurance Group,RSA,Nonlife Insurance
+BP,BP.,Oil & Gas Producers
+Royal Dutch Shell PLC 'A',RDSA,Oil & Gas Producers
+Royal Dutch Shell PLC 'B',RDSB,Oil & Gas Producers
+Burberry,BRBY,Personal Goods
+Unilever,ULVR,Personal Goods
+AstraZeneca,AZN,Pharmaceuticals & Biotechnology
+GlaxoSmithKline,GSK,Pharmaceuticals & Biotechnology
+Shire plc,SHP,Pharmaceuticals & Biotechnology
+British Land,BLND,Real Estate Investment Trusts
+Hammerson,HMSO,Real Estate Investment Trusts
+Land Securities,LAND,Real Estate Investment Trusts
+Segro,SGRO,Real Estate Investment Trusts
+Whitbread,WTB,Retail hospitality
+Micro Focus,MCRO,Software & Computer Services
+Sage Group,SGE,Software & Computer Services
+Ashtead Group,AHT,Support Services
+Bunzl,BNZL,Support Services
+DCC plc,DCC,Support Services
+Experian,EXPN,Support Services
+Ferguson plc,FERG,Support Services
+G4S,GFS,Support Services
+Intertek,ITRK,Support Services
+Rentokil Initial,RTO,Support Services
+British American Tobacco,BATS,Tobacco
+Imperial Brands,IMB,Tobacco
+Carnival Corporation & plc,CCL,Travel & Leisure
+Compass Group,CPG,Travel & Leisure
+easyJet,EZJ,Travel & Leisure
+InterContinental Hotels Group,IHG,Travel & Leisure
+International Airlines Group,IAG,Travel & Leisure
+Paddy Power Betfair,PPB,Travel & Leisure
+TUI Group,TUI,Travel & Leisure
