@@ -26,8 +26,8 @@ class GoogleCommandExtractor(sn.Singleton):
         tree = google_api_output["tree"]
         keywords = google_api_output["keywords"]
 
-        # logger.log("tree:\n {}".format(tree["root"]))
-        # logger.log("keywords {}".format(keywords))
+        logger.log("tree:\n {}".format(tree["root"]))
+        logger.log("keywords {}".format(keywords))
 
         meaning = self.get_meaning_from_using_nlp(tree, keywords)
 
@@ -116,7 +116,6 @@ class GoogleCommandExtractor(sn.Singleton):
                 }
 
         if pattern == "news":
-            print("=" * 200)
             news_key_nodes = []
             for n in tree["nodes"]:
                 for p in self.pattern_based_extractor.pattern_nodes_opinion_on:
@@ -141,7 +140,7 @@ class GoogleCommandExtractor(sn.Singleton):
                     if n.data["text"] == p:  # get children of pattern nodes
                         soc_keywords = n.get_predecessors()
                         keywords = []
-
+            print("!!!!!!!!" + str(soc_keywords))
             for w in soc_keywords:
                 if w.data["part_of_speech"] in interesting_parts_of_speech:
                     keywords.append(w.data["text"])
@@ -152,6 +151,7 @@ class GoogleCommandExtractor(sn.Singleton):
                 "indicator": tags.Indicator.social_media,
                 "keywords": keywords
             }
+        print(req)
         if req is not None:
             req = self.pattern_based_extractor.check_for_empty_information(req)
 
@@ -411,7 +411,10 @@ if __name__ == "__main__":
     # test cases for social media requests with nlp
     test_social_media_nlp = {
         "What do people think about Donald Trump online?": {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['Donald', 'Trump']},
-        "Check social media for IPhone 10": {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['IPhone', '10']}
+        "Check social media for IPhone 10": {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['IPhone', '10']},
+        "What do people think of the new IPhone 10?": {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['IPhone', 'new']},   #only interesting words
+        "Check social media for Donald Trump": {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['Donald', 'Trump']},
+
     }
 
 
