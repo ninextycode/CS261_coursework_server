@@ -84,8 +84,7 @@ class TimePeriods:
         else:
             return TimePeriods.day
 
-
-    right_now=RightNow()
+    right_now = RightNow()
     hour = Hour()
     day = Day()
     week = Week()

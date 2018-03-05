@@ -153,7 +153,6 @@ class GoogleCommandExtractor(sn.Singleton):
             req = {
                 "type": tags.Type.data_request,
                 "subtype": tags.SubType.news,
-                "indicator": tags.Indicator.news,
                 "keywords": keywords
             }
 
@@ -171,7 +170,6 @@ class GoogleCommandExtractor(sn.Singleton):
             req = {
                 "type": tags.Type.data_request,
                 "subtype": tags.SubType.social_media,
-                "indicator": tags.Indicator.social_media,
                 "keywords": keywords
             }
 
