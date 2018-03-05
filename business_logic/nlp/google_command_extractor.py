@@ -139,7 +139,7 @@ if __name__ == "__main__":
     # test cases for stock price of company with patterns
     # print("companies_____________________________________________")
     # print(3)
-    # gce.get_meaning_from_single_using_nlp("How is Rolls Royce priced?")
+    print(gce.get_meaning_from_single_using_nlp("How is Rolls Royce priced?"))
     # print(6)
     # gce.get_meaning_from_single_using_nlp("What is the price of Royal Dutch Shell?")  # should give back two: A and B share give a as default??
     # print(7)
@@ -197,5 +197,21 @@ if __name__ == "__main__":
 
 
     # logger.log(gce.get_meaning_from_single_using_patterns("What is the stock price of Barclays Bank today?"))
-    logger.log(gce.get_meaning_from_single_using_nlp("Give me the variance of Barclays Bank?")) #!!! problem solved with ordering
+    # logger.log(gce.get_meaning_from_single("Give me the variance of Barclays Bank?")) #!!! problem solved with ordering
     # logger.log(gce.get_meaning_from_single_using_patterns("What is the variance of Barclays Bank?"))
+
+    # test cases for stock price of company with patterns
+
+    test_stock_price_patterns = {
+        "What is the stock price of Barclays Bank?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['RR.']}   ,
+        "What is the price of Barclays?"
+        "How is Rolls Royce priced?" # doesn't make it into the test at all, priced not in pattern
+        "What is the price of Rolls Royce?"
+        "How much is the price of RDS A?"
+        "What is the price of Royal Dutch Shell?" # should give back two: A and B share give a as default??
+        "Tell me the stock price of Smith?" # three companies that include smith
+        "Tell me the stock price of Microsoft?"
+        "Give me the stock of Lloyds Group?"
+        "Give me the stock of Royal Shell?"
+    }
+
