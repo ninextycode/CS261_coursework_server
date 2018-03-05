@@ -22,5 +22,4 @@ class WorldData(sn.Singleton):
     def get_indicator(self, tickers, indicator, time_start, time_end):
         prices = self.sql_connection.get_prices(tickers, time_start, time_end)
         value = self.indicators.calculate_indicator(prices, indicator)
-
         return value

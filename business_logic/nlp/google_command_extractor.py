@@ -14,7 +14,6 @@ logger = l.Logger("GoogleCommandExtractor", None)
 
 
 class GoogleCommandExtractor(sn.Singleton):
-
     def __init__(self):
         self.pattern_based_extractor: pbe.PatternBasedExtractor = pbe.PatternBasedExtractor.get_instance()
         self.google_api = google_nlp.GoogleNlpApi.get_instance()
