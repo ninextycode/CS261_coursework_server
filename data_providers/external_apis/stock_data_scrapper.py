@@ -2,13 +2,12 @@ import base.singleton as sn
 import bs4
 import requests
 from datetime import datetime
+import time
+import numpy as np
+import pandas as pd
 
 
-<<<<<<< HEAD
-class StockDataScrapper:
-=======
 class StockDataScrapper(sn.Singleton):
->>>>>>> database
     def split_string(self, s, start, end):
         return (s.split(start))[1].split(end)[0].strip()
 
@@ -32,7 +31,6 @@ class StockDataScrapper(sn.Singleton):
                 curr = [code,name,current,price,diff,per_diff,time]
                 arr.append(curr)
             return arr
-<<<<<<< HEAD
 
     '''
     return pandas dataframe of all ftse100 stock's code, name, current, price, diff, per_diff
@@ -86,5 +84,3 @@ if __name__ == '__main__':
     date = datetime.datetime(2017,3,20)
     print(scrapper.get_stocks_historical_price("III",date))
     print(scrapper.get_stocks_historical_price("BARC",date))
-=======
->>>>>>> database
