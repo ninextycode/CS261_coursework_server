@@ -26,8 +26,8 @@ class GoogleCommandExtractor(sn.Singleton):
         tree = google_api_output["tree"]
         keywords = google_api_output["keywords"]
 
-        logger.log("tree:\n {}".format(tree["root"]))
-        logger.log("keywords {}".format(keywords))
+        # logger.log("tree:\n {}".format(tree["root"]))
+        # logger.log("keywords {}".format(keywords))
 
         meaning = self.get_meaning_from_using_nlp(tree, keywords)
 
@@ -66,7 +66,7 @@ class GoogleCommandExtractor(sn.Singleton):
         api_responses = async_result.get()
         for response in api_responses:
             if response is not None:
-                logger.log(response)
+                # logger.log(response)
                 return response
 
         return None
@@ -188,19 +188,25 @@ class GoogleCommandExtractor(sn.Singleton):
 
 
 
-    def test_nlp(self, test_cases):
-         for test in test_cases:
+    def test(self, test_cases, test_number=0): # test_number: 1 for patterns, 2 for nlp, otherwise for general get_meaning from single
+        for test in test_cases:
+            input = test
+            expected = test_cases[test]
+            if test_number == 1:
+                result = gce.get_meaning_from_single_using_patterns(test)
+            elif test_number == 2:
+                result = gce.get_meaning_from_single_using_nlp(test)
+            else:
+                result = gce.get_meaning_from_single(test)
 
-             expected = test_cases[test]
-             result = gce.get_meaning_from_single_using_nlp(test)
+            if expected == result:
+                logger.log("OK")
+            else:
+                logger.log("Wrong")
 
-             if expected == result:
-                 print("OK")
-             else:
-                 print("Wrong")
-
-             print("Expected:\t" + str(test_cases[test]))
-             print("Result:\t" + result + "\n")
+            logger.log("Input:\t" + str(input))
+            logger.log("Expected:\t" + str(test_cases[test]))
+            logger.log("Result:\t" + str(result) + "\n")
 
 
 
@@ -376,18 +382,37 @@ if __name__ == "__main__":
     }
 
     # test cases for social_media request with patterns
-    print(gce.get_meaning_from_single_using_patterns("What do people think about the construction sector?"))
-    # gce.get_meaning_from_single_using_patterns("Show me social media trends of Legal and General?")
-    # gce.get_meaning_from_single_using_patterns("What do people think about Donald Trump online?")
-    #
     test_social_media_with_patterns = {
         "What do people think about the construction sector?": {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['Construction & Materials']},
         "Show me social media trends of Legal and General?": {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['legal and general']},
         "What do people think about Donald Trump online?": None
     }
 
+    # test cases for stock price of company with patterns
+    test_stock_price_nlp = {
+        "How is Rolls Royce priced?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['RR.']},
+        "What is the price of Royal Dutch Shell?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['RDSA', 'RDSB']},
+        "Tell me the stock price of Smith?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['GSK', 'SN.', 'SMDS', 'SMIN']},
+        "Tell me the stock price of Microsoft?": None,
+        "Give me the stock of Lloyds Group?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['LLOY']},
+        "Give me the stock of Royal Shell?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['RDSA', 'RDSB']}
+    }
+
+    # test cases for industries with nlp
+
+    # test cases for news request with nlp
+    test_news_nlp = {
+        "Display the headlines of the pharmaceutical industry?": {'type': 'data_request', 'subtype': 'news', 'indicator': 'news', 'keywords': ['Pharmaceuticals & Biotechnology']},
+        "Find news on the CEO of Barclays?": {'type': 'data_request', 'subtype': 'news', 'indicator': 'news', 'keywords': ['CEO', 'Barclays']},
+        "Find news on Germany?": {'type': 'data_request', 'subtype': 'news', 'indicator': 'news', 'keywords': ['Germany']},
+        "Find news about Donald Trump": {'type': 'data_request', 'subtype': 'news', 'indicator': 'news', 'keywords': ['Donald', 'Trump']}
+    }
+
+    # test cases for social media requests with nlp
+    test_social_media_nlp = {
+        "What do people think about Donald Trump online?": {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['Donald', 'Trump']},
+        "Check social media for IPhone 10": {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['IPhone', '10']}
+    }
 
 
-
-
-    gce.test_static_pattern(test_social_media_with_patterns)
+    gce.test(test_social_media_nlp, 2)

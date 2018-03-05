@@ -101,7 +101,7 @@ companies = {
     "SVT": ["SEVERN TRENT"],
     "SHP": ["SHIRE"],
     "SKY": ["SKY PLC", "Sky"],
-    "SN.": ["SMITH&NEPHEW", "Smith and Nephew"], # test all three smith
+    "SN.": ["SMITH&NEPHEW", "Smith and Nephew"], # test all four smith
     "SMDS": ["SMITH(DS)", "DS Smith"],
     "SMIN": ["SMITHS GROUP"],
     "SKG": ["SMURFIT KAP.", "Smurfit Kappa", "Smurfit"],
