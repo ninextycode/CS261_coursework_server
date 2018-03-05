@@ -78,7 +78,7 @@ class StockDataProvider(sn.Singleton):
                     }}
 
             response = requests.post("http://charts.londonstockexchange.com/WebCharts/services/ChartWService.asmx/GetPrices", json = data)
-            if(response.status_code == 200):
+            if response.status_code == 200:
                 json_obj = response.json()
                 return json_obj["d"][0][1]
         else:

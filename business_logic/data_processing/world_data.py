@@ -22,14 +22,13 @@ class WorldData(sn.Singleton):
     def get_indicator(self, tickers, indicator, time_period=None):
         if time_period is None:
             time_period = tags.TimePeriods.default_time_period(indicator)
-        [time_start, time_end] = tags.TimePeriods.period_to_time_interval(time_period)
 
         if indicator == tags.Indicator.just_price:
-            return self.get_price()
+            return self.get_price(tickers, time_period)
 
-        prices = self.sql_wrapper.get_prices(tickers, time_start, time_end)
+        prices = self.sql_wrapper.get_prices(tickers, time_period)
         value = self.indicators.calculate_indicator(prices, indicator)
         return value
 
-    def get_price(self, tickers, datetime):
+    def get_price(self, tickers, time_period):
         self.sql_wrapper.get_first_price_before(tickers, datetime)

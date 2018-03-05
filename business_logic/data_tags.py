@@ -45,12 +45,18 @@ class TimePeriods:
 
             return [start, end.replace(minute=end.minute + 1)]
 
+        def __str__(self):
+            return "right_now"
+
     class Hour:
         def to_interval(self, time=datetime.datetime.now()):
             end = time.replace(microsecond=0, second=0)
             start = end.replace(hour=end.hour-1)
 
             return [start, end.replace(minute=end.minute + 1)]
+
+        def __str__(self):
+            return "hour"
 
     class Day:
         def to_interval(self, time=datetime.datetime.now()):
@@ -59,12 +65,18 @@ class TimePeriods:
 
             return [start, end.replace(minute=end.minute + 1)]
 
+        def __str__(self):
+            return "day"
+
     class Week:
         def to_interval(self, time=datetime.datetime.now()):
             end = time.replace(microsecond=0, second=0)
             start = end.replace(day=end.day - end.isoweekday()+1, hour=0, minute=0)
 
             return [start, end.replace(minute=end.minute + 1)]
+
+        def __str__(self):
+            return "week"
 
     class Month:
         def to_interval(self, time=datetime.datetime.now()):
@@ -73,8 +85,11 @@ class TimePeriods:
 
             return [start, end.replace(minute=end.minute + 1)]
 
+        def __str__(self):
+            return "month"
+
     @staticmethod
-    def default_time_to_interval(indcator):
+    def default_time_period(indcator):
         if indcator == Indicator.just_price:
             return TimePeriods.right_now
         else:
