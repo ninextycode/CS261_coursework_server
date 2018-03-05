@@ -4,6 +4,7 @@ import business_logic.nlp.nlp as nlp
 import business_logic.data_tags as tags
 import business_logic.message_routing.readable_responser as rr
 import business_logic.data_processing.world_data as world_data
+import business_logic.data_processing.my_data as my_data
 import business_logic.message_routing.html_generator as html_generator
 import base.message_worker as mw
 
@@ -19,16 +20,21 @@ class MessageRouter(sn.Singleton):
         self.nlp = nlp.NLP.get_instance()
         self.readable_responser: rr.ReadableResponser = rr.ReadableResponser.get_instance()
         self.world_data: world_data.WorldData = world_data.WorldData.get_instance()
+        self.my_data: my_data.MyData = my_data.MyData.get_instance()
         self.html_generator: html_generator.HtmlGenerator = html_generator.HtmlGenerator.get_instance()
         self.message_worker: mw.MessageWorker = None
 
     def process_alternatives(self, alternatives):
         formal_request = self.nlp.get_meaning_from_alternatives(alternatives)
-        self.send(self.response_to_formal_request(formal_request))
+        self.process_formal_request(formal_request)
 
     def process_single(self, message):
         formal_request = self.nlp.get_meaning_from_single(message)
-        self.send(self.response_to_formal_request(formal_request))
+        self.send(self.process_formal_request(formal_request))
+
+    def process_formal_request(self, request):
+        self.my_data.add_request(result)
+        self.response_to_formal_request(request)
 
     def send(self, data):
         self.message_worker.send(data)
