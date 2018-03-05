@@ -4,12 +4,31 @@ import tornado.httpserver as t_http
 import tornado.ioloop
 
 import threading
-import json
 import traceback
 
 import base.log as l
 import base.singleton as sn
 import config
+import business_logic.data_tags as tags
+import base.news_page_handler as news_handler
+
+import datetime
+import json
+import numpy as np
+
+
+
+# make sure dates are properly written to json
+def default_with_dates(self, o):
+    if isinstance(o, datetime.datetime):
+        return o.isoformat()
+    if isinstance(o, np.int64):
+        return str(o)
+    return default_old(self, o)
+
+
+default_old = json.JSONEncoder.default
+json.JSONEncoder.default = default_with_dates
 
 
 handler_logger = l.Logger("Handler")
@@ -87,20 +106,20 @@ class Server(sn.Singleton):
 
     def on_message(self, message):
         with self.receiving_message_lock:
-            response = {
-                "type": "message",
-                "data": {
-                    "mime_type": "text/plain",
-                    "body": "test response"
-                }
-            }
             try:
                 self.unsafe_on_message(message)
             except Exception as e:
-                response["data"]["body"] = traceback.format_exc()
-                response["type"] = "exception"
+                self.send(self.on_exception_responce())
 
-            self.send(response)
+    def on_exception_responce(self):
+        response = {
+            "type": tags.OutgoingMessageType.on_exception,
+            "data": {
+                "mime_type": tags.MimeTypes.text,
+                "body": traceback.format_exc()
+            }
+        }
+        return response
 
     def unsafe_on_message(self, message):
         message_json = json.loads(message)
@@ -109,10 +128,15 @@ class Server(sn.Singleton):
     def start_server(self):
         application = tw.Application([
             (r"/", Handler),
-        ])
+            (r"/news", news_handler.NewsPageHandler),
+            (r"/(.*)", tw.StaticFileHandler, {"path": config.static_folder}),
+        ],
+            template_path=config.templates_folder,
+            static_path=config.static_folder
+        )
 
         http_server = t_http.HTTPServer(application)
-        http_server.listen(config.ws_port)
+        http_server.listen(config.port)
         message_send_period_ms = 100
 
         send_messages = tornado.ioloop.PeriodicCallback(self.send_queued, message_send_period_ms)
@@ -125,7 +149,7 @@ class Server(sn.Singleton):
         self.ioloop_thread = threading.Thread(target=start_in_thread)
         self.ioloop_thread.start()
 
-    def stop_server(self):
+    def stop_server(self, *args, **kwargs):
         self.ioloop.add_callback(self.ioloop.stop)
 
     def add_handler(self, h):

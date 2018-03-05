@@ -10,10 +10,25 @@ class SubType:
 
 
 class Indicator:
-    pass
+    industry_average = "industry_average"
+    just_price = "just_price"
+    news = "news"
+    social_media = "social_media"
 
 
 class Mood:
     positive = "positive"
     neutral = "neutral"
     negative = "negative"
+
+
+class OutgoingMessageType:
+    response = "response"
+    on_unknown_request = "unknown_request"
+    on_exception = "exception"
+
+
+class MimeTypes:
+    text = "text/plain"
+    ogg = "audio/ogg"
+    flac = "audio/flac"

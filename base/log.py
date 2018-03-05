@@ -11,3 +11,4 @@ class Logger:
         if self.max_len is not None and len(output) > self.max_len:
             output = output[0:self.max_len] + "..."
         print(output)
+

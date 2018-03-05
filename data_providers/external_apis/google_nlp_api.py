@@ -3,7 +3,9 @@ import base.log as l
 
 import google.cloud as gl_cloud
 import google.cloud.language as gl_lang
-import requests
+
+import data_providers.external_apis.google_nlp_enum_string as maps
+
 
 logger = l.Logger("GoogleNlpApi", None)
 
@@ -63,6 +65,9 @@ class GoogleNlpApiEmotions(sn.Singleton):
 
 
 class GoogleNlpApiMeaning(sn.Singleton):
+    def __init__(self):
+        self.client = gl_cloud.language.LanguageServiceClient()
+
     def query_meaning(self, text):
         document = gl_lang.types.Document(
             content=text,
@@ -92,7 +97,7 @@ class GoogleNlpApiMeaning(sn.Singleton):
                 "text":  token.text.content,
                 "lemma": token.lemma,
                 "dependency_edge": token.dependency_edge.label,
-                "part_of_speech": token.part_of_speech.tag
+                "part_of_speech": token.part_of_speech.tag,
             }
             nodes.append(Node(token_node_data))
 
@@ -118,11 +123,14 @@ class GoogleNlpApiMeaning(sn.Singleton):
             return keywords
 
 
-# used to construct a tree of word relationships
 class Node:
     def __init__(self, data, children=()):
         self.children = list(children)
         self.data = data
+        self.int_mappers = {
+            "dependency_edge": maps.dependency_edge,
+            "part_of_speech": maps.part_of_speech
+        }
 
     def add_child(self, child):
         self.children.append(child)
@@ -130,12 +138,29 @@ class Node:
     def remove_child(self, child):
         self.children.remove(child)
 
-    def __str__(self, level=0):
-        ret = "\t" * 2 * level + "({0})\n".format(repr(self.data))
+    def __str__(self, use_int_mappers=True, level=0):
+        ret = "\t" * 2 * level
+        data_string = ""
+
+        if use_int_mappers and type(self.data) is dict:
+            temp_data = self.data.copy()
+            for key in temp_data.keys():
+                if key in self.int_mappers.keys():
+                    temp_data[key] = self.int_mappers[key][temp_data[key]]
+            ret += "({})\n".format(temp_data)
+        else:
+            ret += "({})\n".format(self.data)
 
         for child in self.children:
-            ret += child.__str__(level + 1)
+            ret += child.__str__(use_int_mappers, level + 1)
         return ret
 
     def __repr__(self):
-        return "<tree>"
+        return "<node>"
+
+    def get_predecessors(self):
+        predecessors = []
+        for child in self.children:
+            predecessors.append(child)
+            predecessors.extend(child.get_predecessors())
+        return predecessors

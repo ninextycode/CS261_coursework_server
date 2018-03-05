@@ -39,7 +39,7 @@ class TwitterApi(sn.Singleton):
                 }
         return list(results_dict.values())
 
-    def generate_search_query(self, keywords, req_type, join_or=True):
+    def generate_search_query(self, keywords, req_type, join_or=False):
         joiner = " OR " if join_or else " AND "
         q = joiner.join(keywords)
         return {
