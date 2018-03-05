@@ -26,8 +26,8 @@ class GoogleCommandExtractor(sn.Singleton):
         tree = google_api_output["tree"]
         keywords = google_api_output["keywords"]
 
-        logger.log("tree:\n {}".format(tree["root"]))
-        logger.log("keywords {}".format(keywords))
+        # logger.log("tree:\n {}".format(tree["root"]))
+        # logger.log("keywords {}".format(keywords))
 
         meaning = self.get_meaning_from_using_nlp(tree, keywords)
 
@@ -99,6 +99,30 @@ class GoogleCommandExtractor(sn.Singleton):
             if pattern is not None:
                 break
 
+
+
+            if pattern == "stock_price":
+                     indicator = tags.Indicator.just_price
+                     if subtype is tags.Indicator.industry_average:
+                         req = {
+                             "type": tags.Type.data_request,
+                             "subtype": tags.SubType.stock,
+                             "indicator": tags.Indicator.industry_average,
+                             "keywords": self.find_industry_from_array(nouns)
+                         }
+                     else:
+                         for n in tree["nodes"]:
+                             if n.data["text"] in self.pattern_based_extractor.patterns_for_stock_prices:
+                                 indicator = n.data["text"]
+                                 break
+                         req =  {
+                                 "type": tags.Type.data_request,
+                                 "subtype": tags.SubType.stock,
+                                 "indicator": indicator,
+                                 "keywords": self.find_company_name_from_array(nouns)
+                             }
+
+
         if pattern == "stock_price":
             if subtype is tags.Indicator.industry_average:
                 req = {
@@ -140,7 +164,7 @@ class GoogleCommandExtractor(sn.Singleton):
                     if n.data["text"] == p:  # get children of pattern nodes
                         soc_keywords = n.get_predecessors()
                         keywords = []
-            print("!!!!!!!!" + str(soc_keywords))
+
             for w in soc_keywords:
                 if w.data["part_of_speech"] in interesting_parts_of_speech:
                     keywords.append(w.data["text"])
@@ -151,7 +175,7 @@ class GoogleCommandExtractor(sn.Singleton):
                 "indicator": tags.Indicator.social_media,
                 "keywords": keywords
             }
-        print(req)
+
         if req is not None:
             req = self.pattern_based_extractor.check_for_empty_information(req)
 
@@ -351,16 +375,18 @@ if __name__ == "__main__":
 
     # test cases for stock price of company with patterns
     test_stock_price_patterns = {
-        "What is the stock price of Barclays Bank?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
-        "What is the price of Barclays?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
-        "How is Rolls Royce priced?": None, # doesn't make it into the test at all, priced not in pattern
-        "What is the price of Rolls Royce?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['RR.']},
-        "How much is the price of RDS A?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['RDSA']},
-        "What is the price of Royal Dutch Shell?": None, # no exact pattern match
-        "Give me the stock of Royal Shell?": None, # no exact pattern match
-        "Tell me the stock price of Smith?": None, # four companies that include smith, but no exact match
-        "Tell me the stock price of Microsoft?": None, # Microsoft not in FTSE100
-        "Give me the stock of Lloyds Group?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['LLOY']},
+        # "What is the stock price of Barclays Bank?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
+        # "What is the price of Barclays?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
+        # "How is Rolls Royce priced?": None, # doesn't make it into the test at all, priced not in pattern
+        # "What is the price of Rolls Royce?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['RR.']},
+        # "How much is the price of RDS A?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['RDSA']},
+        # "What is the price of Royal Dutch Shell?": None, # no exact pattern match
+        # "Give me the stock of Royal Shell?": None, # no exact pattern match
+        # "Tell me the stock price of Smith?": None, # four companies that include smith, but no exact match
+        # "Tell me the stock price of Microsoft?": None, # Microsoft not in FTSE100
+        # "Give me the stock of Lloyds Group?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['LLOY']},
+        "What is the stock price of Barclays Bank today?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
+        "What was the stock price of Barclays Bank yesterday?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
 
     }
 
@@ -418,4 +444,4 @@ if __name__ == "__main__":
     }
 
 
-    gce.test(test_social_media_nlp, 2)
+    gce.test(test_stock_price_patterns, 1)
