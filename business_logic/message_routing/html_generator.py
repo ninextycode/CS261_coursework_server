@@ -27,7 +27,6 @@ class HtmlGenerator(sn.Singleton):
             page = self.news_template.generate(news=news,
                                                keywords=request["keywords"], static_url=HtmlGenerator.static_url)
             new_page.write(page)
-            print("=" * 100)
         news_page_handler.NewsPageHandler.news_page = page
 
         return page

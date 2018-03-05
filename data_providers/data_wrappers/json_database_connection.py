@@ -7,4 +7,4 @@ class JsonDatabaseConnection(sn.Singleton):
         self.database_connection: mongo.MongoConnection = mongo.MongoConnection.get_instance()
 
     def write(self, data):
-        self.database_connection.wtite(data)
+        self.database_connection.write(data)

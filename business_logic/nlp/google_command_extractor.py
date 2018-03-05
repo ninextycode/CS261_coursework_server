@@ -16,7 +16,7 @@ logger = l.Logger("GoogleCommandExtractor", None)
 class GoogleCommandExtractor(sn.Singleton):
 
     def __init__(self):
-        self.pattern_based_extractor = pbe.PatternBasedExtractor.get_instance()
+        self.pattern_based_extractor: pbe.PatternBasedExtractor = pbe.PatternBasedExtractor.get_instance()
         self.google_api = google_nlp.GoogleNlpApi.get_instance()
 
     def get_meaning_from_single_using_nlp(self, text):
@@ -69,7 +69,6 @@ class GoogleCommandExtractor(sn.Singleton):
                 logger.log(response)
                 return response
 
-        #raise ex.MeaningUnknown()
         return None
 
     def get_meaning_from_using_nlp(self, tree, keywords):
@@ -85,13 +84,20 @@ class GoogleCommandExtractor(sn.Singleton):
         for n in tree["nodes"]:
             if n.data["part_of_speech"] in interesting_parts_of_speech:  # get nouns
                 keywords.append(n.data["lemma"])
-            for p in self.pattern_based_extractor.patterns:
+
+        for p in self.pattern_based_extractor.patterns_keys:
+            for n in tree["nodes"]:
                 if n.data["lemma"] in self.pattern_based_extractor.patterns[p]:  # find pattern
                     pattern = p
                     if n.data["lemma"] in self.pattern_based_extractor.patterns_for_industry:
                         subtype = tags.Indicator.industry_average
                     if n.data["part_of_speech"] in interesting_parts_of_speech:
                         keywords.remove(n.data["lemma"])
+
+                        logger.log("looking for a {}".format(pattern))
+                        break
+            if pattern is not None:
+                break
 
         if pattern == "stock_price":
             if subtype is tags.Indicator.industry_average:
@@ -108,7 +114,20 @@ class GoogleCommandExtractor(sn.Singleton):
                     "indicator": tags.Indicator.just_price,
                     "keywords": self.find_company_name_from_array(keywords)
                 }
+
         if pattern == "news":
+            print("=" * 200)
+            news_key_nodes = []
+            for n in tree["nodes"]:
+                for p in self.pattern_based_extractor.pattern_nodes_opinion_on:
+                    if n.data["text"] == p:  # get children of pattern nodes
+                        news_key_nodes = n.get_predecessors()
+                        keywords = []
+
+            for w in news_key_nodes:
+                if w.data["part_of_speech"] in interesting_parts_of_speech:
+                    keywords.append(w.data["text"])
+
             req = {
                 "type": tags.Type.data_request,
                 "subtype": tags.SubType.news,
@@ -118,7 +137,7 @@ class GoogleCommandExtractor(sn.Singleton):
 
         if pattern == "social_media":
             for n in tree["nodes"]:
-                for p in self.pattern_based_extractor.pattern_nodes_social_media:
+                for p in self.pattern_based_extractor.pattern_nodes_opinion_on:
                     if n.data["text"] == p:  # get children of pattern nodes
                         soc_keywords = n.get_predecessors()
                         keywords = []

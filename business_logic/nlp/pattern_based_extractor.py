@@ -11,13 +11,14 @@ logger = l.Logger("PatternBasedExtractor")
 
 
 class PatternBasedExtractor(sn.Singleton):
-
-    patterns = {"stock_price": ["price", "much", "stock", "industry", "sector"],
-                "news": ["news", "information", "headlines"],
-                "social_media": ["think", "talk", "social media"]
-                }
+    patterns_keys = ["news",   "stock_price", "social_media"]
+    patterns = {
+        "news": ["news", "information", "headlines"],
+        "stock_price": ["price", "much", "stock", "industry", "sector"],
+        "social_media": ["think", "talk", "social media"]
+    }
     patterns_for_industry = ["industry", "sector"]
-    pattern_nodes_social_media = ["about", "for"]
+    pattern_nodes_opinion_on = ["about", "for", "on"]
 
     companies = conf.companies
     industries = conf.industries
@@ -122,8 +123,8 @@ class PatternBasedExtractor(sn.Singleton):
         company = []
 
         for c in self.companies.keys():
-            variations = [x.lower() for x in self.companies[c]]
-            for comp in variations:
+            alternatives = [x.lower() for x in self.companies[c]]
+            for comp in alternatives:
                 if comp in input:
                     company.append(c)
                     break
@@ -139,11 +140,10 @@ class PatternBasedExtractor(sn.Singleton):
     def find_industry_from_string(self, string):
         input = string.lower()
         industry = []
-        temp = None
 
-        for i in self.industries:
-            temp = self.industries[i]
-            for ind in temp:
+        for i in self.industries.keys():
+            alternatives = self.industries[i]
+            for ind in alternatives:
                 if ind.lower() in input:
                     industry.append(self.industries[i][0])
                     break
