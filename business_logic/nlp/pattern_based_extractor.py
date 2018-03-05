@@ -175,6 +175,7 @@ class PatternBasedExtractor(sn.Singleton):
                      nouns.remove(n.data["lemma"])
 
         if pattern == "stock_price":
+            indicator = tags.Indicator.just_price
             if subtype is tags.Indicator.industry_average:
                 req = {
                     "type": tags.Type.data_request,
@@ -182,12 +183,17 @@ class PatternBasedExtractor(sn.Singleton):
                     "indicator": tags.Indicator.industry_average,
                     "keywords": self.find_industry_from_array(nouns)
                 }
-            req =  {
-                    "type": tags.Type.data_request,
-                    "subtype": tags.SubType.stock,
-                    "indicator": tags.Indicator.just_price,
-                    "keywords": self.find_company_name_from_array(nouns)
-                }
+            else:
+                for n in tree["nodes"]:
+                    if n.data["text"] in self.patterns_for_stock_prices:
+                        indicator = n.data["text"]
+                        break
+                req =  {
+                        "type": tags.Type.data_request,
+                        "subtype": tags.SubType.stock,
+                        "indicator": indicator,
+                        "keywords": self.find_company_name_from_array(nouns)
+                    }
         if pattern == "news":
             req = {
                 "type": tags.Type.data_request,

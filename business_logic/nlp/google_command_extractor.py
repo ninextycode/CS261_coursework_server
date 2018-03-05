@@ -197,5 +197,5 @@ if __name__ == "__main__":
 
 
     # logger.log(gce.get_meaning_from_single_using_patterns("What is the stock price of Barclays Bank today?"))
-    logger.log(gce.get_meaning_from_single_using_patterns("What is the variance of Barclays Bank today?")) #!!! problem solved with ordering
-    logger.log(gce.get_meaning_from_single_using_patterns("What is the variance of Barclays Bank?"))
+    logger.log(gce.get_meaning_from_single_using_nlp("Give me the variance of Barclays Bank?")) #!!! problem solved with ordering
+    # logger.log(gce.get_meaning_from_single_using_patterns("What is the variance of Barclays Bank?"))
