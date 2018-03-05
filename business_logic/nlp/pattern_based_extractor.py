@@ -18,6 +18,7 @@ class PatternBasedExtractor(sn.Singleton):
         "stock_price": ["price", "much", "stock", "industry", "sector"],
         "social_media": ["think", "talk", "social media"]
     }
+    patterns_for_stock_prices = ["variance", "behaviour", "today", "yesterday"]
     patterns_for_industry = ["industry", "sector"]
     pattern_nodes_opinion_on = ["about", "for", "on"]
 

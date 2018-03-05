@@ -171,6 +171,45 @@ class GoogleCommandExtractor(sn.Singleton):
 
         return companies
 
+
+    def test_static_pattern(self, test_cases):
+         for test in test_cases:
+
+             expected = test_cases[test]
+             result = gce.get_meaning_from_single_using_patterns(test)
+
+             if expected == result:
+                 print("OK")
+             else:
+                 print("Wrong")
+
+             print("Expected:\t" + str(test_cases[test]))
+             print("Result:\t" + result + "\n")
+
+
+
+    def test_nlp(self, test_cases):
+         for test in test_cases:
+
+             expected = test_cases[test]
+             result = gce.get_meaning_from_single_using_nlp(test)
+
+             if expected == result:
+                 print("OK")
+             else:
+                 print("Wrong")
+
+             print("Expected:\t" + str(test_cases[test]))
+             print("Result:\t" + result + "\n")
+
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
     gce = GoogleCommandExtractor().get_instance()
 
@@ -187,7 +226,7 @@ if __name__ == "__main__":
     # print(5)
     # gce.get_meaning_from_single_using_patterns("How much is the price of RDS A?")
     # print(6)
-    # gce.get_meaning_from_single_using_patterns("What is the price of Royal Dutch Shell?") # should give back two: A and B share give a as default??
+    # print(gce.get_meaning_from_single_using_nlp("What is the price of Royal Dutch Shell?")) # should give back two: A and B share give a as default??
     # print(7)
     # gce.get_meaning_from_single_using_patterns("Tell me the stock price of Smith?") # three companies that include smith
     # print(8)
@@ -200,7 +239,7 @@ if __name__ == "__main__":
     # test cases for industry request with patterns
     # print("industry_____________________________________________")
     # print(1)
-    # gce.get_meaning_from_single_using_patterns("Tell me about the software industry.")
+    # print(gce.get_meaning_from_single_using_patterns("Tell me about the software industry."))
     # print(2)
     # gce.get_meaning_from_single_using_patterns("How is the car industry behaving?")
     # print(3)
@@ -242,13 +281,13 @@ if __name__ == "__main__":
     # test cases for stock price of company with patterns
     # print("companies_____________________________________________")
     # print(3)
-    print(gce.get_meaning_from_single_using_nlp("How is Rolls Royce priced?"))
+    # print(gce.get_meaning_from_single_using_nlp("How is Rolls Royce priced?"))
     # print(6)
     # gce.get_meaning_from_single_using_nlp("What is the price of Royal Dutch Shell?")  # should give back two: A and B share give a as default??
     # print(7)
-    # gce.get_meaning_from_single_using_nlp("Tell me the stock price of Smith?")  # three companies that include smith
+    # print(gce.get_meaning_from_single_using_nlp("Tell me the stock price of Smith?"))  # three companies that include smith
     # print(8)
-    # gce.get_meaning_from_single_using_nlp("Tell me the stock price of Microsoft?")  # three companies that include smith
+    # gce.get_meaning_from_single_using_nlp("Tell me the stock price of Microsoft?")  # four companies that include smith
     # print(9)
     # gce.get_meaning_from_single_using_nlp("Give me the stock of Lloyds Group?")
     # print(10)
@@ -277,8 +316,8 @@ if __name__ == "__main__":
 
     # general test cases
 
-    # gce.get_meaning_from_single("What is the price of Barclays?")
-    # gce.get_meaning_from_single("What do people think about Donald Trump online?")
+    # print(gce.get_meaning_from_single("What is the price of Barclays?"))
+    # print(gce.get_meaning_from_single("What do people think about Donald Trump online?"))
     # gce.get_meaning_from_single("How is Rolls Royce priced?")
     # gce.get_meaning_from_single("Show me social media trends of Legal and General?")
     # gce.get_meaning_from_single("Find news on Sainsbury's?")
@@ -303,18 +342,52 @@ if __name__ == "__main__":
     # logger.log(gce.get_meaning_from_single("Give me the variance of Barclays Bank?")) #!!! problem solved with ordering
     # logger.log(gce.get_meaning_from_single_using_patterns("What is the variance of Barclays Bank?"))
 
-    # test cases for stock price of company with patterns
 
+    # test cases for stock price of company with patterns
     test_stock_price_patterns = {
-        "What is the stock price of Barclays Bank?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['RR.']}   ,
-        "What is the price of Barclays?"
-        "How is Rolls Royce priced?" # doesn't make it into the test at all, priced not in pattern
-        "What is the price of Rolls Royce?"
-        "How much is the price of RDS A?"
-        "What is the price of Royal Dutch Shell?" # should give back two: A and B share give a as default??
-        "Tell me the stock price of Smith?" # three companies that include smith
-        "Tell me the stock price of Microsoft?"
-        "Give me the stock of Lloyds Group?"
-        "Give me the stock of Royal Shell?"
+        "What is the stock price of Barclays Bank?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
+        "What is the price of Barclays?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
+        "How is Rolls Royce priced?": None, # doesn't make it into the test at all, priced not in pattern
+        "What is the price of Rolls Royce?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['RR.']},
+        "How much is the price of RDS A?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['RDSA']},
+        "What is the price of Royal Dutch Shell?": None, # no exact pattern match
+        "Give me the stock of Royal Shell?": None, # no exact pattern match
+        "Tell me the stock price of Smith?": None, # four companies that include smith, but no exact match
+        "Tell me the stock price of Microsoft?": None, # Microsoft not in FTSE100
+        "Give me the stock of Lloyds Group?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['LLOY']},
+
     }
 
+    # test cases for industries with patterns
+    test_industry_with_patterns = {
+        "Tell me about the software industry.": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'industry_average', 'keywords': ['Software & Computer Services']},
+        "How is the car industry behaving?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'industry_average', 'keywords': ['Automobiles & Parts']},
+        "Is there any movement in the paper industry?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'industry_average', 'keywords': ['Forestry & Paper']},
+        "Any news on the electronics industry?":  {'type': 'data_request', 'subtype': 'stock', 'indicator': 'industry_average', 'keywords': ['Electronic & Electrical Equipment']}
+    }
+    
+    # test cases for news request with patterns
+    test_news_with_patterns = {
+        "Give me the latest news on Barclays?": {'type': 'data_request', 'subtype': 'news', 'indicator': 'news', 'keywords': ['barclays']},
+        "Find news on Sainsbury's?": {'type': 'data_request', 'subtype': 'news', 'indicator': 'news', 'keywords': ['sainsburys']},
+        "Display the headlines of the pharmaceutical industry?": {'type': 'data_request', 'subtype': 'news', 'indicator': 'news', 'keywords': ['Pharmaceuticals & Biotechnology']},
+        "Find news on the CEO of Barclays?": None, # makes the pattern, but cleary wrong result
+        "Find news on Germany?": None
+    }
+
+    # test cases for social_media request with patterns
+    print(gce.get_meaning_from_single_using_patterns("What do people think about the construction sector?"))
+    # gce.get_meaning_from_single_using_patterns("Show me social media trends of Legal and General?")
+    # gce.get_meaning_from_single_using_patterns("What do people think about Donald Trump online?")
+    #
+    test_social_media_with_patterns = {
+        "What do people think about the construction sector?": {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['Construction & Materials']},
+        "Show me social media trends of Legal and General?": {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['legal and general']},
+        "What do people think about Donald Trump online?": None
+    }
+
+
+
+
+
+    gce.test_static_pattern(test_social_media_with_patterns)
