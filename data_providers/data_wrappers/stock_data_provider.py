@@ -43,7 +43,7 @@ class StockDataProvider(sn.Singleton):
     def get_all_stocks_data(self):
         arr = []
         time_object = datetime.datetime.now()
-        time_object = time_object.replace(second = 0, microsecond = 0)
+        time_object = time_object.replace(second=0, microsecond=0)
 
         for i in range(1, 7):
             arr.extend(
