@@ -10,13 +10,13 @@ class SubType:
     social_media = 'social_media'
     news = 'news'
     stock = 'stock'
-
+    industry = "industry"
 
 class Indicator:
+    just_price = "just_price"
     industry_average = 'industry_average'
     price_change = 'price_change'
-    stock_variance = 'stock_variance'
-    stock_behaviour = 'stock_behaviour'
+    stock_volatility = 'stock_variance'
 
 class Mood:
     positive = 'positive'
@@ -47,6 +47,9 @@ class TimePeriods:
         def __str__(self):
             return "right_now"
 
+        def __repr__(self):
+            return str(self)
+
     class Hour:
         def to_interval(self, time=datetime.datetime.now()):
             end = time.replace(microsecond=0, second=0)
@@ -56,6 +59,9 @@ class TimePeriods:
 
         def __str__(self):
             return "hour"
+
+        def __repr__(self):
+            return str(self)
 
     class Day:
         def to_interval(self, time=datetime.datetime.now()):
@@ -67,6 +73,9 @@ class TimePeriods:
         def __str__(self):
             return "day"
 
+        def __repr__(self):
+            return str(self)
+
     class Week:
         def to_interval(self, time=datetime.datetime.now()):
             end = time.replace(microsecond=0, second=0)
@@ -76,6 +85,9 @@ class TimePeriods:
 
         def __str__(self):
             return "week"
+
+        def __repr__(self):
+            return str(self)
 
     class Month:
         def to_interval(self, time=datetime.datetime.now()):
@@ -87,19 +99,15 @@ class TimePeriods:
         def __str__(self):
             return "month"
 
-    @staticmethod
-    def default_time_period(indcator):
-        if indcator == Indicator.just_price:
-            return TimePeriods.right_now
-        else:
-            return TimePeriods.day
+        def __repr__(self):
+            return str(self)
 
     right_now = RightNow()
     hour = Hour()
     day = Day()
     week = Week()
     month = Month()
-
+    default_time_period = day
 
 if __name__=='__main__':
     time = datetime.datetime(2018, 2, 14, 10, 32, 21, 0)
