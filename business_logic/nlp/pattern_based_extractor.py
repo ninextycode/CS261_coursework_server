@@ -7,27 +7,48 @@ import re
 import base.log as l
 
 
-logger = l.Logger("PatternBasedExtractor")
+logger = l.Logger('PatternBasedExtractor')
 
 
 class PatternBasedExtractor(sn.Singleton):
-    patterns_keys = ["news",   "stock_price", "social_media"]
-    patterns = {
-        "news": ["news", "information", "headlines"],
-        "stock_price": ["price", "much", "stock", "industry", "sector"],
-        "social_media": ["think", "talk", "social media"]
-    }
-    patterns_for_industry = ["industry", "sector"]
-    pattern_nodes_opinion_on = ["about", "for", "on"]
 
-    companies = conf.companies
-    industries = conf.industries
+    patterns_keys = [tags.SubType.news, tags.SubType.social_media, tags.SubType.stock, tags.SubType.industry]
+    patterns = {
+        tags.SubType.news: ['news', 'information', 'headlines'],
+        tags.SubType.social_media: ['think', 'talk', 'social'],
+        tags.SubType.stock: ['price', 'much', 'stock', 'variance', 'behaviour', 'volatility'],
+        tags.SubType.industry: ['industry', 'sector']
+    }
+
+    indicators_for_behaviour = [
+            tags.Indicator.stock_volatility,
+            tags.Indicator.price_change,
+            tags.Indicator.just_price
+    ]
+
+    patterns_for_indicators = {
+        'behaviour': indicators_for_behaviour,
+        'behaving': indicators_for_behaviour,
+        'behaves': indicators_for_behaviour,
+        'change': [tags.Indicator.price_change],
+        'volatility': [tags.Indicator.stock_volatility],
+        'variance': [tags.Indicator.stock_volatility],
+    }
+
+    time_patterns = {
+        'hour': tags.TimePeriods.hour,
+        'today': tags.TimePeriods.day,
+        'day': tags.TimePeriods.day,
+        'week': tags.TimePeriods.week,
+        'month': tags.TimePeriods.month
+    }
+
+    pattern_nodes_opinion_on = ['about', 'for', 'of', 'on']
 
     # basic predefined commands including pattern words and company name or industry name
     def get_meaning_from_using_patterns(self, string):
-        words = re.sub(r"[^\w\s]","",string).split()
-
         result = self.check_news(string)
+
         if result is None:
             result = self.check_social_media(string)
         if result is None:
@@ -36,81 +57,121 @@ class PatternBasedExtractor(sn.Singleton):
         return result
 
     def check_stock_price(self, string):
-        words = re.sub(r"[^\w\s]","",string).split()
-        indicator = None
-        keywords = None
-        pattern_keywords = self.patterns["stock_price"]
-        patterns_for_industry = self.patterns_for_industry
+        words = re.sub(r'[^\w\s]','',string.lower()).split()
 
+        if len(set(words).intersection(
+                   set(self.patterns[tags.SubType.industry]).union(
+                        set(self.patterns[tags.SubType.stock])))) == 0:
+            return None
 
+        is_industry = self.is_about_industry_words_list(words)
+        industry_id = -1
+        if is_industry:
+            industry_id = self.find_industry_from_string(string)
+            ticker = self.get_industry_tickers_by_id(industry_id)
+        else:
+            ticker = self.find_company_ticker_from_string(string)
+
+        indicators = self.check_stock_price_indicator(words)
+        time = self.check_stock_price_time(words)
+        if len(indicators) == 0:
+            if is_industry:
+                indicators = [tags.Indicator.industry_average]
+            else:
+                indicators = [tags.Indicator.just_price]
+
+        req = {
+            'type': tags.Type.data_request,
+            'subtype': tags.SubType.industry if is_industry else tags.SubType.stock,
+            'indicators' : indicators,
+            'time': time,
+            'tickers': ticker,
+        }
+        if is_industry:
+            req["industry"] = industry_id
+
+        req = self.null_on_empty_information(req)
+        return req
+
+    def is_about_industry_words_list(self, words):
+        if "social" in words and "media" in words:
+            words.remove("media") # to break possible media industry pattern
+
+        is_industry = False
+        for word in words:
+            if word in self.patterns[tags.SubType.industry]:
+                is_industry = True
+                break
+        return is_industry
+
+    def check_stock_price_indicator(self, words):
+        indicators = []
         for w in words:
-            if w in pattern_keywords:
+            if w in self.patterns_for_indicators.keys():
+                indicators.extend(self.patterns_for_indicators[w])
+        return indicators
 
-                if w in patterns_for_industry:
-                    indicator = tags.Indicator.industry_average
-                    keywords = self.find_industry_from_string(string)
-                else:
-                    indicator = tags.Indicator.just_price
-                    keywords = self.find_company_ticker_from_string(string)
-                req = {
-                    "type": tags.Type.data_request,
-                    "subtype": tags.SubType.stock,
-                    "indicator" : indicator,
-                    "keywords": keywords
-                }
-                req = self.check_for_empty_information(req)
-                return req
-        return None
+    def check_stock_price_time(self, words):
+        time = tags.TimePeriods.default_time_period
+        for word in words:
+            if word in self.time_patterns.keys():
+                time = self.time_patterns[word]
+                break
+        return time
 
     def check_news(self, string):
-        words = re.sub(r"[^\w\s]", "", string).split()
-        indicator = None
-        keywords = None
-        pattern_keywords = self.patterns["news"]
+        words = re.sub(r'[^\w\s]', '', string).split()
 
-        for w in words:
-            if w in pattern_keywords:
-                keywords = self.find_company_name_from_string(string)
-                if not keywords:
-                    keywords = self.find_industry_from_string(string)
-                req = {
-                    "type": tags.Type.data_request,
-                    "subtype": tags.SubType.news,
-                    "indicator": tags.Indicator.news,
-                    "keywords": keywords
-                }
-                req = self.check_for_empty_information(req)
-                return req
-        return None
+        if len(set(words).intersection(set(self.patterns[tags.SubType.news]))) == 0:
+            return None
+
+        is_industry = self.is_about_industry_words_list(words)
+        if is_industry:
+            industry_id = self.find_industry_from_string(string)
+            keywords = [word for word in conf.industries[industry_id][0].replace("&", " ").split(" ") if len(word) > 0]
+        else:
+            tickers = self.find_company_ticker_from_string(string)
+            keywords = [conf.companies[t][0] for t in tickers]
+
+        req = {
+            'type': tags.Type.data_request,
+            'subtype': tags.SubType.news,
+            'keywords': keywords
+        }
+
+        req = self.null_on_empty_information(req)
+        return req
 
     def check_social_media(self, string):
-        words = re.sub(r"[^\w\s]", "", string.lower()).split()
-        pattern = None
-        indicator = None
-        keywords = None
-        pattern_keywords = self.patterns["social_media"]
+        words = re.sub(r'[^\w\s]', '', string).split()
+        if 'social media' in string:
+            words.append('social media')
 
-        for w in words:
-            if str(w) in pattern_keywords or "social media" in string.lower():
-                keywords = self.find_company_name_from_string(string)
-                if not keywords:
-                    keywords = self.find_industry_from_string(string)
-                req = {
-                    "type": tags.Type.data_request,
-                    "subtype": tags.SubType.social_media,
-                    "indicator": tags.Indicator.social_media,
-                    "keywords": keywords
-                }
-                req = self.check_for_empty_information(req)
-                return req
-        return None
+        if len(set(words).intersection(set(self.patterns[tags.SubType.social_media]))) == 0:
+            return None
+
+        is_industry = self.is_about_industry_words_list(words)
+        if is_industry:
+            industry_id = self.find_industry_from_string(string)
+            keywords = [word for word in conf.industries[industry_id][0].replace("&", " ").split(" ") if len(word) > 0]
+        else:
+            tickers = self.find_company_ticker_from_string(string)
+            keywords = [conf.companies[t][0] for t in tickers]
+
+        req = {
+            'type': tags.Type.data_request,
+            'subtype': tags.SubType.social_media,
+            'keywords': keywords
+        }
+        req = self.null_on_empty_information(req)
+        return req
 
     def find_company_name_from_string(self, string):
         input = string.lower()
         company = []
 
-        for c in self.companies.keys():
-            variations = [x.lower() for x in self.companies[c]]
+        for c in conf.companies.keys():
+            variations = [x.lower() for x in conf.companies[c]]
             for comp in variations:
                 if comp in input:
                     company.append(comp)
@@ -122,8 +183,8 @@ class PatternBasedExtractor(sn.Singleton):
         input = string.lower()
         company = []
 
-        for c in self.companies.keys():
-            alternatives = [x.lower() for x in self.companies[c]]
+        for c in conf.companies.keys():
+            alternatives = [x.lower() for x in conf.companies[c]]
             for comp in alternatives:
                 if comp in input:
                     company.append(c)
@@ -138,36 +199,29 @@ class PatternBasedExtractor(sn.Singleton):
         return industries
 
     def find_industry_from_string(self, string):
-        input = string.lower()
-        industry = []
+        lower_string = string.lower()
+        for id in conf.industries.keys():
+            alternatives = conf.industries[id]
+            for alt in alternatives:
+                if alt.lower() in lower_string:
+                    return id
+        return None
 
-        for i in self.industries.keys():
-            alternatives = self.industries[i]
-            for ind in alternatives:
-                if ind.lower() in input:
-                    industry.append(self.industries[i][0])
-                    break
-
-        return industry
-
-    def check_for_empty_information(self, temp_req):
-        temp = None
-        for field in temp_req:
-            temp = temp_req[field]
-            if isinstance(temp, str):
-                if temp is None:
-                    return None
-            if isinstance(temp, list):
-                if not temp:
-                    return None
-        return temp_req
+    def get_industry_tickers_by_id(self, industry_number):
+        if industry_number is None:
+            return None
+        return conf.industry_companies[industry_number]
 
 
+    def null_on_empty_information(self, req):
+        for field in req.keys():
+            val = req[field]
+            if val is None or ((type(val) is list or type(val) is str) and len(val) == 0):
+                logger.log("missing some data in {}".format(req))
+                print("missing some data in {}".format(req))
+                return None
+        return req
 
-    # def get_all_nouns_from_tree(self, tree):
-    #     nouns = []
-    #     for n in tree["nodes"]:
-    #         print(n.data["lemma"] + ", " + str(n.data["part_of_speech"]))
-    #         if n.data["part_of_speech"] == 6:
-    #             nouns.append(n.data["lemma"])
-    #     return nouns
+
+if __name__ == '__main__':
+    print('social' in 'social media')

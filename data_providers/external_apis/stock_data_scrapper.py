@@ -14,19 +14,19 @@ class StockDataScrapper(sn.Singleton):
     def scrape_stocks_data(self, url):
         response = requests.get(url)
         if response.status_code == 200:
-            soup = bs4.BeautifulSoup(response.content, "lxml")
-            table = soup.findAll(attrs={"summary": "Companies and Prices"})[0]
-            body = table.find("tbody")
-            rows = body.findAll("tr")
+            soup = bs4.BeautifulSoup(response.content, 'lxml')
+            table = soup.findAll(attrs={'summary': 'Companies and Prices'})[0]
+            body = table.find('tbody')
+            rows = body.findAll('tr')
             time = str(datetime.now())
             arr = []
             for r in rows:
-                data = r.findAll("td")
+                data = r.findAll('td')
                 code = data[0].string
                 name = data[1].findChildren()[0].string
                 current = data[2].string
-                price = data[3].string.replace(",", "")
-                diff = self.split_string(str(data[4]), ">", "<")
+                price = data[3].string.replace(',', '')
+                diff = self.split_string(str(data[4]), '>', '<')
                 per_diff = data[5].string.strip()
                 curr = [code,name,current,price,diff,per_diff,time]
                 arr.append(curr)
@@ -52,19 +52,19 @@ class StockDataScrapper(sn.Singleton):
         today = datetime.date.today()
         if(today.year - date.year < 5 or today.year - date.year == 5 and (today.month < date.month or (today.month == date.month and today.day < date.day))):
             timestamp = time.mktime(date.timetuple())
-            data = {"request":{
-                    "SampleTime":"1d",
-                    "TimeFrame":"5y",
-                    "RequestedDataSetType":"ohlc",
-                    "ChartPriceType":"price",
-                    "Key":stock_code+".LD",
-                    "OffSet":"-60",
-                    "FromDate":timestamp,
-                    "ToDate":timestamp,
-                    "UseDelay":"true",
-                    "KeyType":"Topic",
-                    "KeyType2":"Topic",
-                    "Language":"en"
+            data = {'request':{
+                    'SampleTime':'1d',
+                    'TimeFrame':'5y',
+                    'RequestedDataSetType':'ohlc',
+                    'ChartPriceType':'price',
+                    'Key':stock_code+'.LD',
+                    'OffSet':'-60',
+                    'FromDate':timestamp,
+                    'ToDate':timestamp,
+                    'UseDelay':'true',
+                    'KeyType':'Topic',
+                    'KeyType2':'Topic',
+                    'Language':'en'
                     }}
 
             response = requests.post('http://charts.londonstockexchange.com/WebCharts/services/ChartWService.asmx/GetPrices', json = data)
@@ -82,5 +82,5 @@ if __name__ == '__main__':
 
     print('get_stocks_historical_data(key,date)')
     date = datetime.datetime(2017,3,20)
-    print(scrapper.get_stocks_historical_price("III",date))
-    print(scrapper.get_stocks_historical_price("BARC",date))
+    print(scrapper.get_stocks_historical_price('III',date))
+    print(scrapper.get_stocks_historical_price('BARC',date))

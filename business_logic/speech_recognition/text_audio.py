@@ -9,16 +9,16 @@ class TextAudio(sn.Singleton):
 
     def get_alternatives(self, audio_json):
         audio_bytes_dict = {
-            "mime_type": audio_json["mime_type"],
-            "bytes": self.get_bytes(audio_json)
+            'mime_type': audio_json['mime_type'],
+            'bytes': self.get_bytes(audio_json)
         }
         return self.api_caller.get_alternatives(audio_bytes_dict)
 
     def get_bytes(self, audio_json):
-        if audio_json["is_base64"]:
-            return base64.b64decode(audio_json["content"])
+        if audio_json['is_base64']:
+            return base64.b64decode(audio_json['content'])
         else:
-            raise NotImplementedError("Audio should be encoded in base64")
+            raise NotImplementedError('Audio should be encoded in base64')
 
     def text_to_audio(self, throw):
-        raise NotImplementedError("text_to_audio not implemented yet")
+        raise NotImplementedError('text_to_audio not implemented yet')

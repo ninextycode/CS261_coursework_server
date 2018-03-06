@@ -11,7 +11,7 @@ class Summariser(sn.Singleton):
             sumy_api.SummarisationWithSumy.get_instance()
             # potentially add more
         ]
-        self.no_summary_response = "Unfortunately no summary available."
+        self.no_summary_response = 'Unfortunately no summary available.'
 
     def summarise_url(self, url):
         for api in self.sum_apis:

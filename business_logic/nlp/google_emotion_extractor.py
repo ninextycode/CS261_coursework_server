@@ -12,22 +12,22 @@ class GoogleEmotionExtractor(sn.Singleton):
     def get_emotions_score(self, text, by_sentences):
         result = self.get_emotions(text, by_sentences)
         if by_sentences:
-            return [r["score"] for r in result]
+            return [r['score'] for r in result]
         else:
-            return result["score"]
+            return result['score']
 
     def get_emotions_magnitude(self, text, by_sentences):
         result = self.get_emotions(text, by_sentences)
         if by_sentences:
-            return [r["magnitude"] for r in result]
+            return [r['magnitude'] for r in result]
         else:
-            return result["magnitude"]
+            return result['magnitude']
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     gee = GoogleEmotionExtractor.get_instance()
     sentences = [
-        "I really hate this place",
-        "I love this place a lot",
+        'I really hate this place',
+        'I love this place a lot',
     ] * 2
     print([gee.get_emotions_score(s, False) for s in sentences])
-    print(gee.get_emotions_score(". ".join(sentences) + ".", True))
+    print(gee.get_emotions_score('. '.join(sentences) + '.', True))

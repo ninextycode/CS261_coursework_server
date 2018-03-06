@@ -2,39 +2,38 @@ import datetime
 
 
 class Type:
-    data_request = "data_request"
-    subscription = "subscription"
+    data_request = 'data_request'
+    subscription = 'subscription'
 
 
 class SubType:
-    social_media = "social_media"
-    news = "news"
-    stock = "stock"
-
+    social_media = 'social_media'
+    news = 'news'
+    stock = 'stock'
+    industry = "industry"
 
 class Indicator:
-    industry_average = "industry_average"
     just_price = "just_price"
-    news = "news"
-    social_media = "social_media"
-
+    industry_average = 'industry_average'
+    price_change = 'price_change'
+    stock_volatility = 'stock_variance'
 
 class Mood:
-    positive = "positive"
-    neutral = "neutral"
-    negative = "negative"
+    positive = 'positive'
+    neutral = 'neutral'
+    negative = 'negative'
 
 
 class OutgoingMessageType:
-    response = "response"
-    on_unknown_request = "unknown_request"
-    on_exception = "exception"
+    response = 'response'
+    on_unknown_request = 'unknown_request'
+    on_exception = 'exception'
 
 
 class MimeTypes:
-    text = "text/plain"
-    ogg = "audio/ogg"
-    flac = "audio/flac"
+    text = 'text/plain'
+    ogg = 'audio/ogg'
+    flac = 'audio/flac'
 
 
 class TimePeriods:
@@ -48,6 +47,9 @@ class TimePeriods:
         def __str__(self):
             return "right_now"
 
+        def __repr__(self):
+            return str(self)
+
     class Hour:
         def to_interval(self, time=datetime.datetime.now()):
             end = time.replace(microsecond=0, second=0)
@@ -57,6 +59,9 @@ class TimePeriods:
 
         def __str__(self):
             return "hour"
+
+        def __repr__(self):
+            return str(self)
 
     class Day:
         def to_interval(self, time=datetime.datetime.now()):
@@ -68,6 +73,9 @@ class TimePeriods:
         def __str__(self):
             return "day"
 
+        def __repr__(self):
+            return str(self)
+
     class Week:
         def to_interval(self, time=datetime.datetime.now()):
             end = time.replace(microsecond=0, second=0)
@@ -77,6 +85,9 @@ class TimePeriods:
 
         def __str__(self):
             return "week"
+
+        def __repr__(self):
+            return str(self)
 
     class Month:
         def to_interval(self, time=datetime.datetime.now()):
@@ -88,22 +99,17 @@ class TimePeriods:
         def __str__(self):
             return "month"
 
-    @staticmethod
-    def default_time_period(indcator):
-        if indcator == Indicator.just_price:
-            return TimePeriods.right_now
-        else:
-            return TimePeriods.day
+        def __repr__(self):
+            return str(self)
 
-
-    right_now=RightNow()
+    right_now = RightNow()
     hour = Hour()
     day = Day()
     week = Week()
     month = Month()
+    default_time_period = day
 
-
-if __name__=="__main__":
+if __name__=='__main__':
     time = datetime.datetime(2018, 2, 14, 10, 32, 21, 0)
     expected = [
         [datetime.datetime(2018, 2, 14, 10, 32, 0, 0), datetime.datetime(2018, 2, 14, 10, 33, 0, 0)],
@@ -122,4 +128,4 @@ if __name__=="__main__":
 
     for i, tester in enumerate(testers):
         actual = tester.to_interval(time)
-        print(expected[i], "\t", actual, "\t", expected[i]==actual)
+        print(expected[i], '\t', actual, '\t', expected[i]==actual)

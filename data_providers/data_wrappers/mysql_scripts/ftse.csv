@@ -26,11 +26,11 @@ Sainsbury's,SBRY,Food & Drug Retailers
 Tesco,TSCO,Food & Drug Retailers
 Associated British Foods,ABF,Food Producers
 Mondi,MNDI,Forestry & Paper
-Centrica,CNA,"Gas, Water & Multiutilities"
-National Grid plc,NG.,"Gas, Water & Multiutilities"
-Severn Trent,SVT,"Gas, Water & Multiutilities"
-United Utilities,UU.,"Gas, Water & Multiutilities"
-"Smith, D.S.",SMDS,General Industrials
+Centrica,CNA,'Gas, Water & Multiutilities'
+National Grid plc,NG.,'Gas, Water & Multiutilities'
+Severn Trent,SVT,'Gas, Water & Multiutilities'
+United Utilities,UU.,'Gas, Water & Multiutilities'
+'Smith, D.S.',SMDS,General Industrials
 Smiths Group,SMIN,General Industrials
 Smurfit Kappa,SKG,General Industrials
 Just Eat,JE.,General Retailers
