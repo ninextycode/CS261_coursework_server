@@ -58,7 +58,6 @@ class PatternBasedExtractor(sn.Singleton):
         pattern_keywords = self.patterns['stock_price']
         patterns_for_industry = self.patterns_for_industry
 
-
         for word in words:
             if word in pattern_keywords:
                 industry = False
@@ -67,7 +66,9 @@ class PatternBasedExtractor(sn.Singleton):
                 for w in words:
                     if w in patterns_for_industry:
                         industry = True
-                        keywords = self.find_industry_from_string(string)
+                        industry_numbers = self.find_industry_from_string(string)
+                        if len(industry_numbers) > 0:
+                            keywords = self.get_industry_ticker(industry_numbers[0])
                 if not industry:
                     keywords = self.find_company_ticker_from_string(string)
                 req = {
@@ -181,10 +182,13 @@ class PatternBasedExtractor(sn.Singleton):
             alternatives = self.industries[i]
             for ind in alternatives:
                 if ind.lower() in input:
-                    industry.append(self.industries[i][0])
+                    industry.append(i)
                     break
-
         return industry
+
+    def get_industry_ticker(self, industry_number):
+        return conf.industry_companies[industry_number]
+
 
     def check_for_empty_information(self, req):
         for field in req.keys():
