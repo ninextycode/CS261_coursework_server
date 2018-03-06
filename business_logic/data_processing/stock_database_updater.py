@@ -12,7 +12,7 @@ class StockDatabaseUpdater(sn.Singleton):
         self.provider = stock_data.StockDataProvider.get_instance()
         self.sql_wrapper = sql_db.SqlDatabaseWrapper.get_instance()
         self.currentDf = None
-        self.period_sec = 60
+        self.period_sec = 60 * 15
 
     def update(self):
         dataframe = self.provider.get_all_stocks_data()
