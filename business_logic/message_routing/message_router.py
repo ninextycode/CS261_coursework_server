@@ -38,7 +38,6 @@ class MessageRouter(sn.Singleton):
         self.send(self.response_to_formal_request(request))
 
     def send(self, data):
-        print(data)
         self.message_worker.send(data)
 
     def response_to_formal_request(self, formal_request):
