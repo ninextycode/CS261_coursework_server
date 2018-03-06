@@ -74,6 +74,7 @@ class GoogleCommandExtractor(sn.Singleton):
         req = None
         pattern = None
         subtype = None
+        interesting_words = []
         keywords = []
         req = None
         soc_keywords = []
@@ -82,61 +83,48 @@ class GoogleCommandExtractor(sn.Singleton):
 
         for n in tree["nodes"]:
             if n.data["part_of_speech"] in interesting_parts_of_speech:  # get nouns
-                keywords.append(n.data["lemma"])
+                interesting_words.append(n.data["lemma"])
 
         for p in self.pattern_based_extractor.patterns_keys:
             for n in tree["nodes"]:
                 if n.data["lemma"] in self.pattern_based_extractor.patterns[p]:  # find pattern
                     pattern = p
-                    if n.data["lemma"] in self.pattern_based_extractor.patterns_for_industry:
-                        subtype = tags.Indicator.industry_average
-                    if n.data["part_of_speech"] in interesting_parts_of_speech:
-                        keywords.remove(n.data["lemma"])
-
-                        logger.log("looking for a {}".format(pattern))
-                        break
+                    logger.log("looking for a {}".format(pattern))
+                    break
             if pattern is not None:
                 break
 
 
 
-            if pattern == "stock_price":
-                     indicator = tags.Indicator.just_price
-                     if subtype is tags.Indicator.industry_average:
-                         req = {
-                             "type": tags.Type.data_request,
-                             "subtype": tags.SubType.stock,
-                             "indicator": tags.Indicator.industry_average,
-                             "keywords": self.find_industry_from_array(nouns)
-                         }
-                     else:
-                         for n in tree["nodes"]:
-                             if n.data["text"] in self.pattern_based_extractor.patterns_for_stock_prices:
-                                 indicator = n.data["text"]
-                                 break
-                         req =  {
-                                 "type": tags.Type.data_request,
-                                 "subtype": tags.SubType.stock,
-                                 "indicator": indicator,
-                                 "keywords": self.find_company_name_from_array(nouns)
-                             }
-
-
         if pattern == "stock_price":
-            if subtype is tags.Indicator.industry_average:
+                industry = False
+                indicator = tags.Indicator.price_change
+                time =  tags.TimePeriods.day
+
+                for n in tree["nodes"]:
+                    if n.data["lemma"] in self.pattern_based_extractor.patterns_for_industry:
+                        industry = True
+                    if n.data["lemma"] in self.pattern_based_extractor.patterns_for_stock_prices:
+                        indicator = self.pattern_based_extractor.patterns_for_stock_prices[n.data["text"]]
+                    if n.data["lemma"] in self.pattern_based_extractor.time_patterns.keys():
+                        time = self.pattern_based_extractor.time_patterns[n.data["text"]]
+
+                if industry:
+                    keywords = self.find_industry_from_array(interesting_words)
+                else:
+                    keywords = self.find_company_name_from_array(interesting_words)
+
                 req = {
-                    "type": tags.Type.data_request,
-                    "subtype": tags.SubType.stock,
-                    "indicator": tags.Indicator.industry_average,
-                    "keywords": self.pattern_based_extractor.find_industry_from_array(keywords)
-                }
-            else:
-                req = {
-                    "type": tags.Type.data_request,
-                    "subtype": tags.SubType.stock,
-                    "indicator": tags.Indicator.just_price,
-                    "keywords": self.find_company_name_from_array(keywords)
-                }
+                        "type": tags.Type.data_request,
+                        "subtype": tags.SubType.stock,
+                        "industry": industry,
+                        "indicator": indicator,
+                        "time": time,
+                        "ticker": keywords
+                    }
+                print(interesting_words)
+                print(req)
+
 
         if pattern == "news":
             news_key_nodes = []
@@ -192,20 +180,19 @@ class GoogleCommandExtractor(sn.Singleton):
 
         return companies
 
+    def find_industry_from_array(self, data):
+           industries = []
+           for word in data:
+               industries.extend(self.pattern_based_extractor.find_industry_from_string(word))
+           return industries
 
-    def test_static_pattern(self, test_cases):
-         for test in test_cases:
 
-             expected = test_cases[test]
-             result = gce.get_meaning_from_single_using_patterns(test)
 
-             if expected == result:
-                 print("OK")
-             else:
-                 print("Wrong")
 
-             print("Expected:\t" + str(test_cases[test]))
-             print("Result:\t" + result + "\n")
+
+
+
+
 
 
 
@@ -383,16 +370,17 @@ if __name__ == "__main__":
         # "Tell me the stock price of Microsoft?": None, # Microsoft not in FTSE100
         # "Give me the stock of Lloyds Group?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['LLOY']},
         "What is the stock price of Barclays Bank today?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
-        "What was the stock price of Barclays Bank yesterday?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
+        "What was the variance of Barclays Bank this month?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
 
     }
 
     # test cases for industries with patterns
     test_industry_with_patterns = {
         "Tell me about the software industry.": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'industry_average', 'keywords': ['Software & Computer Services']},
-        "How is the car industry behaving?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'industry_average', 'keywords': ['Automobiles & Parts']},
-        "Is there any movement in the paper industry?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'industry_average', 'keywords': ['Forestry & Paper']},
-        "Any news on the electronics industry?":  {'type': 'data_request', 'subtype': 'stock', 'indicator': 'industry_average', 'keywords': ['Electronic & Electrical Equipment']}
+        # "How is the car industry behaving?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'industry_average', 'keywords': ['Automobiles & Parts']},
+        # "Is there any movement in the paper industry?": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'industry_average', 'keywords': ['Forestry & Paper']},
+        # "Any news on the electronics industry?":  {'type': 'data_request', 'subtype': 'stock', 'indicator': 'industry_average', 'keywords': ['Electronic & Electrical Equipment']},
+        "Show me the volatility of the electronic sector this week.": {'type': 'data_request', 'subtype': 'stock', 'indicator': 'stock_variance', 'time': 'month', 'keywords': ['Electronic & Electrical Equipment']}
     }
     
     # test cases for news request with patterns
@@ -441,4 +429,4 @@ if __name__ == "__main__":
     }
 
 
-    gce.test(test_stock_price_patterns, 1)
+    gce.test(test_industry_with_patterns, 2)

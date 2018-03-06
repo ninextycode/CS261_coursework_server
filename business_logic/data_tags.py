@@ -14,14 +14,9 @@ class SubType:
 
 class Indicator:
     industry_average = "industry_average"
-    just_price = "just_price"
-    price_today = "price_today"
-    price_yesterday = "price_yesterday"
+    price_change = "price_change"
     stock_variance = "stock_variance"
-
-    news = "news"
-    social_media = "social_media"
-
+    stock_behaviour = "stock_behaviour"
 
 class Mood:
     positive = "positive"

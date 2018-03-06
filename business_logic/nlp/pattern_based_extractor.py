@@ -16,10 +16,23 @@ class PatternBasedExtractor(sn.Singleton):
     patterns = {
         "news": ["news", "information", "headlines"],
         "social_media": ["think", "talk", "social"],
-        "stock_price": ["price", "much", "stock", "industry", "sector"]
+        "stock_price": ["price", "much", "stock", "industry", "sector", "variance", "behaviour", "volatility"]
     }
-    patterns_for_stock_prices = ["variance", "behaviour", "change"]
-    change_patterns = ["hour", "today", "day", "week", "month"]
+    patterns_for_stock_prices = {
+        "variance": tags.Indicator.stock_variance,
+        "behaviour": tags.Indicator.stock_behaviour,
+        "change": tags.Indicator.price_change,
+        "volatitlity": tags.Indicator.stock_variance
+    }
+
+    time_patterns = {
+        "hour": tags.TimePeriods.hour,
+        "today": tags.TimePeriods.day,
+        "day": tags.TimePeriods.day,
+        "week": tags.TimePeriods.week,
+        "month": tags.TimePeriods.month
+    }
+
     patterns_for_industry = ["industry", "sector"]
     pattern_nodes_opinion_on = ["about", "for", "of", "on"]
 
@@ -46,32 +59,46 @@ class PatternBasedExtractor(sn.Singleton):
         patterns_for_industry = self.patterns_for_industry
 
 
-        for w in words:
-            if w in pattern_keywords:
-
-                if w in patterns_for_industry:
-                    indicator = tags.Indicator.industry_average
-                    keywords = self.find_industry_from_string(string)
-                else:
-                    indicator = self.check_stock_price_tags(words)
+        for word in words:
+            if word in pattern_keywords:
+                industry = False
+                indicator = self.check_stock_price_tags(words)
+                time = self.check_stock_price_time(words)
+                for w in words:
+                    if w in patterns_for_industry:
+                        industry = True
+                        keywords = self.find_industry_from_string(string)
+                if not industry:
                     keywords = self.find_company_ticker_from_string(string)
                 req = {
                     "type": tags.Type.data_request,
                     "subtype": tags.SubType.stock,
+                    "Industry": industry,
                     "indicator" : indicator,
-                    "keywords": keywords
+                    "time": time,
+                    "ticker": keywords
                 }
+                print(req)
                 req = self.check_for_empty_information(req)
                 return req
         return None
 
     def check_stock_price_tags(self, words):
-        indicator = tags.Indicator.just_price
+        indicator = tags.Indicator.price_change
         for w in words:
             if w in self.patterns_for_stock_prices:
                 indicator = w
                 break
         return indicator
+
+    def check_stock_price_time(self, words):
+        time = tags.TimePeriods.day
+        for word in words:
+            if word in self.time_patterns.keys():
+                time = self.time_patterns[word],
+                break
+        return time
+
 
     def check_news(self, string):
         words = re.sub(r"[^\w\s]", "", string).split()
@@ -164,7 +191,9 @@ class PatternBasedExtractor(sn.Singleton):
     def check_for_empty_information(self, req):
         for field in req.keys():
             val = req[field]
-            if val is None or len(val) == 0:
+            if val is None:
+                return None
+            if (type(val) is list or type(val) is str) and len(val) == 0:
                 return None
         return req
 
