@@ -4,10 +4,6 @@ import business_logic.speech_recognition.text_audio as text_audio
 import business_logic.data_tags as tags
 
 
-import random
-import base64
-
-
 logger = l.Logger('MessageWorker')
 
 

@@ -212,7 +212,13 @@ if __name__ == '__main__':
 
     # test cases for stock price of company with patterns
     test_stock_price_patterns = {
-        'What is the stock price of Barclays Bank?': {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
+        'What is the stock price of Barclays Bank?': {
+                'type': 'data_request',
+                'subtype': 'stock',
+                'indicator': 'just_price',
+                'keywords': ['BARC']
+            },
+
         'What is the price of Barclays?': {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['BARC']},
         'How is Rolls Royce priced?': None, # doesn't make it into the test at all, priced not in pattern
         'What is the price of Rolls Royce?': {'type': 'data_request', 'subtype': 'stock', 'indicator': 'just_price', 'keywords': ['RR.']},
@@ -238,17 +244,42 @@ if __name__ == '__main__':
     
     # test cases for news request with patterns
     test_news_with_patterns = {
-        'Give me the latest news on Barclays?': {'type': 'data_request', 'subtype': 'news', 'indicator': 'news', 'keywords': ['barclays']},
-        'Find news on Sainsbury\'s?': {'type': 'data_request', 'subtype': 'news', 'indicator': 'news', 'keywords': ['sainsburys']},
-        'Display the headlines of the pharmaceutical industry?': {'type': 'data_request', 'subtype': 'news', 'indicator': 'news', 'keywords': ['Pharmaceuticals & Biotechnology']},
+        'Give me the latest news on Barclays?': {
+            'type': 'data_request',
+            'subtype': 'news',
+            'keywords': ['barclays']
+        },
+
+        'Find news on Sainsbury\'s?': {
+            'type': 'data_request',
+            'subtype': 'news',
+            'keywords': ['sainsburys']
+        },
+
+        'Display the headlines of the pharmaceutical industry?': {
+            'type': 'data_request',
+            'subtype': 'news',
+            'keywords': ['Pharmaceuticals & Biotechnology']
+        },
         'Find news on the CEO of Barclays?': None, # makes the pattern, but cleary wrong result
         'Find news on Germany?': None
     }
 
     # test cases for social_media request with patterns
     test_social_media_with_patterns = {
-        'What do people think about the construction sector?': {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['Construction & Materials']},
-        'Show me social media trends of Legal and General?': {'type': 'data_request', 'subtype': 'social_media', 'indicator': 'social_media', 'keywords': ['legal and general']},
+        'What do people think about the construction sector?': {
+            'type': 'data_request',
+            'subtype': 'social_media',
+            'indicator': 'social_media',
+            'keywords': ['Construction & Materials']
+        },
+
+        'Show me social media trends of Legal and General?': {
+            'type': 'data_request',
+            'subtype': 'social_media',
+            'indicator': 'social_media',
+            'keywords': ['legal and general']
+        },
         'What do people think about Donald Trump online?': None
     }
 

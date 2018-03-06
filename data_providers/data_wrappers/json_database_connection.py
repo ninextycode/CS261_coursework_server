@@ -17,6 +17,7 @@ class JsonDatabaseConnection(sn.Singleton):
 
     def count(self, data):
         return self.database_connection.counnt(data)
+
     def insert_one(self, data, collection='default'):
         data['time'] = datetime.datetime.now()
         self.database_connection.insert_one(data, collection)

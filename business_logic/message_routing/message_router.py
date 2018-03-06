@@ -30,12 +30,12 @@ class MessageRouter(sn.Singleton):
 
     def process_single(self, message):
         formal_request = self.nlp.get_meaning_from_single(message)
-        self.send(self.process_formal_request(formal_request))
+        self.process_formal_request(formal_request)
 
     def process_formal_request(self, request):
-        logger.log('request: {}'.format(request))
-        self.my_data.add_request(result)
-        self.response_to_formal_request(request)
+        logger.log("request: {}".format(request))
+        self.my_data.add_request(request)
+        self.send(self.response_to_formal_request(request))
 
     def send(self, data):
         self.message_worker.send(data)
@@ -84,8 +84,10 @@ class MessageRouter(sn.Singleton):
             unformatted_data = self.world_data.get_public_opinion(formal_request)
             text_response = \
                 self.readable_responser.get_readable_response_for_public_opinion(unformatted_data, formal_request)
-        else:  # formal_request['subtype'] == tags.SubType.stock:
-            pass
+        else:  # formal_request["subtype"] == tags.SubType.stock:
+            unformatted_data = self.world_data.get_indicator(formal_request)
+            text_response = \
+                self.readable_responser.get_readable_response_for_indicator(unformatted_data, formal_request)
             # todo
             # return self.world_data.get_stock_price_data(meaning)
 

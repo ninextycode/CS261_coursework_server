@@ -50,4 +50,7 @@ class ReadableResponser(sn.Singleton):
         return '{:2.1f}%'.format(den/nom*100)
 
     def get_readable_response_for_unknown(self):
-        return 'Cannot process request'
+        return "Cannot process request"
+
+    def get_readable_response_for_indicator(self, data, request):
+        return str(data)
