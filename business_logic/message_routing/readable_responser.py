@@ -51,3 +51,6 @@ class ReadableResponser(sn.Singleton):
 
     def get_readable_response_for_unknown(self):
         return "Cannot process request"
+
+    def get_readable_response_for_indicator(self, data, request):
+        return str(data)
