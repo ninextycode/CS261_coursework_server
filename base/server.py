@@ -24,6 +24,12 @@ def default_with_dates(self, o):
         return o.isoformat()
     if isinstance(o, np.int64):
         return str(o)
+    if isinstance(o, tags.TimePeriods.Month) \
+            or isinstance(o, tags.TimePeriods.Week) \
+            or isinstance(o, tags.TimePeriods.Day) \
+            or isinstance(o, tags.TimePeriods.Hour) \
+            or isinstance(o, tags.TimePeriods.RightNow):
+        return default_old(self, o.to_interval())
     return default_old(self, o)
 
 
