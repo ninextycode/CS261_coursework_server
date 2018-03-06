@@ -184,17 +184,10 @@ class GoogleCommandExtractor(sn.Singleton):
            industries = []
            for word in data:
                industries.extend(self.pattern_based_extractor.find_industry_from_string(word))
-           return industries
-
-
-
-
-
-
-
-
-
-
+           if len(industries) > 0:
+                return self.pattern_based_extractor.get_industry_ticker(industries[0])
+           else:
+               return []
 
     def test(self, test_cases, test_number=0): # test_number: 1 for patterns, 2 for nlp, otherwise for general get_meaning from single
         for test in test_cases:
