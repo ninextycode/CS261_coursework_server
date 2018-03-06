@@ -24,5 +24,5 @@ class StockDatabaseUpdater(sn.Singleton):
             time.sleep(self.period_sec / 2)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     StockDatabaseUpdater.get_instance().start()

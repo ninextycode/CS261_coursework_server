@@ -6,7 +6,7 @@ import pymysql
 import json
 
 
-logger = l.Logger("MySqlConnection")
+logger = l.Logger('MySqlConnection')
 
 
 class MySqlConnection():
@@ -16,13 +16,13 @@ class MySqlConnection():
         self.open()
 
     def open(self):
-        self.conn = pymysql.connect(host="localhost",
-                                    user=self.key["user"],
-                                    password=self.key["password"],
-                                    db="cs261")
+        self.conn = pymysql.connect(host='localhost',
+                                    user=self.key['user'],
+                                    password=self.key['password'],
+                                    db='cs261')
 
     def execute(self, sql, data):
-        logger.log(("executing {}".format(sql)))
+        logger.log(('executing {}'.format(sql)))
         many = type(data) is list
         if not self.conn.open:
             self.open()
@@ -36,10 +36,10 @@ class MySqlConnection():
 
             self.conn.commit()
         except Exception as e:
-            logger.log("failed with {}".format(e))
+            logger.log('failed with {}'.format(e))
 
     def query(self, sql, data, many=False):
-        logger.log(("executing {}".format(sql)))
+        logger.log(('executing {}'.format(sql)))
         if not self.conn.open:
             self.open()
         result = None
@@ -53,7 +53,7 @@ class MySqlConnection():
 
             self.conn.commit()
         except Exception as e:
-            logger.log("failed with {}".format(e))
+            logger.log('failed with {}'.format(e))
         return result
 
     def __del__(self):

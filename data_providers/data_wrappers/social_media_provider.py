@@ -3,7 +3,7 @@ import base.singleton as sn
 import data_providers.external_apis.twitter_api as twitter_api
 
 
-logger = l.Logger("SocialMediaProvider")
+logger = l.Logger('SocialMediaProvider')
 
 
 class SocialMediaProvider(sn.Singleton):
@@ -21,7 +21,7 @@ class SocialMediaProvider(sn.Singleton):
 
         for api in self.social_media_apis:
             from_this_api = self.get_posts_from_given_media_by_keywords(api, keywords)
-            logger.log("got {} posts from {} for keywords {}".format(
+            logger.log('got {} posts from {} for keywords {}'.format(
                 len(from_this_api), str(api.name), keywords)
             )
             posts.extend(from_this_api)

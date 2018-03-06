@@ -31,7 +31,7 @@ default_old = json.JSONEncoder.default
 json.JSONEncoder.default = default_with_dates
 
 
-handler_logger = l.Logger("Handler")
+handler_logger = l.Logger('Handler')
 
 
 class Handler(tws.WebSocketHandler):
@@ -39,22 +39,22 @@ class Handler(tws.WebSocketHandler):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        handler_logger.log(self, "connected")
+        handler_logger.log(self, 'connected')
         Server.get_instance().add_handler(self)
 
     def open(self):
         pass
 
     def on_message(self, message):
-        handler_logger.log(" received {}".format(message))
+        handler_logger.log(' received {}'.format(message))
         Handler.on_message_callback(message)
 
     def on_close(self):
-        handler_logger.log(self, "disconnected")
+        handler_logger.log(self, 'disconnected')
         Server.get_instance().remove_handler(self)
 
 
-server_logger = l.Logger("Server")
+server_logger = l.Logger('Server')
 
 
 class Server(sn.Singleton):
@@ -97,9 +97,9 @@ class Server(sn.Singleton):
     def unsafe_send(self, message):
         self.unsafe_clean_live_handlers_list()
         if len(self.live_handlers) > 0:
-            server_logger.log("Server sends {}".format(message))
+            server_logger.log('Server sends {}'.format(message))
         else:
-            server_logger.log("No active connections to send {}".format(message))
+            server_logger.log('No active connections to send {}'.format(message))
 
         for ws in self.live_handlers:
             ws.write_message(message)
@@ -113,10 +113,10 @@ class Server(sn.Singleton):
 
     def on_exception_responce(self):
         response = {
-            "type": tags.OutgoingMessageType.on_exception,
-            "data": {
-                "mime_type": tags.MimeTypes.text,
-                "body": traceback.format_exc()
+            'type': tags.OutgoingMessageType.on_exception,
+            'data': {
+                'mime_type': tags.MimeTypes.text,
+                'body': traceback.format_exc()
             }
         }
         return response
@@ -127,9 +127,9 @@ class Server(sn.Singleton):
 
     def start_server(self):
         application = tw.Application([
-            (r"/", Handler),
-            (r"/news", news_handler.NewsPageHandler),
-            (r"/(.*)", tw.StaticFileHandler, {"path": config.static_folder}),
+            (r'/', Handler),
+            (r'/news', news_handler.NewsPageHandler),
+            (r'/(.*)', tw.StaticFileHandler, {'path': config.static_folder}),
         ],
             template_path=config.templates_folder,
             static_path=config.static_folder
@@ -142,7 +142,7 @@ class Server(sn.Singleton):
         send_messages = tornado.ioloop.PeriodicCallback(self.send_queued, message_send_period_ms)
 
         def start_in_thread():
-            server_logger.log("Server started")
+            server_logger.log('Server started')
             send_messages.start()
             self.ioloop.start()
 

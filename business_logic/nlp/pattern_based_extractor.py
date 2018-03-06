@@ -7,41 +7,41 @@ import re
 import base.log as l
 
 
-logger = l.Logger("PatternBasedExtractor")
+logger = l.Logger('PatternBasedExtractor')
 
 
 class PatternBasedExtractor(sn.Singleton):
 
-    patterns_keys = ["news",   "stock_price", "social_media"]
+    patterns_keys = ['news',   'stock_price', 'social_media']
     patterns = {
-        "news": ["news", "information", "headlines"],
-        "social_media": ["think", "talk", "social"],
-        "stock_price": ["price", "much", "stock", "industry", "sector", "variance", "behaviour", "volatility"]
+        'news': ['news', 'information', 'headlines'],
+        'social_media': ['think', 'talk', 'social'],
+        'stock_price': ['price', 'much', 'stock', 'industry', 'sector', 'variance', 'behaviour', 'volatility']
     }
     patterns_for_stock_prices = {
-        "variance": tags.Indicator.stock_variance,
-        "behaviour": tags.Indicator.stock_behaviour,
-        "change": tags.Indicator.price_change,
-        "volatitlity": tags.Indicator.stock_variance
+        'variance': tags.Indicator.stock_variance,
+        'behaviour': tags.Indicator.stock_behaviour,
+        'change': tags.Indicator.price_change,
+        'volatitlity': tags.Indicator.stock_variance
     }
 
     time_patterns = {
-        "hour": tags.TimePeriods.hour,
-        "today": tags.TimePeriods.day,
-        "day": tags.TimePeriods.day,
-        "week": tags.TimePeriods.week,
-        "month": tags.TimePeriods.month
+        'hour': tags.TimePeriods.hour,
+        'today': tags.TimePeriods.day,
+        'day': tags.TimePeriods.day,
+        'week': tags.TimePeriods.week,
+        'month': tags.TimePeriods.month
     }
 
-    patterns_for_industry = ["industry", "sector"]
-    pattern_nodes_opinion_on = ["about", "for", "of", "on"]
+    patterns_for_industry = ['industry', 'sector']
+    pattern_nodes_opinion_on = ['about', 'for', 'of', 'on']
 
     companies = conf.companies
     industries = conf.industries
 
     # basic predefined commands including pattern words and company name or industry name
     def get_meaning_from_using_patterns(self, string):
-        words = re.sub(r"[^\w\s]","",string).split()
+        words = re.sub(r'[^\w\s]','',string).split()
 
         result = self.check_news(string)
         if result is None:
@@ -52,10 +52,10 @@ class PatternBasedExtractor(sn.Singleton):
         return result
 
     def check_stock_price(self, string):
-        words = re.sub(r"[^\w\s]","",string.lower()).split()
+        words = re.sub(r'[^\w\s]','',string.lower()).split()
         indicator = None
         keywords = None
-        pattern_keywords = self.patterns["stock_price"]
+        pattern_keywords = self.patterns['stock_price']
         patterns_for_industry = self.patterns_for_industry
 
 
@@ -71,12 +71,12 @@ class PatternBasedExtractor(sn.Singleton):
                 if not industry:
                     keywords = self.find_company_ticker_from_string(string)
                 req = {
-                    "type": tags.Type.data_request,
-                    "subtype": tags.SubType.stock,
-                    "Industry": industry,
-                    "indicator" : indicator,
-                    "time": time,
-                    "ticker": keywords
+                    'type': tags.Type.data_request,
+                    'subtype': tags.SubType.stock,
+                    'Industry': industry,
+                    'indicator' : indicator,
+                    'time': time,
+                    'ticker': keywords
                 }
                 print(req)
                 req = self.check_for_empty_information(req)
@@ -101,10 +101,10 @@ class PatternBasedExtractor(sn.Singleton):
 
 
     def check_news(self, string):
-        words = re.sub(r"[^\w\s]", "", string).split()
+        words = re.sub(r'[^\w\s]', '', string).split()
         indicator = None
         keywords = None
-        pattern_keywords = self.patterns["news"]
+        pattern_keywords = self.patterns['news']
 
         for w in words:
             if w in pattern_keywords:
@@ -112,32 +112,30 @@ class PatternBasedExtractor(sn.Singleton):
                 if not keywords:
                     keywords = self.find_industry_from_string(string)
                 req = {
-                    "type": tags.Type.data_request,
-                    "subtype": tags.SubType.news,
-                    "indicator": tags.Indicator.news,
-                    "keywords": keywords
+                    'type': tags.Type.data_request,
+                    'subtype': tags.SubType.news,
+                    'keywords': keywords
                 }
                 req = self.check_for_empty_information(req)
                 return req
         return None
 
     def check_social_media(self, string):
-        words = re.sub(r"[^\w\s]", "", string.lower()).split()
+        words = re.sub(r'[^\w\s]', '', string.lower()).split()
         pattern = None
         indicator = None
         keywords = None
-        pattern_keywords = self.patterns["social_media"]
+        pattern_keywords = self.patterns['social_media']
 
         for w in words:
-            if str(w) in pattern_keywords or "social media" in string.lower():
+            if str(w) in pattern_keywords or 'social media' in string.lower():
                 keywords = self.find_company_name_from_string(string)
                 if not keywords:
                     keywords = self.find_industry_from_string(string)
                 req = {
-                    "type": tags.Type.data_request,
-                    "subtype": tags.SubType.social_media,
-                    "indicator": tags.Indicator.social_media,
-                    "keywords": keywords
+                    'type': tags.Type.data_request,
+                    'subtype': tags.SubType.social_media,
+                    'keywords': keywords
                 }
                 req = self.check_for_empty_information(req)
                 return req
@@ -198,5 +196,5 @@ class PatternBasedExtractor(sn.Singleton):
         return req
 
 
-    if __name__ == "__main__":
-       print("social" in "social media")
+    if __name__ == '__main__':
+       print('social' in 'social media')

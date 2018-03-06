@@ -18,7 +18,7 @@ class NewsProvider(sn.Singleton):
             for new in news_loc:
 
                 # prevent duplicates
-                if new["link"] not in news_links:
-                    news_links.add(new["link"])
+                if new['link'] not in news_links:
+                    news_links.add(new['link'])
                     news.append(new)
         return news

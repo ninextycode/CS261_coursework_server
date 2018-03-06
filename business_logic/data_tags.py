@@ -2,38 +2,38 @@ import datetime
 
 
 class Type:
-    data_request = "data_request"
-    subscription = "subscription"
+    data_request = 'data_request'
+    subscription = 'subscription'
 
 
 class SubType:
-    social_media = "social_media"
-    news = "news"
-    stock = "stock"
+    social_media = 'social_media'
+    news = 'news'
+    stock = 'stock'
 
 
 class Indicator:
-    industry_average = "industry_average"
-    price_change = "price_change"
-    stock_variance = "stock_variance"
-    stock_behaviour = "stock_behaviour"
+    industry_average = 'industry_average'
+    price_change = 'price_change'
+    stock_variance = 'stock_variance'
+    stock_behaviour = 'stock_behaviour'
 
 class Mood:
-    positive = "positive"
-    neutral = "neutral"
-    negative = "negative"
+    positive = 'positive'
+    neutral = 'neutral'
+    negative = 'negative'
 
 
 class OutgoingMessageType:
-    response = "response"
-    on_unknown_request = "unknown_request"
-    on_exception = "exception"
+    response = 'response'
+    on_unknown_request = 'unknown_request'
+    on_exception = 'exception'
 
 
 class MimeTypes:
-    text = "text/plain"
-    ogg = "audio/ogg"
-    flac = "audio/flac"
+    text = 'text/plain'
+    ogg = 'audio/ogg'
+    flac = 'audio/flac'
 
 
 class TimePeriods:
@@ -86,7 +86,7 @@ class TimePeriods:
     month = Month()
 
 
-if __name__=="__main__":
+if __name__=='__main__':
     time = datetime.datetime(2018, 2, 14, 10, 32, 21, 0)
     expected = [
         [datetime.datetime(2018, 2, 14, 10, 32, 0, 0), datetime.datetime(2018, 2, 14, 10, 33, 0, 0)],
@@ -105,4 +105,4 @@ if __name__=="__main__":
 
     for i, tester in enumerate(testers):
         actual = tester.to_interval(time)
-        print(expected[i], "\t", actual, "\t", expected[i]==actual)
+        print(expected[i], '\t', actual, '\t', expected[i]==actual)
