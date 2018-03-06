@@ -7,13 +7,19 @@ class ReadableResponser(sn.Singleton):
     def get_readable_response_for_news(self, data, request):
         n = len(data)
         headline = 'I found {} recent articles for {}.\n'.format(n, request['keywords'])
-        articles = ''
+        # articles = ''
+        articles = []
+
+
 
         for l in data[:10]:
-            articles += (l['title'] + ': ' + l['link'] + '\n')
-        articles += 'Find summaries and more news at {}'.format(config.news_summary_address)
+            #articles += (l['title'] + ': ' + l['link'] + '\n')
+            articles.append([l['title'], l['link']])
+        #articles += 'Find summaries and more news at {}'.format(config.news_summary_address)
+
         response = {
             'headline': headline,
+            'type': "news",
             'text_body': articles
         }
 
@@ -41,6 +47,7 @@ class ReadableResponser(sn.Singleton):
 
         response = {
             'headline': 'Social Media Analysis for ' + str(search_terms),
+            'type': "social_media",
             'text_body': sentiments
         }
 

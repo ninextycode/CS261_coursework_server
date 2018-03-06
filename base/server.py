@@ -29,7 +29,7 @@ def default_with_dates(self, o):
             or isinstance(o, tags.TimePeriods.Day) \
             or isinstance(o, tags.TimePeriods.Hour) \
             or isinstance(o, tags.TimePeriods.RightNow):
-        return default_old(self, o.to_interval())
+        return str(o.to_interval())
     return default_old(self, o)
 
 
