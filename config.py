@@ -10,9 +10,10 @@ templates_folder = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(
 
 
 port = 7004
+mysql_host = "mysql"
+mongodb_host = "localhost"
 
-
-news_summary_address = 'localhost:{}/news.html'.format(port)
+news_summary_address = 'http://localhost:{}/news.html'.format(port)
 
 
 companies = {

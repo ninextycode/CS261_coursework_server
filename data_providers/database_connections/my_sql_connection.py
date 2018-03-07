@@ -1,6 +1,7 @@
 import base.singleton as sn
 from data_providers.database_connections import mysql_key_path
 import base.log as l
+import config
 
 import pymysql
 import json
@@ -16,7 +17,7 @@ class MySqlConnection():
         self.open()
 
     def open(self):
-        self.conn = pymysql.connect(host='localhost',
+        self.conn = pymysql.connect(host=config.mysql_host,
                                     user=self.key['user'],
                                     password=self.key['password'],
                                     db='cs261')

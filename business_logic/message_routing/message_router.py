@@ -38,7 +38,6 @@ class MessageRouter(sn.Singleton):
         self.send(self.response_to_formal_request(request))
 
     def send(self, data):
-        print(data)
         self.message_worker.send(data)
 
     def response_to_formal_request(self, formal_request):
@@ -67,12 +66,12 @@ class MessageRouter(sn.Singleton):
         }
         return response
 
-
     def response_to_data_request(self, formal_request):
         data_subtypes = [
             tags.SubType.news,
             tags.SubType.social_media,
-            tags.SubType.stock
+            tags.SubType.stock,
+            tags.SubType.industry
         ]
         if formal_request is None or formal_request['subtype'] not in data_subtypes:
             return self.unknown_request_response(formal_request)
@@ -85,12 +84,10 @@ class MessageRouter(sn.Singleton):
             unformatted_data = self.world_data.get_public_opinion(formal_request)
             text_response = \
                 self.readable_responser.get_readable_response_for_public_opinion(unformatted_data, formal_request)
-        else:  # formal_request["subtype"] == tags.SubType.stock:
+        elif formal_request["subtype"] in [tags.SubType.stock, tags.SubType.industry]:
             unformatted_data = self.world_data.get_indicator(formal_request)
             text_response = \
                 self.readable_responser.get_readable_response_for_indicator(unformatted_data, formal_request)
-            # todo
-            # return self.world_data.get_stock_price_data(meaning)
 
         response = {
             'type': tags.OutgoingMessageType.response,

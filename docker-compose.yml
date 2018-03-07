@@ -7,9 +7,35 @@ services:
     restart: always
 
     build: ./
-
     volumes:
       - .:/server/
-
     ports:
       - 7004:7004
+    links:
+    - mongodb
+    - mysql
+
+  mysql:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cs261
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+    - MONGO_INITDB_ROOT_USERNAME=user
+    - MONGO_INITDB_ROOT_PASSWORD=password
+    - MONGO_INITDB_DATABASE=cs261

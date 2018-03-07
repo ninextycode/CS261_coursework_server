@@ -1,12 +1,12 @@
 import base.singleton as sn
+import config
 
-import datetime
 import pymongo
 
 
 class MongoConnection(sn.Singleton):
     def __init__(self):
-        self.client = pymongo.MongoClient()
+        self.client = pymongo.MongoClient(host=config.mongodb_host)
         self.db_name = 'cs261'
         self.db = self.client[self.db_name]
 

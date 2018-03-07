@@ -1,3 +1,8 @@
+import sys; print('Python %s on %s' % (sys.version, sys.platform))
+sys.path.extend(['/server',
+                 '/server/data_providers/data_wrappers/mysql_scripts'])
+
+
 import data_providers.data_wrappers.sql_database_wrapper as sql_db
 import pandas as pd
 

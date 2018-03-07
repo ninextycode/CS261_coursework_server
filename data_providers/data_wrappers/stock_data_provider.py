@@ -1,4 +1,3 @@
-import data_providers.external_apis.stock_data_scrapper as scrapper
 import base.singleton as sn
 
 import requests
@@ -11,7 +10,6 @@ import bs4
 
 class StockDataProvider(sn.Singleton):
     def __init__(self):
-        self.scrapper = scrapper.StockDataScrapper.get_instance()
         self.url = 'http://www.londonstockexchange.com/exchange/prices-and-markets/' \
                    'stocks/indices/constituents-indices.html?index=UKX&industrySector=&page={}'
 
@@ -31,11 +29,8 @@ class StockDataProvider(sn.Singleton):
                 data = r.findAll('td')
                 code = data[0].string
                 name = data[1].findChildren()[0].string
-                current = data[2].string
-                price = data[3].string.replace(',', '')
-                diff = self.split_string(str(data[4]), '>', '<')
-                per_diff = data[5].string.strip()
-                curr = [code,name,current,price,diff,per_diff]
+                price = float(data[3].string.replace(',', ''))
+                curr = [code, name, price]
                 arr.append(curr)
             return arr
 
@@ -46,11 +41,9 @@ class StockDataProvider(sn.Singleton):
         time_object = time_object.replace(second=0, microsecond=0)
 
         for i in range(1, 7):
-            arr.extend(
-                self.scrape_stocks_data(
-                    self.url.format(i)))
+            arr.extend(self.scrape_stocks_data(self.url.format(i)))
         data = np.array(arr)
-        dataframe = pd.DataFrame(data=data, columns=['code','name','current','price','diff','per_diff'])
+        dataframe = pd.DataFrame(data=data, columns=['code','name','price'])
         dataframe['time'] = str(time_object)
         return dataframe
 

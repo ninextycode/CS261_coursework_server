@@ -53,4 +53,8 @@ class ReadableResponser(sn.Singleton):
         return "Cannot process request"
 
     def get_readable_response_for_indicator(self, data, request):
-        return str(data)
+        return  {
+            'headline': list(data.keys()),
+            'text_body': str(data)
+        }
+

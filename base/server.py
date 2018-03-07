@@ -15,13 +15,15 @@ import base.news_page_handler as news_handler
 import datetime
 import json
 import numpy as np
-
+import decimal
 
 
 # make sure dates are properly written to json
 def default_with_dates(self, o):
     if isinstance(o, datetime.datetime):
         return o.isoformat()
+    if isinstance(o, decimal.Decimal):
+        return str(o)
     if isinstance(o, np.int64):
         return str(o)
     if isinstance(o, tags.TimePeriods.Month) \
@@ -29,7 +31,7 @@ def default_with_dates(self, o):
             or isinstance(o, tags.TimePeriods.Day) \
             or isinstance(o, tags.TimePeriods.Hour) \
             or isinstance(o, tags.TimePeriods.RightNow):
-        return default_old(self, o.to_interval())
+        return str(o.to_interval())
     return default_old(self, o)
 
 
