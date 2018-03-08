@@ -30,7 +30,7 @@ class OutgoingMessageType:
     response = 'response'
     on_unknown_request = 'unknown_request'
     on_exception = 'exception'
-
+    notification = "notification"
 
 class MimeTypes:
     text = 'text/plain'

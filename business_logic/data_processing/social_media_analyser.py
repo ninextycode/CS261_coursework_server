@@ -25,8 +25,6 @@ class SocialMediaAnalyser(sn.Singleton):
         async_result = pool.map_async(self.nlp.get_emotions_score, [p['text'] for p in posts_likes])
         emotions = np.array(async_result.get())
 
-
-
         return self.analytics(emotions, keywords)
 
     def analytics(self, emotions, keywords):

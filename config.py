@@ -10,8 +10,15 @@ templates_folder = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(
 
 
 port = 7004
-mysql_host = "mysql"
-mongodb_host = "mongodb"
+local = False
+
+if local:
+    mysql_host = "localhost"
+    mongodb_host = "localhost"
+else:
+    mongodb_host = "mongodb"
+    mysql_host = "mysql"
+
 
 news_summary_address = 'http://localhost:{}/news.html'.format(port)
 
@@ -125,7 +132,7 @@ companies = {
 def get_ticker(name):
     global companies
     for ticker in companies.keys():
-        if name.lover() in [alternative.lower for alternative in companies[ticker]]:
+        if name.lower() in [alternative.lower() for alternative in companies[ticker]]:
             return ticker
     return None
 

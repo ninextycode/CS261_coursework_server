@@ -61,7 +61,6 @@ class ReadableResponser(sn.Singleton):
 
     def get_readable_response_for_indicator(self, data, request):
         headline = "The value of {}:\n".format(request["indicators"])
-
         body = ""
         for indicator in data.keys():
             for ticker in data[indicator].keys():
