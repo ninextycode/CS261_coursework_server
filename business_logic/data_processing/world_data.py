@@ -31,5 +31,5 @@ class WorldData(sn.Singleton):
         value = self.indicators.calculate_indicators(prices, request)
         return value
 
-    def get_price(self, tickers, time_period):
-        self.sql_wrapper.get_first_price_before(tickers, time_period.to_interval()[1])
+    def get_price(self, tickers, time):
+        self.sql_wrapper.get_first_price_before(tickers, time)

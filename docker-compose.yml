@@ -23,6 +23,8 @@ services:
       MYSQL_DATABASE: cs261
       MYSQL_USER: root
       MYSQL_PASSWORD: root
+    volumes:
+      - mysql_volume:/var/lib/mysql
 
   adminer:
     image: adminer
@@ -35,3 +37,9 @@ services:
     image: mongo
     ports:
       - 27017:27017
+    volumes:
+      - mongodb_volume:/data/db
+
+volumes:
+  mongodb_volume:
+  mysql_volume:

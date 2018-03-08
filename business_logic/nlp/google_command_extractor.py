@@ -47,20 +47,21 @@ class GoogleCommandExtractor(sn.Singleton):
 
     def get_meaning_from_single(self, text):
         meaning = self.get_meaning_from_single_using_patterns(text)
+        if meaning is not None:
+            meaning["raw_input"] = text
 
         if meaning is not None and 'keywords' not in meaning.keys(): # keywords may be extended
             return meaning
 
         meaning_nlp = self.get_meaning_from_single_using_nlp(text)
         if meaning_nlp is not None:
+            meaning_nlp["raw_input"] = text
             return meaning_nlp
         else:
             return meaning  # update meaning, but if failed - return old one
 
     def get_meaning_from_single_using_patterns(self, text):
         response = self.pattern_based_extractor.get_meaning_from_using_patterns(text)
-        if response is not None:
-            response["raw_input"] = text
         return response
 
     def get_meaning_from_single_using_nlp(self, text):
