@@ -319,14 +319,7 @@ if __name__ == '__main__':
             "time": tags.TimePeriods.week
         },
 
-        'How does Aerospace and Defense perform this week?': {
-            'type': tags.Type.data_request,
-            'subtype': tags.SubType.industry,
-            'indicators': [tags.Indicator.industry_average],
-            'tickers': ['BA.', 'RR.'],
-            'time': tags.TimePeriods.week,
-            'industry': 1
-        },
+        'How is Severn Trent performing?': None,
 
     }
 
@@ -379,7 +372,16 @@ if __name__ == '__main__':
             'tickers': ['HLMA'],
             'time': tags.TimePeriods.week,
             'industry': 9
-        }
+        },
+
+        'How does Aerospace and Defense perform this week?': {
+            'type': tags.Type.data_request,
+            'subtype': tags.SubType.industry,
+            'indicators': [tags.Indicator.industry_average],
+            'tickers': ['BA.', 'RR.'],
+            'time': tags.TimePeriods.week,
+            'industry': 1
+        },
     }
     
     # test cases for news request with patterns
@@ -401,8 +403,11 @@ if __name__ == '__main__':
             'subtype': tags.SubType.news,
             'keywords': ['Pharmaceuticals', 'Biotechnology']
         },
+
         'Find news on the CEO of Barclays?': None, # makes the pattern, but cleary wrong result
-        'Find news on Germany?': None
+
+        'Find news about the chancellor of Germany?': None
+
     }
 
     # test cases for social_media request with patterns
@@ -416,9 +421,12 @@ if __name__ == '__main__':
         'Show me social media trends of Legal and General?': {
             'type': tags.Type.data_request,
             'subtype': tags.SubType.social_media,
-            'keywords': ['Legal and General']  # such complex company name
+            'keywords': ['Legal and General']
         },
+
+
         'What do people think about Donald Trump online?': None
+
     }
 
     # test cases for stock price of company with patterns
@@ -529,7 +537,7 @@ if __name__ == '__main__':
 
     for pattern in test_patterns[0]:
         print("="*10)
-        print("Passed ", gce.test(pattern, 2))
+        print("Passed ", gce.test(pattern, 1))
 
 
 
