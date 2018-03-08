@@ -9,6 +9,7 @@ import config as conf
 import google.cloud.language as gl_lang
 import multiprocessing.pool as m_pool
 
+import re
 
 logger = l.Logger('GoogleCommandExtractor', None)
 
@@ -87,8 +88,7 @@ class GoogleCommandExtractor(sn.Singleton):
                 break
 
         if pattern in [tags.SubType.stock, tags.SubType.industry]:
-            # req = self.request_for_stock_price(tree, string)
-            return None
+            req = self.request_for_stock_price(tree, string)
         if pattern == 'news':
             req = self.request_for_news(tree)
         if pattern == 'social_media':
@@ -98,42 +98,39 @@ class GoogleCommandExtractor(sn.Singleton):
         return req
 
     def request_for_stock_price(self, tree, string):
-        interesting_words = []
-        for n in tree['nodes']:
-            if n.data['part_of_speech'] in self.interesting_parts_of_speech:  # get nouns
-                interesting_words.append(n.data['lemma'])
-
-        industry = False
-        indicators = tags.Indicator.price_change
-        time = tags.TimePeriods.day
-
-        for n in tree['nodes']:
-            if n.data['lemma'] in self.pattern_based_extractor.patterns[tags.SubType.industry]:
-                industry = True
-
-            if n.data['lemma'] in self.pattern_based_extractor.patterns_for_indicators:
-                indicators = self.pattern_based_extractor.patterns_for_indicators[n.data['text']]
-
-            if n.data['lemma'] in self.pattern_based_extractor.time_patterns.keys():
-                time = self.pattern_based_extractor.time_patterns[n.data['text']]
-
-        if industry:
-            keywords = self.find_industry_from_array(interesting_words)
-            if len(keywords) == 0:
-                keywords = self.pattern_based_extractor.find_industry_from_string(string)
+        words = re.sub(r'[^\w\s]', '', string.lower()).split()
+        # is_industry = self.is_about_industry_words_list(words)
+        if self.pattern_based_extractor.find_industry_from_string(string) is not None:
+            is_industry = True
         else:
-            keywords = self.find_company_names_from_array(interesting_words)
-            if len(keywords) == 0:
-                keywords = self.pattern_based_extractor.find_company_ticker_from_string(string)
+            is_industry = None
+        industry_id = -1
+        if is_industry:
+            industry_id = self.pattern_based_extractor.find_industry_from_string(string)
+            ticker = self.pattern_based_extractor.get_industry_tickers_by_id(industry_id)
+        else:
+            ticker = self.pattern_based_extractor.find_company_ticker_from_string(string)
 
-        return {
+        indicators = self.pattern_based_extractor.check_stock_price_indicator(words)
+        time = self.pattern_based_extractor.check_stock_price_time(words)
+        if len(indicators) == 0:
+            if is_industry:
+                indicators = [tags.Indicator.industry_average]
+            else:
+                indicators = [tags.Indicator.just_price]
+
+        req = {
             'type': tags.Type.data_request,
-            'subtype': tags.SubType.stock,
-            'industry': industry,
+            'subtype': tags.SubType.industry if is_industry else tags.SubType.stock,
             'indicators': indicators,
             'time': time,
-            'ticker': keywords
+            'tickers': ticker,
         }
+        if is_industry:
+            req["industry"] = industry_id
+
+        req = self.pattern_based_extractor.null_on_empty_information(req)
+        return req
 
     def request_for_news(self, tree):
         keywords = []
@@ -196,7 +193,11 @@ class GoogleCommandExtractor(sn.Singleton):
 
     def test(self, test_cases, test_number=0): # test_number: 1 for patterns, 2 for nlp, otherwise for general get_meaning from single
         passed = True
+        total = 0
+        number_passed = 0
+
         for test_input in test_cases.keys():
+            total += 1
             expected = test_cases[test_input]
             if test_number == 1:
                 result = gce.get_meaning_from_single_using_patterns(test_input)
@@ -205,8 +206,11 @@ class GoogleCommandExtractor(sn.Singleton):
             else:
                 result = gce.get_meaning_from_single(test_input)
 
+            if result is not None and "raw_input" in result.keys():
+                del(result["raw_input"])
             if expected == result:
                 print('OK' + '=' * 150 + 'OK')
+                number_passed += 1
             else:
                 print('Wrong' + '=' * 150 + 'Wrong')
                 passed=False
@@ -215,6 +219,10 @@ class GoogleCommandExtractor(sn.Singleton):
             print('Expect:\t' + str(test_cases[test_input]))
             print('Result:\t' + str(result) + '\n')
 
+        print("!"*100)
+        print("Total: " + str(total))
+        print("Passed: " + str(number_passed))
+        print("!" * 100)
         return passed
 
 
@@ -223,6 +231,7 @@ if __name__ == '__main__':
 
     # test cases for stock price of company with patterns
     test_stock_price_patterns = {
+
         'What is the stock price of Barclays Bank?': {
                 'type': tags.Type.data_request,
                 'subtype': 'stock',
@@ -259,7 +268,16 @@ if __name__ == '__main__':
 
         'What is the price of Royal Dutch Shell?': None, # no exact pattern match
         'Give me the stock of Royal Shell?': None, # no exact pattern match
-        'Tell me the stock price of Smith?': None, # four companies that include smith, but no exact match
+
+        # four companies that include smith, but no exact match
+        'Tell me the stock price of Smith?': {
+            'type': 'data_request',
+            'subtype': 'stock',
+            'indicators': [tags.Indicator.just_price],
+            'time': [tags.Indicator.just_price],
+            'tickers': ['GSK', 'SN.', 'SMDS', 'SMIN']
+        },
+
         'Tell me the stock price of Microsoft?': None, # Microsoft not in FTSE100
 
         'Give me the stock of Lloyds Group?': {
@@ -292,13 +310,24 @@ if __name__ == '__main__':
             'tickers': ['BARC'],
             "time": tags.TimePeriods.hour
         },
-        'What was the price behaviour of Barclays in the last week?': {
+
+        'What was the  behaviour of Barclays stock in the last week?': {
             'type': tags.Type.data_request,
             'subtype': 'stock',
             'indicators': [tags.Indicator.stock_volatility, tags.Indicator.price_change, tags.Indicator.just_price],
             'tickers': ['BARC'],
             "time": tags.TimePeriods.week
         },
+
+        'How does Aerospace and Defense perform this week?': {
+            'type': tags.Type.data_request,
+            'subtype': tags.SubType.industry,
+            'indicators': [tags.Indicator.industry_average],
+            'tickers': ['BA.', 'RR.'],
+            'time': tags.TimePeriods.week,
+            'industry': 1
+        },
+
     }
 
     # test cases for industries with patterns
@@ -497,10 +526,14 @@ if __name__ == '__main__':
         test_social_media_nlp
     ]
 
+
     for pattern in test_patterns[0]:
         print("="*10)
-        print("Passed ", gce.test(pattern, 1))
+        print("Passed ", gce.test(pattern, 2))
+
+
 
     for pattern in test_patterns[1]:
         print("="*10)
         print("Passed ", gce.test(pattern))
+
