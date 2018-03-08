@@ -139,7 +139,7 @@ def get_ticker(name):
 industries = {
     1: ['Aerospace & Defence', 'Aerospace', 'Defence'],
     2: ['Alternative Energy'],
-    3: ['Automobiles & Parts', 'Automobiles and Parts', 'Automobile', 'Automobiles' 'Car', 'Parts'],
+    3: ['Automobiles & Parts', 'Automobiles and Parts', 'Automobile', 'Automobiles', 'Car', 'Parts'],
     4: ['Banks'],
     5: ['Beverages'],
     6: ['Chemicals'],
