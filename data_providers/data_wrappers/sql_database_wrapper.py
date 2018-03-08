@@ -36,7 +36,7 @@ class SqlDatabaseWrapper(sn.Singleton):
                     '(SELECT Company_ID FROM Companies WHERE Company_code=%s), ' \
                     '(%s), (%s) ' \
                 ')'
-        df1 = dataframe[['code', 'time', 'price']]
+        df1 = dataframe[['Company_code', 'Record_Time', 'Price']]
         data = list(df1.itertuples(index=False, name=None))
         self.conn.execute(query, data)
 
@@ -60,6 +60,23 @@ class SqlDatabaseWrapper(sn.Singleton):
 
     def close(self):
         self.conn.close()
+
+    def get_first_price_all_tickers(self, time):
+        query = 'SELECT Record_Time, Price, Company_code ' \
+                'FROM Historical_Prices  INNER JOIN Companies ' \
+                'ON Companies.Company_ID = Historical_Prices.Company_ID ' \
+                'WHERE Record_Time <= %s ' \
+                'ORDER BY Record_Time DESC LIMIT 1'
+
+        data = self.conn.query(query, [str(time)], many=False)
+
+        if data is None:
+            return pd.DataFrame()
+
+        dataframe = pd.DataFrame([list(data)],
+                                 columns=['Record_Time', 'Price', 'Company_code'])
+        dataframe["Price"] = dataframe["Price"].astype(float)
+        return dataframe
 
     def get_first_price_one_ticker(self, one_ticker, time):
         query = 'SELECT Record_Time, Price, Company_code ' \

@@ -14,7 +14,7 @@ import threading
 class SubscriptionChecker(sn.Singleton):
     def __init__(self):
         self.my_data = my_data.MyData.get_instance()
-        self.check_period_seconds = 60 * 15
+        self.check_period_seconds = 60 * 1
         self.single_subscription_period_seconds = 60 * 60
         self.message_router: message_router.MessageRouter = message_router.MessageRouter.get_instance()
         self.world_data: world_data.WorldData = world_data.WorldData.get_instance()
@@ -98,12 +98,12 @@ class SubscriptionChecker(sn.Singleton):
             differences[ticker] = difference
 
             if abs(difference) < tolerance:
-                same.append(tickers)
+                same.append(ticker)
             else:
                 if difference < 0:
-                    downs.append(tickers)
+                    downs.append(ticker)
                 else:
-                    ups.append(tickers)
+                    ups.append(ticker)
 
         exceptional = None
         if len(ups) == 1 and len(downs) == 0:

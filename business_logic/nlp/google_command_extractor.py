@@ -35,28 +35,24 @@ class GoogleCommandExtractor(sn.Singleton):
         for i, response in enumerate(pattern_based_responses):
             if response is not None:
                 logger.log(response)
-                response["raw_input"] = alternatives[i]
+                response["raw_input"] = alternatives[i]["text"]
                 return response
 
         async_result = pool.map_async(self.get_meaning_from_single_using_nlp, [a['text'] for a in alternatives])
         api_responses = async_result.get()
         for i, response in enumerate(api_responses):
             if response is not None:
-                response["raw_input"] = alternatives[i]
+                response["raw_input"] = alternatives[i]["text"]
                 return response
         return None
 
     def get_meaning_from_single(self, text):
         meaning = self.get_meaning_from_single_using_patterns(text)
-        if meaning is not None:
-            meaning["raw_input"] = text
-
         if meaning is not None and 'keywords' not in meaning.keys(): # keywords may be extended
             return meaning
 
         meaning_nlp = self.get_meaning_from_single_using_nlp(text)
         if meaning_nlp is not None:
-            meaning_nlp["raw_input"] = text
             return meaning_nlp
         else:
             return meaning  # update meaning, but if failed - return old one

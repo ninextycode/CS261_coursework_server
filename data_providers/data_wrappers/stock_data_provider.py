@@ -43,8 +43,8 @@ class StockDataProvider(sn.Singleton):
         for i in range(1, 7):
             arr.extend(self.scrape_stocks_data(self.url.format(i)))
         data = np.array(arr)
-        dataframe = pd.DataFrame(data=data, columns=['code','name','price'])
-        dataframe['time'] = str(time_object)
+        dataframe = pd.DataFrame(data=data, columns=['Company_code', 'name', 'Price'])
+        dataframe['Record_Time'] = str(time_object)
         return dataframe
 
     def get_stocks_historical_price(self, stock_code, date):
