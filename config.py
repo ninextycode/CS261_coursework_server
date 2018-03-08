@@ -11,9 +11,10 @@ templates_folder = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(
 
 port = 7004
 mysql_host = "mysql"
-mongodb_host = "localhost"
+mongodb_host = "mongodb"
 
 news_summary_address = 'http://localhost:{}/news.html'.format(port)
+
 
 
 companies = {
@@ -119,6 +120,14 @@ companies = {
     'TWB': ['WHITBREAD'],
     'WWP': ['WWP']
 }
+
+
+def get_ticker(name):
+    global companies
+    for ticker in companies.keys():
+        if name.lover() in [alternative.lower for alternative in companies[ticker]]:
+            return ticker
+    return None
 
 industries = {
     1: ['Aerospace & Defence', 'Aerospace', 'Defence'],
