@@ -16,7 +16,7 @@ class PatternBasedExtractor(sn.Singleton):
     patterns = {
         tags.SubType.news: ['news', 'information', 'headlines'],
         tags.SubType.social_media: ['think', 'talk', 'social'],
-        tags.SubType.stock: ['price', 'much', 'stock', 'variance', 'behaviour', 'volatility'],
+        tags.SubType.stock: ['price', 'much', 'stock', 'variance', 'behaviour', 'volatility', 'perform', 'rise', 'fall'],
         tags.SubType.industry: ['industry', 'sector']
     }
 
@@ -64,7 +64,11 @@ class PatternBasedExtractor(sn.Singleton):
                         set(self.patterns[tags.SubType.stock])))) == 0:
             return None
 
-        is_industry = self.is_about_industry_words_list(words)
+        # is_industry = self.is_about_industry_words_list(words)
+        if self.find_industry_from_string(string) is not None:
+            is_industry = True
+        else:
+            is_industry = None
         industry_id = -1
         if is_industry:
             industry_id = self.find_industry_from_string(string)

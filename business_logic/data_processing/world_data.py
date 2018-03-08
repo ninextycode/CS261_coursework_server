@@ -10,7 +10,7 @@ class WorldData(sn.Singleton):
     def __init__(self):
         self.news_analyser = news_analyser.NewsAnalyser.get_instance()
         self.social_media_analyser = sm_analyser.SocialMediaAnalyser.get_instance()
-        self.sql_wrapper: sql_connection.SqlDatabaseWrapper = sql_connection.SqlDatabaseWrapper.get_instance()
+        # self.sql_wrapper: sql_connection.SqlDatabaseWrapper = sql_connection.SqlDatabaseWrapper.get_instance()
         self.indicators = indicators.Indicator.get_instance()
 
     def get_news(self, json_request):
