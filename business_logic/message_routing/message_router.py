@@ -106,18 +106,170 @@ class MessageRouter(sn.Singleton):
 
 
 if __name__ == "__main__":
+    class FakeMessageWorker:
+        def __init__(self):
+            self.expected = ""
+
+        def make_str_dict(self, dictionary, string="", prefix=""):
+            for key in dictionary.keys():
+                string += (prefix + str(key)) + "\n"
+                if type(dictionary[key]) is dict:
+                    string = self.make_str_dict(dictionary[key], string, prefix+"\t")
+            return string
+
+        def send(self, message):
+            print()
+            s = self.make_str_dict(message)
+            passed = s == self.expected
+            print("passed", passed)
+            if not passed:
+                print("Structure")
+                print("<<" + s + ">>")
+                print("expected structure")
+                print("<<" + expected + ">>")
+            print()
 
     tests = [
-        #'What is the price of Barclays?',
-        #'What do people think about Donald Trump online?',
-        #'How is Rolls Royce priced?',
-        #'Show me social media trends of Legal and General?',
-        #'Find news on Sainsbury's?',
-        #'How much does Microsoft cost',
+        'What is the price of Barclays?',
+        'What do people think about Donald Trump online?',
+        'How is Rolls Royce priced?',
+        'Show me social media trends of Legal and General?',
+        'Find news on Sainsbury\'s?',
+        'How much does Microsoft cost',
         'What are the news about pork meat in the uk'
     ]
 
+    responses = [
+"""type
+data
+	body
+		headline
+		text_body
+	mime_type
+additional_data
+	formal_request
+		type
+		subtype
+		indicators
+		time
+		tickers
+		time_period
+	unformatted_data
+		price
+			BARC
+			average
+""",
+
+"""type
+data
+	body
+		headline
+		type
+		text_body
+	mime_type
+additional_data
+	formal_request
+		type
+		subtype
+		keywords
+	unformatted_data
+		very_positive
+		positive
+		neutral
+		negative
+		very_negative
+		total
+		mean
+		histrogram_string
+		general_opinion
+""",
+
+"""type
+data
+	body
+		headline
+		text_body
+	mime_type
+additional_data
+	formal_request
+		type
+		subtype
+		indicators
+		time
+		tickers
+		time_period
+	unformatted_data
+		price
+			RR.
+			average
+""",
+
+"""type
+data
+	body
+		headline
+		type
+		text_body
+	mime_type
+additional_data
+	formal_request
+		type
+		subtype
+		keywords
+	unformatted_data
+		very_positive
+		positive
+		neutral
+		negative
+		very_negative
+		total
+		mean
+		histrogram_string
+		general_opinion
+""",
+
+
+"""type
+data
+	body
+		headline
+		type
+		text_body
+	mime_type
+additional_data
+	formal_request
+		type
+		subtype
+		keywords
+	unformatted_data
+""",
+
+"""type
+data
+	body
+	mime_type
+additional_data
+	formal_request
+""",
+
+
+"""type
+data
+	body
+		headline
+		type
+		text_body
+	mime_type
+additional_data
+	formal_request
+		type
+		subtype
+		keywords
+	unformatted_data
+"""]
+
     router: MessageRouter = MessageRouter.get_instance()
-    for test in tests:
-        result = router.process_single(test)
-        print(test, result)
+    router.message_worker = FakeMessageWorker()
+    for test, expected in zip(tests, responses):
+        router.message_worker.expected = expected
+        router.process_single(test)

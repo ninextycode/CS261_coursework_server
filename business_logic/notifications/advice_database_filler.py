@@ -10,7 +10,7 @@ adv: adviser.Adviser = adviser.Adviser.get_instance()
 
 for company in config.companies.keys():
     print(company)
-    adv.add_subscription_stock(company, 0.0)
+    adv.add_subscription_stock(company, 0.1)
 
 for industry_id in config.industries.keys():
     print(config.industries[industry_id])

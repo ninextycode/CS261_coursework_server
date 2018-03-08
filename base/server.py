@@ -31,8 +31,10 @@ def default_with_dates(self, o):
             or isinstance(o, tags.TimePeriods.Day) \
             or isinstance(o, tags.TimePeriods.Hour) \
             or isinstance(o, tags.TimePeriods.RightNow):
-        return str(o.to_interval())
-    return default_old(self, o)
+        interval = o.to_interval()
+        interval[0] = interval[0].isoformat()
+        interval[1] = interval[1].isoformat()
+    return interval
 
 
 default_old = json.JSONEncoder.default

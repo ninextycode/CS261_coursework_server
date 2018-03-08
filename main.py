@@ -10,11 +10,10 @@ import business_logic.notifications.subscription_checker as s_ch
 
 import threading
 import signal
+import business_logic.data_processing.stock_database_updater as stock_database_updater
 
 
 def start():
-
-    server: svr.Server = None
     # todo send special message on server restart
     server = svr.Server.get_instance()
     message_worker = mw.MessageWorker.get_instance()
@@ -31,6 +30,8 @@ def start():
     checker: s_ch.SubscriptionChecker = s_ch.SubscriptionChecker.get_instance()
     checker.start()
 
+    updater: stock_database_updater.StockDatabaseUpdater = stock_database_updater.StockDatabaseUpdater.get_instance()
+    updater.start()
     signal.signal(signal.SIGINT, server.stop_server)
 
 

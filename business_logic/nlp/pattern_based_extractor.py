@@ -222,7 +222,6 @@ class PatternBasedExtractor(sn.Singleton):
             val = req[field]
             if val is None or ((type(val) is list or type(val) is str) and len(val) == 0):
                 logger.log("missing some data in {}".format(req))
-                print("missing some data in {}".format(req))
                 return None
         return req
 
