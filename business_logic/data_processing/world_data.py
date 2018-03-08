@@ -22,13 +22,14 @@ class WorldData(sn.Singleton):
     def get_indicator(self, request):
         return
         if "time_period" not in request.keys():
-            request["time_period"] = tags.TimePeriods.default_time_period(request["indicators"])
+            request["time_period"] = tags.TimePeriods.default_time_period
 
-        if request["indicators"] == tags.Indicator.just_price:
-            return self.get_price(request["tickers"], request["time_period"])
+        #if request["indicators"] == tags.Indicator.just_price:
+        #    return self.get_price(request["tickers"], request["time_period"])
 
-        prices = self.sql_wrapper.get_prices(request["tickers"], request["time_period"])
-        value = self.indicators.calculate_indicator(prices, request["indicators"])
+        start_time, end_time = request["time_period"].to_interval()
+        prices = self.sql_wrapper.get_prices(request["tickers"], True, start_time, end_time)
+        value = self.indicators.calculate_indicators(prices, request)
         return value
 
     def get_price(self, tickers, time_period):

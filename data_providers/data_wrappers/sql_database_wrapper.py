@@ -30,14 +30,12 @@ class SqlDatabaseWrapper(sn.Singleton):
         return dataframe
 
     def insert_prices(self, dataframe):
-        dataframe.to_csv('dataframe.csv')
         query = 'INSERT IGNORE INTO Historical_Prices ' \
                 '(Company_ID, Record_Time, Price) ' \
                 'VALUES (' \
                     '(SELECT Company_ID FROM Companies WHERE Company_code=%s), ' \
                     '(%s), (%s) ' \
                 ')'
-
         df1 = dataframe[['code', 'time', 'price']]
         data = list(df1.itertuples(index=False, name=None))
         self.conn.execute(query, data)

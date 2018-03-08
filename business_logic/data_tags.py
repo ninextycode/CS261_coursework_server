@@ -12,11 +12,13 @@ class SubType:
     stock = 'stock'
     industry = "industry"
 
+
 class Indicator:
-    just_price = "just_price"
+    just_price = "price"
     industry_average = 'industry_average'
     price_change = 'price_change'
     stock_volatility = 'stock_variance'
+
 
 class Mood:
     positive = 'positive'
@@ -34,6 +36,12 @@ class MimeTypes:
     text = 'text/plain'
     ogg = 'audio/ogg'
     flac = 'audio/flac'
+
+
+class SubscriptionType:
+    price_change = "price_change"
+    news = "news"
+    social_media = "social_media"
 
 
 class TimePeriods:

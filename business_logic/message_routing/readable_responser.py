@@ -60,4 +60,19 @@ class ReadableResponser(sn.Singleton):
         return "Cannot process request"
 
     def get_readable_response_for_indicator(self, data, request):
-        return str(data)
+        headline = "The value of {}:\n".format(request["indicators"])
+
+        body = ""
+        for indicator in data.keys():
+            for ticker in data[indicator].keys():
+                if ticker != "average":
+                    body += "{}: {}\n".format(ticker, data[indicator][ticker])
+
+            if "average" in data[indicator].keys():
+                body += "{}: {}\n".format("average", data[indicator]["average"])
+            body += "\n"*2
+        return {
+            'headline': headline,
+            'text_body': body
+        }
+

@@ -31,16 +31,17 @@ class GoogleCommandExtractor(sn.Singleton):
 
         async_result = pool.map_async(self.get_meaning_from_single_using_patterns, [a['text'] for a in alternatives])
         pattern_based_responses = async_result.get()
-        for response in pattern_based_responses:
+        for i, response in enumerate(pattern_based_responses):
             if response is not None:
                 logger.log(response)
+                response["raw_input"] = alternatives[i]
                 return response
 
         async_result = pool.map_async(self.get_meaning_from_single_using_nlp, [a['text'] for a in alternatives])
         api_responses = async_result.get()
-        for response in api_responses:
+        for i, response in enumerate(api_responses):
             if response is not None:
-                # logger.log(response)
+                response["raw_input"] = alternatives[i]
                 return response
         return None
 
@@ -57,7 +58,10 @@ class GoogleCommandExtractor(sn.Singleton):
             return meaning  # update meaning, but if failed - return old one
 
     def get_meaning_from_single_using_patterns(self, text):
-        return self.pattern_based_extractor.get_meaning_from_using_patterns(text)
+        response = self.pattern_based_extractor.get_meaning_from_using_patterns(text)
+        if response is not None:
+            response["raw_input"] = text
+        return response
 
     def get_meaning_from_single_using_nlp(self, text):
         google_api_output = self.google_api.query_meaning(text)
@@ -166,7 +170,6 @@ class GoogleCommandExtractor(sn.Singleton):
     def get_nodes_from_request_branch(self, tree):
         for n in tree['nodes']:
             if n.data['text'] in self.pattern_based_extractor.pattern_nodes_opinion_on:
-                print("{} =======> {}".format(n.data['text'], self.pattern_based_extractor.pattern_nodes_opinion_on))
                 return n.get_predecessors()
         return []
 
