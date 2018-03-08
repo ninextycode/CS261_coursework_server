@@ -471,7 +471,16 @@ if __name__ == '__main__':
             'indicators': [tags.Indicator.just_price],
             'tickers': ['RDSA', 'RDSB'],
             'time': tags.TimePeriods.default_time_period
+        },
+
+        'How is Severn Trent performing?': {
+            'type': 'data_request',
+            'subtype': 'stock',
+            'indicators': [tags.Indicator.just_price],
+            'time': tags.TimePeriods.default_time_period,
+            'tickers': ['SVT']
         }
+
     }
 
     # test cases for industries with nlp
@@ -488,11 +497,13 @@ if __name__ == '__main__':
             'subtype': 'news',
             'keywords': ['CEO', 'Barclays']
         },
-        'Find news on Germany?': {
+
+        'Find news about the chancellor of Germany.': {
             'type': tags.Type.data_request,
             'subtype': 'news',
-            'keywords': ['Germany']
+            'keywords': ['chancellor', 'Germany']
         },
+
         'Find news about Donald Trump': {
             'type': tags.Type.data_request,
             'subtype': 'news',
@@ -501,12 +512,14 @@ if __name__ == '__main__':
     }
 
     # test cases for social media requests with nlp
+
     test_social_media_nlp = {
         'What do people think about Donald Trump online?': {
             'type': tags.Type.data_request,
             'subtype': 'social_media',
             'keywords': ['Trump', 'Donald']
         },
+
         'Check social media for IPhone 10': {
             'type': tags.Type.data_request,
             'subtype': 'social_media',
