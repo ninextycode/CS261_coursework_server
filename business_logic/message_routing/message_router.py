@@ -20,7 +20,7 @@ class MessageRouter(sn.Singleton):
         self.nlp = nlp.NLP.get_instance()
         self.readable_responser: rr.ReadableResponser = rr.ReadableResponser.get_instance()
         self.world_data: world_data.WorldData = world_data.WorldData.get_instance()
-        # self.my_data: my_data.MyData = my_data.MyData.get_instance()
+        self.my_data: my_data.MyData = my_data.MyData.get_instance()
         self.html_generator: html_generator.HtmlGenerator = html_generator.HtmlGenerator.get_instance()
         self.message_worker: mw.MessageWorker = None
 
@@ -86,6 +86,7 @@ class MessageRouter(sn.Singleton):
                 self.readable_responser.get_readable_response_for_public_opinion(unformatted_data, formal_request)
         elif formal_request["subtype"] in [tags.SubType.stock, tags.SubType.industry]:
             unformatted_data = self.world_data.get_indicator(formal_request)
+            logger.log("received {}".format(unformatted_data))
             text_response = \
                 self.readable_responser.get_readable_response_for_indicator(unformatted_data, formal_request)
 

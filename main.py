@@ -5,12 +5,15 @@ import time
 import base.server as svr
 import base.message_worker as mw
 import business_logic.message_routing.message_router as mr
+import business_logic.notifications.subscription_checker as s_ch
+
 
 import threading
 import signal
 
 
 def start():
+
     server: svr.Server = None
     # todo send special message on server restart
     server = svr.Server.get_instance()
@@ -24,6 +27,10 @@ def start():
 
     message_worker.set_message_router(message_router)
     message_router.set_message_worker(message_worker)
+
+    checker: s_ch.SubscriptionChecker = s_ch.SubscriptionChecker.get_instance()
+    checker.start()
+
     signal.signal(signal.SIGINT, server.stop_server)
 
 

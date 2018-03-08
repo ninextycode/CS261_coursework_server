@@ -18,7 +18,7 @@ class SqlDatabaseWrapper(sn.Singleton):
                 'FROM Historical_Prices INNER JOIN Companies ' \
                 'ON Companies.Company_ID = Historical_Prices.Company_ID ' \
                 'WHERE %s <= Record_Time AND Record_Time <= %s ' \
-                'AND Company_code IN %s' \
+                'AND Company_code IN %s ' \
                 'ORDER BY Record_Time DESC'
         data = self.conn.query(query,
                                [

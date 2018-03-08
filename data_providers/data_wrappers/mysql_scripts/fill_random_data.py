@@ -14,10 +14,10 @@ import pandas as pd
 
 import random
 # 7:50 a.m. with an opening auction and ends at 4:35 p.m
-start_time = datetime.time(7, 50)
-end_time = datetime.time(16, 35)
+start_time = datetime.time(0, 00)
+end_time = datetime.time(23, 45)
 
-start_date = datetime.date(2017, 10, 1)
+start_date = datetime.date(2018, 3, 1)
 current_datetime = datetime.datetime.combine(start_date, start_time)
 
 database: sql_database_wrapper.SqlDatabaseWrapper = sql_database_wrapper.SqlDatabaseWrapper.get_instance()
@@ -31,7 +31,7 @@ while current_datetime <= datetime.datetime.now():
     database.insert_prices(data)
 
     for i in range(len(data)):
-        data.loc[i, "price"] += float(data.loc[i, "price"]) * random.uniform(-0.02, 0.02)
+        data.loc[i, "price"] += float(data.loc[i, "price"]) * random.uniform(-0.04, 0.04)
 
     print(current_datetime)
     current_datetime += datetime.timedelta(minutes=15)

@@ -98,9 +98,10 @@ class Server(sn.Singleton):
 
     def send_queued(self):
         with self.sending_message_lock:
-            for m in self.messages_to_send:
-                self.unsafe_send(m)
-            self.messages_to_send = []
+            if len(self.live_handlers) > 0:
+                for m in self.messages_to_send:
+                    self.unsafe_send(m)
+                self.messages_to_send = []
 
     def unsafe_send(self, message):
         self.unsafe_clean_live_handlers_list()

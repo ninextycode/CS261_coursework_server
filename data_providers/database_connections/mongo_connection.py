@@ -11,13 +11,14 @@ class MongoConnection(sn.Singleton):
         self.db = self.client[self.db_name]
 
     def find(self, dictionary, collection):
-        self.db[collection].posts.find(dictionary)
+        return self.db[collection].find(dictionary)
 
     def count(self, dictionary, collection):
         posts = self.db[collection].find(dictionary)
-        for post in posts:
-            print(post)
         return posts.count()
 
     def insert_one(self, data, collection):
         self.db[collection].insert_one(data)
+
+    def update(self, key, data, collection):
+        self.db[collection].update(key, data, upsert=True)

@@ -9,7 +9,7 @@ class JsonDatabaseConnection(sn.Singleton):
         self.database_connection: mongo.MongoConnection = mongo.MongoConnection.get_instance()
 
     def find(self, data, collection):
-        return self.database_connection.find(data, collection)
+        return self.database_connection.find(data, collection=collection)
 
     def count(self, data, collection="requests"):
         return self.database_connection.count(data, collection)
@@ -18,6 +18,9 @@ class JsonDatabaseConnection(sn.Singleton):
         data['time'] = datetime.datetime.now()
         self.database_connection.insert_one(data, collection)
 
+    def update(self, key, data, collection):
+        data['time'] = datetime.datetime.now()
+        self.database_connection.update(key, data, collection)
 
 if __name__ == '__main__':
     conn = JsonDatabaseConnection.get_instance()
