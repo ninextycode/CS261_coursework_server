@@ -25,9 +25,11 @@ class SqlDatabaseWrapper(sn.Singleton):
                                    time_start, time_end, tuple(tickers)
                                ],
                                many=many)
+        if data is None:
+            data = []
         dataframe = pd.DataFrame([list(r) for r in data],
                                  columns=['Record_Time', 'Price', 'Company_code'])
-        return dataframe
+        return dataframe.reset_index(drop=True)
 
     def insert_prices(self, dataframe):
         query = 'INSERT IGNORE INTO Historical_Prices ' \

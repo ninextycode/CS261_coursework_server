@@ -29,6 +29,7 @@ class Indicator(sn.Singleton):
 
 
     def get_average(self, prices, tickers):
+        prices_dict = {}
         av = 0
         number = 0
         for ticker in tickers:
@@ -37,23 +38,31 @@ class Indicator(sn.Singleton):
                 continue
             av += subdf[0]
             number += 1
-        av /= number
-        return {"average": av}
+            prices_dict[ticker] = subdf[0]
+        av = av / number
+        prices_dict["average"] = av
+        return prices_dict
 
     def get_price_changes(self, prices, tickers):
+        total_old = 0
+        total_new = 0
         diff = {}
         av = 0
         number = 0
         for ticker in tickers:
             subdf = prices.loc[prices["Company_code"] == ticker, "Price"].reset_index(drop=True)
             if len(subdf) == 0:
+                print(prices)
                 continue
             n = len(subdf)
-            diff[ticker] = subdf[0] - subdf[n-1]
+            diff[ticker] = (subdf[0] - subdf[n-1]) / subdf[n-1]
+            total_old += subdf[n-1]
+            total_new += subdf[0]
+
             av += diff[ticker]
             number += 1
-        av /= number
-        diff["average"] = av
+
+        diff["average"] = (total_new - total_old) / total_old
         return diff
 
     def get_just_price(self, prices, tickers):
