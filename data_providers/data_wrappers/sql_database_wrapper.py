@@ -1,6 +1,6 @@
 import base.singleton as sn
 import data_providers.database_connections.my_sql_connection as my_sql
-
+import config
 import datetime
 import pandas as pd
 
@@ -62,21 +62,14 @@ class SqlDatabaseWrapper(sn.Singleton):
         self.conn.close()
 
     def get_first_price_all_tickers(self, time):
-        query = 'SELECT Record_Time, Price, Company_code ' \
-                'FROM Historical_Prices  INNER JOIN Companies ' \
-                'ON Companies.Company_ID = Historical_Prices.Company_ID ' \
-                'WHERE Record_Time <= %s ' \
-                'ORDER BY Record_Time DESC LIMIT 1'
+        tickers = list(config.companies.keys())
+        dataframe = pd.DataFrame()
 
-        data = self.conn.query(query, [str(time)], many=False)
+        for ticker in tickers:
+            ticker_df = self.get_first_price_one_ticker(ticker, time)
+            dataframe = dataframe.append(ticker_df)
 
-        if data is None:
-            return pd.DataFrame()
-
-        dataframe = pd.DataFrame([list(data)],
-                                 columns=['Record_Time', 'Price', 'Company_code'])
-        dataframe["Price"] = dataframe["Price"].astype(float)
-        return dataframe
+        return dataframe.reset_index(drop=True)
 
     def get_first_price_one_ticker(self, one_ticker, time):
         query = 'SELECT Record_Time, Price, Company_code ' \
@@ -102,7 +95,7 @@ class SqlDatabaseWrapper(sn.Singleton):
             ticker_df = self.get_first_price_one_ticker(ticker, time)
             dataframe = dataframe.append(ticker_df)
 
-        return dataframe
+        return dataframe.reset_index(drop=True)
 
 
 if __name__ == '__main__':

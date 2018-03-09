@@ -44,13 +44,13 @@ class SubscriptionChecker(sn.Singleton):
 
     def check_stock(self, sub):
         ticker = sub["ticker"]
+
         time_now = datetime.datetime.now()
         last_time_triggered = self.last_time_triggered[ticker]
         old_price = self.world_data.get_price(ticker, last_time_triggered)
         price = self.world_data.get_price(ticker, time_now)
 
         if price is None or old_price is None:
-            print(ticker)
             return
 
         difference = (price - old_price) / old_price

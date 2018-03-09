@@ -122,9 +122,10 @@ if __name__ == "__main__":
             s = self.make_str_dict(message)
             passed = s == self.expected
             print("passed", passed)
+
+            print("Structure")
+            print("<<" + s + ">>")
             if not passed:
-                print("Structure")
-                print("<<" + s + ">>")
                 print("expected structure")
                 print("<<" + expected + ">>")
             print()
@@ -277,4 +278,5 @@ additional_data
     router.message_worker = FakeMessageWorker()
     for test, expected in zip(tests, responses):
         router.message_worker.expected = expected
+        print("Sending ", test)
         router.process_single(test)

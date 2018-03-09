@@ -132,7 +132,9 @@ class PatternBasedExtractor(sn.Singleton):
         is_industry = self.is_about_industry_words_list(words)
         if is_industry:
             industry_id = self.find_industry_from_string(string)
-            keywords = [word for word in conf.industries[industry_id][0].replace("&", " ").split(" ") if len(word) > 0]
+            if industry_id is not None:
+                keywords = [word for word in conf.industries[industry_id][0].replace("&", " ").split(" ") if len(word) > 0]
+            else: keywords = []
         else:
             tickers = self.find_company_ticker_from_string(string)
             keywords = [conf.companies[t][0] for t in tickers]
@@ -157,7 +159,9 @@ class PatternBasedExtractor(sn.Singleton):
         is_industry = self.is_about_industry_words_list(words)
         if is_industry:
             industry_id = self.find_industry_from_string(string)
-            keywords = [word for word in conf.industries[industry_id][0].replace("&", " ").split(" ") if len(word) > 0]
+            if industry_id is not None:
+                keywords = [word for word in conf.industries[industry_id][0].replace("&", " ").split(" ") if len(word) > 0]
+            else: keywords = []
         else:
             tickers = self.find_company_ticker_from_string(string)
             keywords = [conf.companies[t][0] for t in tickers]

@@ -28,7 +28,6 @@ class WorldData(sn.Singleton):
             request["time_period"] = tags.TimePeriods.default_time_period
 
         start_time, end_time = request["time_period"].to_interval()
-        print(start_time, end_time)
 
         prices = self.sql_wrapper.get_prices(request["tickers"], True, start_time, end_time)
         logger.log("get prices {}".format(prices))
