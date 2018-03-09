@@ -140,6 +140,7 @@ if __name__ == "__main__":
     ]
 
     responses = [
+        #response for a price request
 """type
 data
 	body
@@ -160,6 +161,7 @@ additional_data
 			average
 """,
 
+# response for social media request
 """type
 data
 	body
@@ -184,6 +186,7 @@ additional_data
 		general_opinion
 """,
 
+#response for a price request
 """type
 data
 	body
@@ -204,6 +207,7 @@ additional_data
 			average
 """,
 
+# response for social media request
 """type
 data
 	body
@@ -228,7 +232,7 @@ additional_data
 		general_opinion
 """,
 
-
+# response for news request
 """type
 data
 	body
@@ -244,6 +248,7 @@ additional_data
 	unformatted_data
 """,
 
+# response for a failed request
 """type
 data
 	body
@@ -252,7 +257,7 @@ additional_data
 	formal_request
 """,
 
-
+#response for news request
 """type
 data
 	body

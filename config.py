@@ -10,7 +10,7 @@ templates_folder = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(
 
 
 port = 7004
-local = True
+local = False
 
 if local:
     mysql_host = "localhost"

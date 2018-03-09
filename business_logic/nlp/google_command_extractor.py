@@ -521,11 +521,13 @@ if __name__ == '__main__':
             'subtype': 'social_media',
             'keywords': ['IPhone', '10']
         },
+
         'What do people think of the new IPhone 10?': {
             'type': tags.Type.data_request,
             'subtype': 'social_media',
-            'keywords': ['IPhone', 'new', '10']  #only interesting words
+            'keywords': ['IPhone', 'new', '10']
         },
+
         'Check social media for Donald Trump': {
             'type': tags.Type.data_request,
             'subtype': 'social_media',
