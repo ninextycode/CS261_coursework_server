@@ -33,14 +33,12 @@ class RandomData(sn.Singleton):
         current_datetime = datetime.datetime.now().replace(microsecond=0, second=0)
         data = self.database.get_first_price_all_tickers(current_datetime)
         data["Price"] = data["Price"].astype(float)
-        print(data)
         self.randomise(data)
         data["Record_Time"] = str(current_datetime)
         self.database.insert_prices(data)
 
     def randomise(self, data):
         for i in range(len(data)):
-            print("<>\n" * 10, data.loc[i, "Company_code"] , len(data))
             data.loc[i, "Price"] += data.loc[i, "Price"] * random.uniform(-0.03, 0.03)
         return data
 

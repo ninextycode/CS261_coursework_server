@@ -22,7 +22,6 @@ class SubscriptionChecker(sn.Singleton):
 
     def check_all(self):
         subscriptions = self.my_data.get_subscriptions()
-        print("\n" * 10 + "subscriptions", subscriptions.count())
         for sub in subscriptions:
             self.check_one(sub)
 

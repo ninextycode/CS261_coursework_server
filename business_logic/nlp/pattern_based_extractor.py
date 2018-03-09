@@ -192,7 +192,7 @@ class PatternBasedExtractor(sn.Singleton):
         company = []
 
         for c in conf.companies.keys():
-            alternatives = [x.lower() for x in conf.companies[c]]
+            alternatives = [x.lower() for x in conf.companies[c]] + ["'" + c.lower() + "'"]
             for comp in alternatives:
                 if comp in input:
                     company.append(c)

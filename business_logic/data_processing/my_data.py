@@ -39,7 +39,7 @@ class MyData(sn.Singleton):
 
         if keyword in config.companies.keys():
             ticker = keyword
-            keyword = config.companies["ticker"][0]
+            keyword = config.companies[ticker][0]
 
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         escape = r"^{}$"
