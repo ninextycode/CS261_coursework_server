@@ -8,7 +8,7 @@ import pandas as pd
 
 
 wrapper = sql_db.SqlDatabaseWrapper.get_instance()
-dataframe = pd.read_csv('ftse.csv')
+dataframe = pd.read_csv('/server/data_providers/data_wrappers/mysql_scripts/ftse.csv')
 
 sectors = set(dataframe['Sector'])
 

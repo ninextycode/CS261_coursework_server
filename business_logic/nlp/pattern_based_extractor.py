@@ -16,7 +16,7 @@ class PatternBasedExtractor(sn.Singleton):
     patterns = {
         tags.SubType.news: ['news', 'information', 'headlines'],
         tags.SubType.social_media: ['think', 'talk', 'social'],
-        tags.SubType.stock: ['price', 'much', 'stock', 'variance', 'behaviour', 'volatility', 'perform', 'rise', 'fall'],
+        tags.SubType.stock: ['price', 'much', 'stock', 'variance', 'behaviour', 'volatility', 'perform', 'rise', 'fall', 'behave', 'move'],
         tags.SubType.industry: ['industry', 'sector']
     }
 

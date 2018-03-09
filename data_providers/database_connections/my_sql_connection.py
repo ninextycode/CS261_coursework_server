@@ -13,13 +13,12 @@ logger = l.Logger('MySqlConnection')
 class MySqlConnection():
     def __init__(self):
         self.conn = None
-        self.key = json.loads(open(mysql_key_path).read())
         self.open()
 
     def open(self):
         self.conn = pymysql.connect(host=config.mysql_host,
-                                    user=self.key['user'],
-                                    password=self.key['password'],
+                                    user='root',
+                                    password='root',
                                     db='cs261')
 
     def execute(self, sql, data):

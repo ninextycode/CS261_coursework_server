@@ -316,14 +316,7 @@ if __name__ == '__main__':
             "time": tags.TimePeriods.week
         },
 
-        'How does Aerospace and Defense perform this week?': {
-            'type': tags.Type.data_request,
-            'subtype': tags.SubType.industry,
-            'indicators': [tags.Indicator.industry_average],
-            'tickers': ['BA.', 'RR.'],
-            'time': tags.TimePeriods.week,
-            'industry': 1
-        },
+        'How is Severn Trent performing?': None,
 
     }
 
@@ -376,7 +369,16 @@ if __name__ == '__main__':
             'tickers': ['HLMA'],
             'time': tags.TimePeriods.week,
             'industry': 9
-        }
+        },
+
+        'How does Aerospace and Defense perform this week?': {
+            'type': tags.Type.data_request,
+            'subtype': tags.SubType.industry,
+            'indicators': [tags.Indicator.industry_average],
+            'tickers': ['BA.', 'RR.'],
+            'time': tags.TimePeriods.week,
+            'industry': 1
+        },
     }
     
     # test cases for news request with patterns
@@ -398,8 +400,11 @@ if __name__ == '__main__':
             'subtype': tags.SubType.news,
             'keywords': ['Pharmaceuticals', 'Biotechnology']
         },
+
         'Find news on the CEO of Barclays?': None, # makes the pattern, but cleary wrong result
-        'Find news on Germany?': None
+
+        'Find news about the chancellor of Germany?': None
+
     }
 
     # test cases for social_media request with patterns
@@ -413,9 +418,12 @@ if __name__ == '__main__':
         'Show me social media trends of Legal and General?': {
             'type': tags.Type.data_request,
             'subtype': tags.SubType.social_media,
-            'keywords': ['Legal and General']  # such complex company name
+            'keywords': ['Legal and General']
         },
+
+
         'What do people think about Donald Trump online?': None
+
     }
 
     # test cases for stock price of company with patterns
@@ -459,7 +467,16 @@ if __name__ == '__main__':
             'indicators': [tags.Indicator.just_price],
             'tickers': ['RDSA', 'RDSB'],
             'time': tags.TimePeriods.default_time_period
+        },
+
+        'How is Severn Trent performing?': {
+            'type': 'data_request',
+            'subtype': 'stock',
+            'indicators': [tags.Indicator.just_price],
+            'time': tags.TimePeriods.default_time_period,
+            'tickers': ['SVT']
         }
+
     }
 
     # test cases for industries with nlp
@@ -476,11 +493,13 @@ if __name__ == '__main__':
             'subtype': 'news',
             'keywords': ['CEO', 'Barclays']
         },
-        'Find news on Germany?': {
+
+        'Find news about the chancellor of Germany.': {
             'type': tags.Type.data_request,
             'subtype': 'news',
-            'keywords': ['Germany']
+            'keywords': ['chancellor', 'Germany']
         },
+
         'Find news about Donald Trump': {
             'type': tags.Type.data_request,
             'subtype': 'news',
@@ -489,22 +508,26 @@ if __name__ == '__main__':
     }
 
     # test cases for social media requests with nlp
+
     test_social_media_nlp = {
         'What do people think about Donald Trump online?': {
             'type': tags.Type.data_request,
             'subtype': 'social_media',
             'keywords': ['Trump', 'Donald']
         },
+
         'Check social media for IPhone 10': {
             'type': tags.Type.data_request,
             'subtype': 'social_media',
             'keywords': ['IPhone', '10']
         },
+
         'What do people think of the new IPhone 10?': {
             'type': tags.Type.data_request,
             'subtype': 'social_media',
-            'keywords': ['IPhone', 'new', '10']  #only interesting words
+            'keywords': ['IPhone', 'new', '10']
         },
+
         'Check social media for Donald Trump': {
             'type': tags.Type.data_request,
             'subtype': 'social_media',
@@ -526,7 +549,7 @@ if __name__ == '__main__':
 
     for pattern in test_patterns[0]:
         print("="*10)
-        print("Passed ", gce.test(pattern, 2))
+        print("Passed ", gce.test(pattern, 1))
 
 
 
