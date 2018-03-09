@@ -10,5 +10,5 @@ class Logger:
         output = ' '.join([str(s) for s in [datetime.datetime.now(), self.prefix, '\t', *message]])
         if self.max_len is not None and len(output) > self.max_len:
             output = output[0:self.max_len] + '...'
-       #  print(output)
+        print(output)
 

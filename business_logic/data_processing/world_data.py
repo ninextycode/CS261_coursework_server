@@ -24,10 +24,10 @@ class WorldData(sn.Singleton):
         return self.social_media_analyser.get_public_opinion(json_request)
 
     def get_indicator(self, request):
-        if "time_period" not in request.keys():
-            request["time_period"] = tags.TimePeriods.default_time_period
+        if "time" not in request.keys():
+            request["time"] = tags.TimePeriods.default_time_period
 
-        start_time, end_time = request["time_period"].to_interval()
+        start_time, end_time = request["time"].to_interval()
 
         prices = self.sql_wrapper.get_prices(request["tickers"], True, start_time, end_time)
         logger.log("get prices {}".format(prices))
