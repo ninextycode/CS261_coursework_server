@@ -7,6 +7,8 @@ import business_logic.data_processing.world_data as world_data
 import business_logic.data_processing.my_data as my_data
 import business_logic.message_routing.html_generator as html_generator
 import base.message_worker as mw
+import business_logic.notifications.adviser as adviser
+
 
 logger = l.Logger('MessageRouter')
 
@@ -23,6 +25,7 @@ class MessageRouter(sn.Singleton):
         self.my_data: my_data.MyData = my_data.MyData.get_instance()
         self.html_generator: html_generator.HtmlGenerator = html_generator.HtmlGenerator.get_instance()
         self.message_worker: mw.MessageWorker = None
+        self.adviser: adviser.Adviser = adviser.Adviser.get_instance()
 
     def process_alternatives(self, alternatives):
         formal_request = self.nlp.get_meaning_from_alternatives(alternatives)
@@ -35,6 +38,7 @@ class MessageRouter(sn.Singleton):
     def process_formal_request(self, request):
         logger.log("request: {}".format(request))
         self.my_data.add_request(request)
+        self.adviser.on_new_request(request)
         self.send(self.response_to_formal_request(request))
 
     def send(self, data):
