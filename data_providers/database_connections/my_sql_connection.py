@@ -7,7 +7,7 @@ import pymysql
 import json
 
 
-logger = l.Logger('MySqlConnection')
+logger = l.Logger('MySqlConnection', max_len=None)
 
 
 class MySqlConnection():
@@ -39,7 +39,7 @@ class MySqlConnection():
             logger.log('failed with {}'.format(e))
 
     def query(self, sql, data, many=False):
-        logger.log(('executing {}'.format(sql)))
+        logger.log(('executing {}'.format(sql)), data)
         if not self.conn.open:
             self.open()
         result = None

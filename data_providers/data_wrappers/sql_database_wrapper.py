@@ -22,7 +22,7 @@ class SqlDatabaseWrapper(sn.Singleton):
                 'ORDER BY Record_Time DESC'
         data = self.conn.query(query,
                                [
-                                   time_start, time_end, tuple(tickers)
+                                   str(time_start), str(time_end), tuple(tickers)
                                ],
                                many=many)
         if data is None:
@@ -70,7 +70,6 @@ class SqlDatabaseWrapper(sn.Singleton):
         for ticker in tickers:
             ticker_df = self.get_first_price_one_ticker(ticker, time)
             dataframe = dataframe.append(ticker_df)
-
         return dataframe.reset_index(drop=True)
 
     def get_first_price_one_ticker(self, one_ticker, time):
@@ -94,8 +93,11 @@ class SqlDatabaseWrapper(sn.Singleton):
         dataframe = pd.DataFrame()
 
         for ticker in tickers:
-            ticker_df = self.get_first_price_one_ticker(ticker, time)
-            dataframe = dataframe.append(ticker_df)
+            try:
+                ticker_df = self.get_first_price_one_ticker(ticker, time)
+                dataframe = dataframe.append(ticker_df)
+            except:
+                pass
 
         return dataframe.reset_index(drop=True)
 

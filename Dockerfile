@@ -13,5 +13,5 @@ RUN pip3 install -r requirements.txt
 
 COPY . /server
 
-# ENTRYPOINT ["/usr/bin/python3", "main.py"]
-ENTRYPOINT [ "/bin/bash" ]
+ENTRYPOINT ["/bin/bash", "start_script.sh"]
+# ENTRYPOINT [ "/bin/bash" ]
